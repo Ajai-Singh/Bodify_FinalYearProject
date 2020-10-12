@@ -1,3 +1,36 @@
 <resources>
+    <string name="welcome_message">Welcome to Bodify, Sign Up below!</string>
     <string name="app_name">Bodify</string>
+    <string name="title_activity_sign_up">SignUp</string>
+    <string name="User_Name">User Name</string>
+    <string name="email_address">JohnDoe@gmail.com</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="existing_account">Already have an existing Account? Log In here</string>
+    <string name="register">Register</string>
+    <string name="login">Log In</string>
+    <string name="Login_welcome_message">Welcome to Bodify, Log In below!</string>
+    <string name="create_account">Not registered? create an Account</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="weight">Weight</string>
+    <string name="height">Height, feet.inches</string>
+    <string name="gender">Gender</string>
+    <string name="fitness_goal">Fitness Goal</string>
+    <string name="activity_level">Activity Level</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="very_active">Very Active</string>
+    <string name="active">Active</string>
+    <string name="slightly_active">Slightly Active</string>
+    <string name="lose_weight">Lose Weight</string>
+    <string name="maintain_weight">Maintain Weight</string>
+    <string name="gain_weight">Gain Weight</string>
+    <!--    <string name=""></string>-->
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
+    <string name="title_activity_log_in">LogIn</string>
+    <string name="title_activity_tailoring">Tailoring</string>
 </resources>
