@@ -3,8 +3,7 @@ package com.example.bodify.Models;
 import java.util.ArrayList;
 
 public class User {
-    private int userID;
-    private String userName,password,userLocation,email;
+    private String userName,password,email,gender;
     private Double weight,height,bodyMassIndicator;
     //this will store comment ids as integers
 //    private ArrayList<Integer> commentIDs = new ArrayList<>();
@@ -24,15 +23,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-
-    public String getUserLocation() {
-        return userLocation;
-    }
-
-    public void setUserLocation(String userLocation) {
-        this.userLocation = userLocation;
     }
 
     public String getEmail() {
@@ -67,13 +57,21 @@ public class User {
         this.bodyMassIndicator = bodyMassIndicator;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public User() {
     }
 
-    public User(String userName, String password, String userLocation, String email, Double weight, Double height, Double bodyMassIndicator) {
+    public User(String userName, String password, String gender, String email, Double weight, Double height, Double bodyMassIndicator) {
         this.userName = userName;
         this.password = password;
-        this.userLocation = userLocation;
+        this.gender = gender;
         this.email = email;
         this.weight = weight;
         this.height = height;

@@ -9,16 +9,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.bodify.Models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUp extends AppCompatActivity {
     private EditText emailAddress, userName, password, verifyPassword;
@@ -26,13 +22,7 @@ public class SignUp extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView signInInstead;
     private FirebaseAuth mAuth;
-    private FirebaseDatabase rootNode;
-    private DatabaseReference reference;
-    public static final String sendUserName = "SEND1";
-    public static final String sendUserEmailAddress = "SEND2";
-    public static final String sendUserPassword = "SEND3";
-
-
+    public static final String MESSAGE_KEY = "MESSAGE1";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,8 +46,8 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String strUserName = userName.getText().toString().trim();
-                final String strEmailAddress = emailAddress.getText().toString().trim();
-                final String strPassword = password.getText().toString();
+                String strEmailAddress = emailAddress.getText().toString().trim();
+                String strPassword = password.getText().toString();
                 String strVerifyPassword = verifyPassword.getText().toString();
                 if(TextUtils.isEmpty(strUserName) && TextUtils.isEmpty(strEmailAddress) && TextUtils.isEmpty(strPassword) &&
                         TextUtils.isEmpty(strVerifyPassword)) {
@@ -93,26 +83,21 @@ public class SignUp extends AppCompatActivity {
                     verifyPassword.setError("Passwords do not match");
                     verifyPassword.requestFocus();
                 }else {
-                    //reference = rootNode.getReference("Users");
-                    //User user = new User("Ajai_Singh","helloworld","ajai@live.ie","Dublin",88.0,6.0,26.0);
-                    //reference.setValue(user);
-                    progressBar.setVisibility(View.VISIBLE);
-                    mAuth.createUserWithEmailAndPassword(strEmailAddress, strPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(SignUp.this, "User created", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(SignUp.this, Tailoring.class);
-                                intent.putExtra(sendUserName, strUserName);
-                                intent.putExtra(sendUserEmailAddress, strEmailAddress);
-                                intent.putExtra(sendUserPassword, strPassword);
-                                startActivity(intent);
-                            } else {
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(SignUp.this, "Error occurred! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.VISIBLE);
+                        mAuth.createUserWithEmailAndPassword(strEmailAddress, strPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()) {
+                                    Intent intent = new Intent(SignUp.this,Tailoring.class);
+                                    intent.putExtra(MESSAGE_KEY,strUserName);
+                                    Toast.makeText(getApplicationContext(),"User Created Successfully!",Toast.LENGTH_SHORT).show();
+                                    startActivity(intent);
+                                }else {
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(getApplicationContext(),"Error Occurred!" + task.getException().toString(),Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
+                        });
                 }
             }
         });

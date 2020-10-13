@@ -3,6 +3,7 @@
     package="com.example.bodify">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-feature android:name="android.hardware.type.watch" />
 
     <application
@@ -12,7 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".SignUp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".LogIn" />
-        <activity android:name=".Tailoring"/>
+        <activity android:name=".Tailoring" />
     </application>
 
 </manifest>

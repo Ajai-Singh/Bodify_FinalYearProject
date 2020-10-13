@@ -9,10 +9,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -72,7 +70,7 @@ public class LogIn extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()) {
                                 Toast.makeText(LogIn.this, "User verified", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), Tailoring.class));
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             }else {
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(LogIn.this, "Error occurred! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();

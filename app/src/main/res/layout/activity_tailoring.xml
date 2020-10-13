@@ -11,10 +11,11 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="28dp"
         android:text="@string/personal_information"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/personal_information" />
@@ -23,17 +24,18 @@
         android:id="@+id/weightTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="@string/weight"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:autofillHints="" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/heightTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -43,98 +45,134 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weightTextField" />
+        app:layout_constraintTop_toBottomOf="@+id/weightTextField"
+        android:autofillHints="" />
 
     <RadioGroup
-    android:layout_width="281dp"
-    android:layout_height="33dp"
-    android:layout_marginTop="16dp"
-    android:orientation="horizontal"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/gender"
-        android:textSize="20sp" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/male"
-        android:textSize="20sp" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="@string/female"
-        android:textSize="20sp" />
-</RadioGroup>
-
-    <RadioGroup
-        android:layout_width="419dp"
-        android:layout_height="93dp"
+        android:id="@+id/genderRadioGroup"
+        android:layout_width="260dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="-4dp"
-        tools:layout_editor_absoluteY="357dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/heightTextField">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            android:text="@string/gender"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/maleRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/male"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/femaleRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/female"
+            android:textSize="20sp" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/activityLevelRadioGroup"
+        android:layout_width="315dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="9dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/genderRadioGroup">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/activity_level"
             android:textSize="20sp" />
 
         <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/slightlyActive"
+            android:layout_width="58dp"
+            android:layout_height="54dp"
             android:text="@string/slightly_active"
             android:textSize="20sp" />
 
         <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:id="@+id/active"
+            android:layout_width="61dp"
+            android:layout_height="60dp"
             android:text="@string/active"
             android:textSize="20sp" />
 
         <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:id="@+id/veryActive"
+            android:layout_width="69dp"
+            android:layout_height="58dp"
             android:text="@string/very_active"
+            android:textSize="20sp" />
+
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/fitnessGoalRadioGroup"
+        android:layout_width="336dp"
+        android:layout_height="86dp"
+        android:layout_marginTop="44dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.64"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activityLevelRadioGroup">
+
+        <RadioButton
+            android:id="@+id/loseWeightRadioButton"
+            android:layout_width="108dp"
+            android:layout_height="84dp"
+            android:text="@string/lose_weight"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/maintainWeightRadioButton"
+            android:layout_width="112dp"
+            android:layout_height="85dp"
+            android:text="@string/maintain_weight"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/gainWeightRadioButton"
+            android:layout_width="111dp"
+            android:layout_height="85dp"
+            android:text="@string/gain_weight"
             android:textSize="20sp" />
     </RadioGroup>
 
-    <!--    <RadioGroup-->
-<!--        android:layout_width="281dp"-->
-<!--        android:layout_height="33dp"-->
-<!--        android:orientation="horizontal">-->
+    <TextView
+        android:id="@+id/fitnessGoalLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/fitness_goal"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activityLevelRadioGroup" />
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/fitness_goal"-->
-<!--            android:textSize="20sp" />-->
-
-<!--        <RadioButton-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/lose_weight"-->
-<!--            android:textSize="20sp" />-->
-
-<!--        <RadioButton-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:text="@string/maintain_weight"-->
-<!--            android:textSize="20sp" />-->
-
-<!--        <RadioButton-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:text="@string/gain_weight"-->
-<!--            android:textSize="20sp" />-->
-<!--    </RadioGroup>-->
-
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="89dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="52dp"
+        android:text="@string/submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fitnessGoalRadioGroup"
+        tools:text="@string/submit" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
