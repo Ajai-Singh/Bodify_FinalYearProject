@@ -1,24 +1,7 @@
 package com.example.bodify.Models;
 
 public class FitnessGoalCalculator {
-    private String activityLevel, fitnessGoal;
     private int calorieConsumption,fats,carbohydrates,proteins, calculatorID;
-
-    public String getActivityLevel() {
-        return activityLevel;
-    }
-
-    public void setActivityLevel(String activityLevel) {
-        this.activityLevel = activityLevel;
-    }
-
-    public String getFitnessGoal() {
-        return fitnessGoal;
-    }
-
-    public void setFitnessGoal(String fitnessGoal) {
-        this.fitnessGoal = fitnessGoal;
-    }
 
     public int getCalorieConsumption() {
         return calorieConsumption;
@@ -63,9 +46,7 @@ public class FitnessGoalCalculator {
     public FitnessGoalCalculator() {
     }
 
-    public FitnessGoalCalculator(String activityLevel, String fitnessGoal, int calorieConsumption, int fats, int carbohydrates, int proteins, int calculatorID) {
-        this.activityLevel = activityLevel;
-        this.fitnessGoal = fitnessGoal;
+    public FitnessGoalCalculator(int calorieConsumption, int fats, int carbohydrates, int proteins, int calculatorID) {
         this.calorieConsumption = calorieConsumption;
         this.fats = fats;
         this.carbohydrates = carbohydrates;

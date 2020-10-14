@@ -3,26 +3,35 @@ package com.example.bodify.Models;
 import java.util.ArrayList;
 
 public class User {
-    private String userName,password,email,gender;
-    private Double weight,height,bodyMassIndicator;
+    private String userName,email,gender,activityLevel,fitnessGoal;
+    private Double weight,bodyMassIndicator;
+    private int height; //taking height as int now due to BMI formula
     //this will store comment ids as integers
 //    private ArrayList<Integer> commentIDs = new ArrayList<>();
 //    private ArrayList<Integer> recipeIDs = new ArrayList<>();
 //    private Integer calculatorID;
+    public String getActivityLevel() {
+        return activityLevel;
+    }
+
+    public void setActivityLevel(String activityLevel) {
+        this.activityLevel = activityLevel;
+    }
+
+    public String getFitnessGoal() {
+        return fitnessGoal;
+    }
+
+    public void setFitnessGoal(String fitnessGoal) {
+        this.fitnessGoal = fitnessGoal;
+    }
+
     public String getUserName() {
         return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getEmail() {
@@ -41,11 +50,11 @@ public class User {
         this.weight = weight;
     }
 
-    public Double getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setHeight(Double height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
@@ -68,13 +77,28 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String password, String gender, String email, Double weight, Double height, Double bodyMassIndicator) {
+    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, Double weight, Double bodyMassIndicator, int height) {
         this.userName = userName;
-        this.password = password;
-        this.gender = gender;
         this.email = email;
+        this.gender = gender;
+        this.activityLevel = activityLevel;
+        this.fitnessGoal = fitnessGoal;
         this.weight = weight;
-        this.height = height;
         this.bodyMassIndicator = bodyMassIndicator;
+        this.height = height;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userName='" + userName + '\'' +
+                ", email='" + email + '\'' +
+                ", gender='" + gender + '\'' +
+                ", activityLevel='" + activityLevel + '\'' +
+                ", fitnessGoal='" + fitnessGoal + '\'' +
+                ", weight=" + weight +
+                ", bodyMassIndicator=" + bodyMassIndicator +
+                ", height=" + height +
+                '}';
     }
 }

@@ -13,7 +13,7 @@
     <string name="create_account">Not registered? create an Account</string>
     <string name="personal_information">Personal Information</string>
     <string name="weight">Weight in KGs</string>
-    <string name="height">Height, Feet.Inches</string>
+    <string name="height">Height in CM</string>
     <string name="gender">Gender</string>
     <string name="fitness_goal">Fitness Goal</string>
     <string name="activity_level">Activity Level</string>
