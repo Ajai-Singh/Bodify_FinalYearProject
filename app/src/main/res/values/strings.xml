@@ -27,6 +27,9 @@
     <string name="gain_weight">Gain Weight</string>
     <string name="dob">Date Of Birth</string>
     <string name="submit">Submit</string>
+    <string name="facebook_app_id">649335919276298</string>
+    <string name="fb_login_protocol_scheme">fb649335919276298</string>
+    <string name="pedometerButton">Pedometer</string>
     <!--    <string name=""></string>-->
     <!--
     This string is used for square devices and overridden by hello_world in
@@ -36,4 +39,5 @@
     <string name="title_activity_log_in">LogIn</string>
     <string name="title_activity_tailoring">Tailoring</string>
     <string name="title_activity_main">Main</string>
+    <string name="title_activity_pedometer_feature">PedometerFeature</string>
 </resources>

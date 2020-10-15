@@ -55,11 +55,11 @@
         android:id="@+id/logInButton"
         android:layout_width="94dp"
         android:layout_height="53dp"
-        android:layout_marginStart="156dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="14dp"
         android:text="@string/login"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toTopOf="@+id/createNewAccount"
+        app:layout_constraintBottom_toTopOf="@+id/fbLogIn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="@string/login" />
 
@@ -98,4 +98,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/Login_welcome_message" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/fbLogIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="14dp"
+        app:layout_constraintBottom_toTopOf="@+id/createNewAccount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
