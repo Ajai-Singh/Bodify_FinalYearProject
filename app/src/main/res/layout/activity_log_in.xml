@@ -105,6 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="14dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/createNewAccount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

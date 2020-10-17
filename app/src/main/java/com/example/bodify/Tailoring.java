@@ -93,7 +93,7 @@ public class Tailoring extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                            startActivity(new Intent(getApplicationContext(),DashBoard.class));
                         } else {
                             Toast.makeText(getApplicationContext(), "Error Occurred!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
