@@ -1,21 +1,45 @@
 package com.example.bodify;
 
 import android.os.Bundle;
-import android.support.wearable.activity.WearableActivity;
-import android.widget.TextView;
+import android.util.Log;
 
-public class PersonalProfile extends WearableActivity {
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
-    private TextView mTextView;
+import com.example.bodify.Models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+public class PersonalProfile extends AppCompatActivity {
+    private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_profile);
+        mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        String userID = mAuth.getUid();
+        databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        databaseReference.addValueEventListener(new ValueEventListener() {
 
-        mTextView = (TextView) findViewById(R.id.text);
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot: snapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+                } Log.w("USER","user");
+            }
 
-        // Enables Always-on
-        setAmbientEnabled();
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w("Database Error","Cancel Access" + error.getMessage());
+            }
+        });
     }
 }
