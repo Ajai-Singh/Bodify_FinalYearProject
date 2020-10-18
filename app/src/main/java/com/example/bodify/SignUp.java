@@ -49,18 +49,6 @@ public class SignUp extends AppCompatActivity {
                 String strEmailAddress = emailAddress.getText().toString().trim();
                 String strPassword = password.getText().toString();
                 String strVerifyPassword = verifyPassword.getText().toString();
-                //Removing validation on all fields at once looks ugly
-                //                if(TextUtils.isEmpty(strUserName) && TextUtils.isEmpty(strEmailAddress) && TextUtils.isEmpty(strPassword) &&
-//                        TextUtils.isEmpty(strVerifyPassword)) {
-//                    userName.setError("User Name is required.");
-//                    userName.requestFocus();
-//                    emailAddress.setError("Email Address is required.");
-//                    emailAddress.requestFocus();
-//                    password.setError("Password is required.");
-//                    password.requestFocus();
-//                    verifyPassword.setError("Password confirmation is required.");
-//                    verifyPassword.requestFocus();}
-//
                  if(TextUtils.isEmpty(strUserName)) {
                     userName.setError("User Name is required.");
                     userName.requestFocus();

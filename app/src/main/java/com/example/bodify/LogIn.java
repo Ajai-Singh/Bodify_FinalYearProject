@@ -45,13 +45,7 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View v) {
                 String strEmailAddress = emailAddress.getText().toString().trim();
                 String strPassword = password.getText().toString();
-                if(TextUtils.isEmpty(strEmailAddress) && TextUtils.isEmpty(strPassword)) {
-                    emailAddress.setError("Email Address is required.");
-                    emailAddress.requestFocus();
-                    password.setError("Password is required.");
-                    password.requestFocus();
-                }
-                else if(TextUtils.isEmpty(strEmailAddress)) {
+                if(TextUtils.isEmpty(strEmailAddress)) {
                     emailAddress.setError("Email Address is required.");
                     emailAddress.requestFocus();
                 }else if(TextUtils.isEmpty(strPassword)) {
