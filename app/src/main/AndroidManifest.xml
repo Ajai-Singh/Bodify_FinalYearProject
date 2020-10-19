@@ -52,7 +52,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignUp">
+        <activity android:name=".PersonalProfile">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -63,7 +63,7 @@
         <activity android:name=".Tailoring" />
         <activity android:name=".DashBoard" />
         <activity android:name=".GymsNearMe" />
-        <activity android:name=".PersonalProfile" />
+        <activity android:name=".SignUp" />
     </application>
 
 </manifest>

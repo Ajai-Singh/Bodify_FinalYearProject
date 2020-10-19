@@ -32,8 +32,8 @@ public class Tailoring extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tailoring);
         getSupportActionBar().setTitle("Personalize your profile");
-        weight = findViewById(R.id.weightTextField);
-        height = findViewById(R.id.heightTextField);
+        weight = findViewById(R.id.weightTextFieldPP);
+        height = findViewById(R.id.heightTextFieldPP);
         gender = findViewById(R.id.genderRadioGroup);
         fitnessGoal = findViewById(R.id.fitnessGoalRadioGroup);
         activityLevel = findViewById(R.id.activityLevelRadioGroup);
