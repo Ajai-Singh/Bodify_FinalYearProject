@@ -1,28 +1,59 @@
 package com.example.bodify;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.bodify.Models.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class DashBoard extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ArrayList<String> motivatingMessages;
-    private Button gymLocations;
-    private Button profile;
+    private Button gymLocations, profile;
+    private ImageView profileImageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         displayMessage();
+        profileImageView = findViewById(R.id.personalProfile);
         mAuth = FirebaseAuth.getInstance();
-        setContentView(R.layout.activity_dash_board);
+        FirebaseUser user = mAuth.getCurrentUser();
+        final String userID = mAuth.getUid();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                profileImageView.setImageURI(Uri.parse(user.getKey()));
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DashBoard.this,"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+                setContentView(R.layout.activity_dash_board);
         getSupportActionBar().setTitle("Welcome To Bodify");
         profile = findViewById(R.id.buttonProfile);
         gymLocations = findViewById(R.id.buttonEducation);
@@ -71,7 +102,7 @@ public class DashBoard extends AppCompatActivity {
         motivatingMessages.add("IT’S BEEN A LONG ROAD TO HEALTH AND FITNESS FOR ME. I AM JUST GLAD TO HAVE BEEN GIVEN THE OPPORTUNITY TO DO WHAT I LOVE MOST.- JONAH LOMU.");
 
         int index = random.nextInt(motivatingMessages.size());
-        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(DashBoard.this);
+        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(DashBoard.this);
         dlgAlert.setMessage(motivatingMessages.get(index));
         dlgAlert.setTitle("Welcome To Bodify");
         dlgAlert.setPositiveButton("OK", null);

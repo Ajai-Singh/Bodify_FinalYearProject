@@ -1,15 +1,18 @@
 package com.example.bodify.Models;
 
-import java.util.ArrayList;
-
 public class User {
-    private String userName,email,gender,activityLevel,fitnessGoal;
+    private String userName,email,gender,activityLevel,fitnessGoal,key;
     private Double weight,bodyMassIndicator;
-    private int height; //taking height as int now due to BMI formula
-    //this will store comment ids as integers
-//    private ArrayList<Integer> commentIDs = new ArrayList<>();
-//    private ArrayList<Integer> recipeIDs = new ArrayList<>();
-//    private Integer calculatorID;
+    private int height;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getActivityLevel() {
         return activityLevel;
     }
@@ -77,12 +80,13 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, Double weight, Double bodyMassIndicator, int height) {
+    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, String key, Double weight, Double bodyMassIndicator, int height) {
         this.userName = userName;
         this.email = email;
         this.gender = gender;
         this.activityLevel = activityLevel;
         this.fitnessGoal = fitnessGoal;
+        this.key = key;
         this.weight = weight;
         this.bodyMassIndicator = bodyMassIndicator;
         this.height = height;

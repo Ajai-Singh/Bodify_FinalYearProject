@@ -44,6 +44,7 @@
         <item>Maintain Weight</item>
         <item>Gain Weight</item>
     </string-array>
+    <string name="profilePickButton">Profile Picture</string>
 
     <!--    <string name=""></string>-->
     <!--
