@@ -40,23 +40,10 @@ public class DashBoard extends AppCompatActivity {
         profileImageView = findViewById(R.id.personalProfile);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        final String userID = mAuth.getUid();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                profileImageView.setImageURI(Uri.parse(user.getKey()));
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(DashBoard.this,"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-                setContentView(R.layout.activity_dash_board);
+        setContentView(R.layout.activity_dash_board);
         getSupportActionBar().setTitle("Welcome To Bodify");
         profile = findViewById(R.id.buttonProfile);
-        gymLocations = findViewById(R.id.buttonEducation);
+        gymLocations = findViewById(R.id.gymFinderButton);
         gymLocations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

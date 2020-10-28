@@ -20,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.text.DecimalFormat;
 import static com.example.bodify.SignUp.MESSAGE_KEY;
-import static com.example.bodify.SignUp.MESSAGE_KEY1;
 
 public class Tailoring extends AppCompatActivity {
 
@@ -79,7 +78,6 @@ public class Tailoring extends AppCompatActivity {
 
                 Intent intent = getIntent();
                 String strUserName = intent.getStringExtra(MESSAGE_KEY);
-                String imageURL = intent.getStringExtra(MESSAGE_KEY1);
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 String strEmail = firebaseUser.getEmail();
                 String userID = firebaseUser.getUid();
@@ -89,7 +87,7 @@ public class Tailoring extends AppCompatActivity {
                 bodyMassIndex = dblWeight /Math.pow(heightInMetres,2.0);
                 DecimalFormat decimalFormat = new DecimalFormat("##.00");
                 Double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
-                final User user = new User(strUserName,strEmail,strGender,strActivityLevel,strFitnessGoal,imageURL,dblWeight,formattedBodyMassIndex,intHeight);
+                final User user = new User(strUserName,strEmail,strGender,strActivityLevel,strFitnessGoal,dblWeight,formattedBodyMassIndex,intHeight);
                 databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

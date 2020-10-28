@@ -1,17 +1,9 @@
 package com.example.bodify.Models;
 
 public class User {
-    private String userName,email,gender,activityLevel,fitnessGoal,key;
+    private String userName,email,gender,activityLevel,fitnessGoal;
     private Double weight,bodyMassIndicator;
     private int height;
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
 
     public String getActivityLevel() {
         return activityLevel;
@@ -80,13 +72,12 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, String key, Double weight, Double bodyMassIndicator, int height) {
+    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal,Double weight, Double bodyMassIndicator, int height) {
         this.userName = userName;
         this.email = email;
         this.gender = gender;
         this.activityLevel = activityLevel;
         this.fitnessGoal = fitnessGoal;
-        this.key = key;
         this.weight = weight;
         this.bodyMassIndicator = bodyMassIndicator;
         this.height = height;
