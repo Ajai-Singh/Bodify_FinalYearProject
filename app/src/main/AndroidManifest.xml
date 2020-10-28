@@ -64,6 +64,7 @@
         <activity android:name=".DashBoard" />
         <activity android:name=".GymsNearMe" />
         <activity android:name=".PersonalProfile" />
+        <activity android:name=".Health" />
     </application>
 
 </manifest>

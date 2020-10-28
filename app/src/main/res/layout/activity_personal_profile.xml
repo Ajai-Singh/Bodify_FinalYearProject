@@ -151,36 +151,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/activity_level"
+        android:text="@string/fitness_goal"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.143"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activityLevelSpinner"
-        tools:text="@string/activity_level" />
+        tools:text="@string/fitness_goal" />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/fitness_goal"
+        android:text="@string/activity_level"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/heightTextView"
-        tools:text="@string/fitness_goal" />
+        tools:text="@string/activity_level" />
 
     <Button
         android:id="@+id/updateInformationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="Button"
+        android:text="@string/updateProfile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fitnessGoalSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/fitnessGoalSpinner"
+        tools:text="@string/updateProfile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

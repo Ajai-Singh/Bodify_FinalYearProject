@@ -60,8 +60,8 @@ public class Tailoring extends AppCompatActivity {
                             });
                 }
                 else{
-                    Double dblWeight = Double.parseDouble(strWeight);
-                    int intHeight = Integer.parseInt(strHeight);
+                Double dblWeight = Double.parseDouble(strWeight);
+                int intHeight = Integer.parseInt(strHeight);
                 //getting the selected radio button from a radio group
                 int selectedGenderID = gender.getCheckedRadioButtonId();
                 //find the radio button from the id returned

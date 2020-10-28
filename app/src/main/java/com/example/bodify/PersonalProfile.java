@@ -21,6 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class PersonalProfile extends AppCompatActivity implements
         AdapterView.OnItemSelectedListener{
     private FirebaseAuth mAuth;
@@ -28,6 +30,8 @@ public class PersonalProfile extends AppCompatActivity implements
     private EditText height,weight;
     private Spinner activityLevelSpinner,fitnessGoalSpinner;
     private Button updateProfile;
+    private ArrayList<String> activityLevels = new ArrayList<>();
+    ArrayList<String> fitnessGoals = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +49,9 @@ public class PersonalProfile extends AppCompatActivity implements
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                 User user = snapshot.getValue(User.class);
+                User user = snapshot.getValue(User.class);
+                int activityLevelIndex;
+                int fitnessGoalIndex;
                 userName.setText(user.getUserName());
                 email.setText(user.getEmail());
                 int intHeight = user.getHeight();
@@ -54,17 +60,36 @@ public class PersonalProfile extends AppCompatActivity implements
                 Double dblWeight = user.getWeight();
                 String strWeight = String.valueOf(dblWeight);
                 weight.setText(strWeight);
-                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(PersonalProfile.this,R.array.activityLevels,android.R.layout.simple_spinner_dropdown_item);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                activityLevelSpinner.setAdapter(adapter);
+                activityLevels.add("1");
+                activityLevels.add("2");
+                activityLevels.add("3");
+                fitnessGoals.add("Lose Weight");
+                fitnessGoals.add("Maintain Weight");
+                fitnessGoals.add("Gain Weight");
+                ArrayAdapter<String> adapterActivityLevels = new ArrayAdapter<>(PersonalProfile.this,
+                        android.R.layout.simple_spinner_dropdown_item,activityLevels);
+                adapterActivityLevels.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                activityLevelSpinner.setAdapter(adapterActivityLevels);
                 activityLevelSpinner.setOnItemSelectedListener(PersonalProfile.this);
-                activityLevelSpinner.setPrompt(user.getActivityLevel());
 
-                ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(PersonalProfile.this,R.array.fitnessGoals,android.R.layout.simple_spinner_dropdown_item);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                fitnessGoalSpinner.setAdapter(adapter1);
+                ArrayAdapter<String> adapterFitnessGoal = new ArrayAdapter<>(PersonalProfile.this,
+                        android.R.layout.simple_spinner_dropdown_item,fitnessGoals);
+                adapterFitnessGoal.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                fitnessGoalSpinner.setAdapter(adapterFitnessGoal);
                 fitnessGoalSpinner.setOnItemSelectedListener(PersonalProfile.this);
-                fitnessGoalSpinner.setPrompt(user.getFitnessGoal());
+
+                for(int i = 0; i < activityLevels.size(); i++){
+                    if(activityLevels.get(i).equalsIgnoreCase(user.getActivityLevel())) {
+                        activityLevelIndex = i;
+                        activityLevelSpinner.setSelection(activityLevelIndex);
+                    }
+                }
+                for(int i = 0; i < fitnessGoals.size(); i++){
+                    if(fitnessGoals.get(i).equalsIgnoreCase(user.getFitnessGoal())) {
+                        fitnessGoalIndex = i;
+                        fitnessGoalSpinner.setSelection(fitnessGoalIndex);
+                    }
+                }
 
             }
             @Override
@@ -100,13 +125,28 @@ public class PersonalProfile extends AppCompatActivity implements
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        int activityLevelIndex;
+                        int fitnessGoalIndex;
                         User user = snapshot.getValue(User.class);
                         if(user != null) {
                             height.setText(String.valueOf(user.getHeight()));
                             weight.setText(String.valueOf(user.getWeight()));
-                            activityLevelSpinner.setPrompt(user.getActivityLevel());
-                            fitnessGoalSpinner.setPrompt(user.getFitnessGoal());
+
+                            for(int i = 0; i < activityLevels.size(); i++){
+                                if(activityLevels.get(i).equalsIgnoreCase(user.getActivityLevel())) {
+                                 activityLevelIndex = i;
+                                 activityLevelSpinner.setSelection(activityLevelIndex);
+                                }
+                            }
+                            for(int i = 0; i < fitnessGoals.size(); i++){
+                                if(fitnessGoals.get(i).equalsIgnoreCase(user.getFitnessGoal())) {
+                                    fitnessGoalIndex = i;
+                                    fitnessGoalSpinner.setSelection(fitnessGoalIndex);
+                                }
+                            }
+                            Toast.makeText(PersonalProfile.this,"Update Success",Toast.LENGTH_SHORT).show();
                         }
+
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {

@@ -34,17 +34,9 @@
     <string name="myInformationOptionMenu">My Information</string>
     <string name="personalProfileWelcomeMessage">Personal Information</string>
     <string name="userProfilePictureDescription">User Profile Picture</string>
-    <string-array name="activityLevels">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-    <string-array name="fitnessGoals">
-        <item>Lose Weight</item>
-        <item>Maintain Weight</item>
-        <item>Gain Weight</item>
-    </string-array>
     <string name="profilePickButton">Profile Picture</string>
+    <string name="updateProfile">Update Profile</string>
+    <string name="fitnessGoalMessage">Based on your Activity Level and Fitness Goal, Bodify recommend the following lifestyle adjustments</string>
 
     <!--    <string name=""></string>-->
     <!--

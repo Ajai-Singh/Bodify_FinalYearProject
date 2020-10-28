@@ -30,7 +30,7 @@ import java.util.Random;
 public class DashBoard extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ArrayList<String> motivatingMessages;
-    private Button gymLocations, profile;
+    private Button gymLocations, profile,health;
     private ImageView profileImageView;
 
     @Override
@@ -44,6 +44,7 @@ public class DashBoard extends AppCompatActivity {
         getSupportActionBar().setTitle("Welcome To Bodify");
         profile = findViewById(R.id.buttonProfile);
         gymLocations = findViewById(R.id.gymFinderButton);
+        health = findViewById(R.id.healthButton);
         gymLocations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +57,13 @@ public class DashBoard extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), PersonalProfile.class));
             }
         });
+        health.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DashBoard.this,Health.class));
+            }
+        });
+
     }
 
     public void displayMessage() {
