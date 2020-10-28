@@ -37,7 +37,9 @@
     <string name="profilePickButton">Profile Picture</string>
     <string name="updateProfile">Update Profile</string>
     <string name="fitnessGoalMessage">Based on your Activity Level and Fitness Goal, Bodify recommend the following lifestyle adjustments</string>
-
+    <string name="bmi">Body Mass Indicator</string>
+    <string name="fitnessLevel">Fitness Level</string>
+    <string name="calorieIntake">Suggested Calorie Intake</string>
     <!--    <string name=""></string>-->
     <!--
     This string is used for square devices and overridden by hello_world in
