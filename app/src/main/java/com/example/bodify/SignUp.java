@@ -1,6 +1,7 @@
 package com.example.bodify;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,21 +24,67 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.UUID;
+
 public class SignUp extends AppCompatActivity {
     private EditText emailAddress, userName, password, verifyPassword;
-    private Button registerButton;
+    private Button registerButton, uploadProfilePicture;
     private TextView signInInstead;
     private FirebaseAuth mAuth;
+    private StorageReference storageReference;
+    private ImageView profilePlaceHolder;
     public static final String MESSAGE_KEY = "MESSAGE1";
+    public static final String MESSAGE_KEY1 = "MESSAGE2";
+    private String imageUrl;
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1000) {
+            if(resultCode == Activity.RESULT_OK) {
+                Uri imageUri = data.getData();
+                profilePlaceHolder.setImageURI(imageUri);
+                uploadImageToFirebase(imageUri);
+            }
+        }
+    }
+
+    private void uploadImageToFirebase(final Uri imageUri) {
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setTitle("Uploading Image....");
+        pd.show();
+        final StorageReference ref = storageReference.child(UUID.randomUUID().toString());
+        ref.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                pd.dismiss();
+                Toast.makeText(getApplicationContext(),"Image Successfully Uploaded",Toast.LENGTH_SHORT).show();
+                imageUrl = ref.getPath();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                pd.dismiss();
+                Toast.makeText(getApplicationContext(),"Error Occurred!" + e.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                double progressPercent = (100.00* snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                pd.setMessage("Percentage " + (int) progressPercent + " " + "%");
+            }
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         getSupportActionBar().setTitle("Sign Up Form");
+        storageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         userName = findViewById(R.id.userNameSignUp);
         emailAddress = findViewById(R.id.emailAddressSignUp);
@@ -45,6 +92,19 @@ public class SignUp extends AppCompatActivity {
         verifyPassword = findViewById(R.id.confirmPasswordTextField);
         signInInstead = findViewById(R.id.existing_account);
         registerButton = findViewById(R.id.signUpButton);
+        uploadProfilePicture = findViewById(R.id.uploadPicture);
+        profilePlaceHolder = findViewById(R.id.ProfilePicture);
+        uploadProfilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"),1000);
+//                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(intent,1000);
+            }
+        });
         signInInstead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,6 +148,7 @@ public class SignUp extends AppCompatActivity {
                                 if(task.isSuccessful()) {
                                     Intent intent = new Intent(SignUp.this,Tailoring.class);
                                     intent.putExtra(MESSAGE_KEY,strUserName);
+                                    intent.putExtra(MESSAGE_KEY1,imageUrl);
                                     Toast.makeText(getApplicationContext(),"User Created Successfully!",Toast.LENGTH_SHORT).show();
                                     startActivity(intent);
                                     userName.setText("");

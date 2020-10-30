@@ -3,6 +3,8 @@ package com.example.bodify;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -32,6 +37,7 @@ public class DashBoard extends AppCompatActivity {
     private ArrayList<String> motivatingMessages;
     private Button gymLocations, profile,health;
     private ImageView profileImageView;
+    private TextView welcome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,32 @@ public class DashBoard extends AppCompatActivity {
         profile = findViewById(R.id.buttonProfile);
         gymLocations = findViewById(R.id.gymFinderButton);
         health = findViewById(R.id.healthButton);
+        welcome = findViewById(R.id.welcomeUser);
+
+        final String userID = mAuth.getUid();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    welcome.setText("User Logged in: ");
+                    welcome.append(user.getUserName());
+//                    Toast.makeText(DashBoard.this, user.getImageUrl(), Toast.LENGTH_LONG).show();
+                    if(user.getImageUrl()!=null) {
+                        profileImageView.setImageURI(Uri.parse(user.getImageUrl()));
+                        //profileImageView.setImageBitmap(BitmapFactory.decodeFile(user.getImageUrl()));
+                    }
+
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DashBoard.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         gymLocations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +98,8 @@ public class DashBoard extends AppCompatActivity {
 
     }
 
-    public void displayMessage() {
+
+            public void displayMessage() {
         motivatingMessages = new ArrayList<>();
         Random random = new Random();
         motivatingMessages.add("YOU’RE THE ONLY ONE WHO CAN MAKE THE DIFFERENCE. WHATEVER YOUR DREAM IS, GO FOR IT. – MAGIC JOHNSON.");
