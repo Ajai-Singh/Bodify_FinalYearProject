@@ -154,8 +154,8 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
-        android:layout_width="294dp"
-        android:layout_height="225dp"
+        android:layout_width="302dp"
+        android:layout_height="254dp"
         android:layout_marginTop="20dp"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"

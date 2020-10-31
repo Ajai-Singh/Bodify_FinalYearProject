@@ -16,6 +16,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,6 +51,8 @@ public class Health extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         updateFields();
         getBarChartEntries();
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(getDate()));
         barDataSet = new BarDataSet(barEntries, "Data Set");
         barData = new BarData(barDataSet);
         barChart.setData(barData);
@@ -117,26 +120,18 @@ public class Health extends AppCompatActivity {
         barEntries.add(new BarEntry(1, 50));
         barEntries.add(new BarEntry(2, 100));
         barEntries.add(new BarEntry(3, 150));
+    }
 
-        final ArrayList<String> xLabels = new ArrayList<>();
+    public ArrayList<String> getDate() {
+        ArrayList<String> xLabels = new ArrayList<>();
+        xLabels.add("Fats");
         xLabels.add("Fats");
         xLabels.add("Carbohydrates");
         xLabels.add("Proteins");
-
-
-        final XAxis xAxis = barChart.getXAxis();
-        xAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                if(value >= 0) {
-                    if(value<=xLabels.size() - 1){
-                        return xLabels.get((int) value);
-                    }
-                    return "";
-                }
-                return "";
-            }
-        });
+        ArrayList<String> label = new ArrayList<>();
+        for (int i = 0; i < xLabels.size(); i++)
+            label.add(xLabels.get(i));
+        return label;
+    }
 
     }
-}

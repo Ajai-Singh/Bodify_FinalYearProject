@@ -64,6 +64,8 @@ public class SignUp extends AppCompatActivity {
                 pd.dismiss();
                 Toast.makeText(getApplicationContext(),"Image Successfully Uploaded",Toast.LENGTH_SHORT).show();
                 imageUrl = ref.getPath();
+                //imageUrl = ref.getDownloadUrl().toString();
+                //imageUrl = ref.getDownloadUrl();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

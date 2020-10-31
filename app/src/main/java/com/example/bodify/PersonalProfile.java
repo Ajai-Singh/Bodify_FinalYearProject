@@ -31,7 +31,7 @@ public class PersonalProfile extends AppCompatActivity implements
     private Spinner activityLevelSpinner,fitnessGoalSpinner;
     private Button updateProfile;
     private ArrayList<String> activityLevels = new ArrayList<>();
-    ArrayList<String> fitnessGoals = new ArrayList<>();
+    private ArrayList<String> fitnessGoals = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

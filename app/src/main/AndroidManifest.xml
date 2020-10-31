@@ -52,7 +52,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignUp">
+        <activity android:name=".Tailoring"
+            android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,7 +61,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".LogIn" />
-        <activity android:name=".Tailoring" />
+        <activity android:name=".SignUp" />
         <activity android:name=".DashBoard" />
         <activity android:name=".GymsNearMe" />
         <activity android:name=".PersonalProfile" />

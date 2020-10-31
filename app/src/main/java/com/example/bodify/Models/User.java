@@ -1,9 +1,25 @@
 package com.example.bodify.Models;
 
 public class User {
-    private String userName,email,gender,activityLevel,fitnessGoal,imageUrl;
+    private String userName,email,gender,activityLevel,fitnessGoal,imageUrl,bodyType,likefattyFoods;
     private Double weight,bodyMassIndicator;
     private int height;
+
+    public String getBodyType() {
+        return bodyType;
+    }
+
+    public void setBodyType(String bodyType) {
+        this.bodyType = bodyType;
+    }
+
+    public String getLikefattyFoods() {
+        return likefattyFoods;
+    }
+
+    public void setLikefattyFoods(String likefattyFoods) {
+        this.likefattyFoods = likefattyFoods;
+    }
 
     public String getImageUrl() {
         return imageUrl;
@@ -80,7 +96,8 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal,Double weight, Double bodyMassIndicator, int height,String imageUrl) {
+    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal,Double weight, Double bodyMassIndicator, int height,String imageUrl,
+                String bodyType,String likefattyFoods) {
         this.userName = userName;
         this.email = email;
         this.gender = gender;
@@ -90,6 +107,8 @@ public class User {
         this.bodyMassIndicator = bodyMassIndicator;
         this.height = height;
         this.imageUrl = imageUrl;
+        this.bodyType = bodyType;
+        this.likefattyFoods = likefattyFoods;
     }
 
     @Override
