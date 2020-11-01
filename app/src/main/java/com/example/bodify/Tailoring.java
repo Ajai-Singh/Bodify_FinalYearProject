@@ -27,11 +27,8 @@ import java.util.ArrayList;
 import static com.example.bodify.SignUp.MESSAGE_KEY;
 import static com.example.bodify.SignUp.MESSAGE_KEY1;
 
-public class Tailoring extends AppCompatActivity implements
-        AdapterView.OnItemSelectedListener{
-
+public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private EditText weight, height;
-//    private RadioGroup gender, fitnessGoal, activityLevel;
     private Spinner genderSpinner,fitnessGoalSpinner,activityLevelSpinner,bodyTypeSpinner,preferredFoodsSpinner;
     private Button submit;
     private ArrayList<String> genders;
@@ -44,7 +41,7 @@ public class Tailoring extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tailoring);
-        getSupportActionBar().setTitle("Personalize your profile");
+        //getSupportActionBar().setTitle("Personalize your profile");
 
         weight = findViewById(R.id.weightTextFieldPP);
         height = findViewById(R.id.heightTextFieldPP);
@@ -62,17 +59,28 @@ public class Tailoring extends AppCompatActivity implements
             public void onClick(View v) {
                 String strWeight = weight.getText().toString();
                 String strHeight = height.getText().toString();
+                                if(strWeight.matches("") || strHeight.matches(""))  {
+                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(Tailoring.this);
+                    dlgAlert.setMessage("Not All Fields are Filled!");
+                    dlgAlert.setTitle("Error...");
+                    dlgAlert.setPositiveButton("OK", null);
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                    dlgAlert.setPositiveButton("Ok",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            });
+                }
 
-
-
-
-
-
+                String bodyType = bodyTypeSpinner.getSelectedItem().toString();
+                String activityLevel = activityLevelSpinner.getSelectedItem().toString();
+                String fitnessGoal = fitnessGoalSpinner.getSelectedItem().toString();
+                String gender = genderSpinner.getSelectedItem().toString();
+                String preferredMacroNutrient = preferredFoodsSpinner.getSelectedItem().toString();
 
                 Double dblWeight = Double.parseDouble(strWeight);
                 int intHeight = Integer.parseInt(strHeight);
-
-
                 Intent intent = getIntent();
                 String strUserName = intent.getStringExtra(MESSAGE_KEY);
                 String imageUrl = intent.getStringExtra(MESSAGE_KEY1);
@@ -85,7 +93,7 @@ public class Tailoring extends AppCompatActivity implements
                 bodyMassIndex = dblWeight /Math.pow(heightInMetres,2.0);
                 DecimalFormat decimalFormat = new DecimalFormat("##.00");
                 Double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
-                final User user = new User(strUserName,strEmail,"Gender","activityLevel","fitnessGoal",dblWeight,formattedBodyMassIndex,intHeight,imageUrl,"body type","foods");
+                final User user = new User(strUserName,strEmail,gender,activityLevel,fitnessGoal,dblWeight,formattedBodyMassIndex,intHeight,bodyType,preferredMacroNutrient);
                 databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -107,9 +115,9 @@ public class Tailoring extends AppCompatActivity implements
         genders.add("Female");
 
         fitnessGoals = new ArrayList<>();
-        fitnessGoals.add("Lose Weight");
-        fitnessGoals.add("Maintain Weight");
-        fitnessGoals.add("Gain Weight");
+        fitnessGoals.add("Lose weight");
+        fitnessGoals.add("Maintain weight");
+        fitnessGoals.add("Gain weight");
 
         activityLevels = new ArrayList<>();
         activityLevels.add("1");
@@ -117,20 +125,20 @@ public class Tailoring extends AppCompatActivity implements
         activityLevels.add("3");
 
         bodyTypes = new ArrayList<>();
-        bodyTypes.add("Excess Body Fat");
+        bodyTypes.add("Excess body fat");
         bodyTypes.add("Average Shape");
         bodyTypes.add("Good Shape");
 
         preferredFoods = new ArrayList<>();
-        preferredFoods.add("Prefer carbohydrates");
+        preferredFoods.add("Fats");
+        preferredFoods.add("Carbohydrates");
         preferredFoods.add("Don't have a preference");
-        preferredFoods.add("Enjoy fatty foods");
+
 
         ArrayAdapter<String> adapterGender = new ArrayAdapter<>(Tailoring.this,android.R.layout.simple_spinner_dropdown_item,genders);
         adapterGender.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(adapterGender);
         genderSpinner.setOnItemSelectedListener(Tailoring.this);
-        genderSpinner.setPrompt("Select Gender");
 
         ArrayAdapter<String> adapterFitnessGoal = new ArrayAdapter<>(Tailoring.this,android.R.layout.simple_spinner_dropdown_item,fitnessGoals);
         adapterFitnessGoal.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -155,7 +163,12 @@ public class Tailoring extends AppCompatActivity implements
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String choice = parent.getItemAtPosition(position).toString();
+        //String choice = parent.getItemAtPosition(position).toString();
+//        genders.set(0,"Male");
+//        preferredFoods.set(0,"Enjoy Carbohydrates");
+//        activityLevels.set(0,"1");
+//        bodyTypes.set(0,"Excess Body Fat");
+//        fitnessGoals.set(0,"Lose Weight");
     }
 
     @Override

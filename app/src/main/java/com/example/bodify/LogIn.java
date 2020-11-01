@@ -26,7 +26,7 @@ public class LogIn extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle("Log In Form");
+        //getSupportActionBar().setTitle("Log In Form");
         setContentView(R.layout.activity_log_in);
         mAuth = FirebaseAuth.getInstance();
         logIn = findViewById(R.id.logInButton);

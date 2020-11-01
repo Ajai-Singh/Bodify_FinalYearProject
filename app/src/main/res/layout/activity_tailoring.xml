@@ -7,11 +7,11 @@
     android:background="@drawable/background"
     tools:context=".Tailoring">
 
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:text="@string/personal_information"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +64,7 @@
         android:id="@+id/genderTextView"
         android:layout_width="133dp"
         android:layout_height="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="@string/gender"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -149,7 +149,7 @@
         android:id="@+id/fitnessLevelSpinnerTailoring"
         android:layout_width="208dp"
         android:layout_height="34dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.236"
         app:layout_constraintStart_toStartOf="parent"
@@ -159,7 +159,7 @@
         android:id="@+id/bodyTypeSpinner"
         android:layout_width="208dp"
         android:layout_height="34dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.236"
         app:layout_constraintStart_toStartOf="parent"
@@ -169,11 +169,10 @@
         android:id="@+id/foodTypeSpinner"
         android:layout_width="208dp"
         android:layout_height="34dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.236"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/preferedFoodTextField" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

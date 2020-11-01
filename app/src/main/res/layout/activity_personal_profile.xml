@@ -10,14 +10,60 @@
 
 
     <TextView
+        android:id="@+id/preferredMacroNutrientTextField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="36dp"
+        android:text="@string/preferredFoods"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toStartOf="@+id/preferredMacroNutrientSpinner"
+        app:layout_constraintHorizontal_bias="0.615"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bodyCompositionTextField"
+        tools:text="@string/preferredFoods" />
+
+    <Spinner
+        android:id="@+id/bodyCompositionSpinner"
+        android:layout_width="219dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/bodyCompositionTextField"
+        app:layout_constraintTop_toBottomOf="@+id/fitnessGoalSpinner" />
+
+    <Spinner
+        android:id="@+id/preferredMacroNutrientSpinner"
+        android:layout_width="219dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bodyCompositionSpinner" />
+
+    <TextView
+        android:id="@+id/bodyCompositionTextField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="36dp"
+        android:text="@string/bodytype"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7"
+        tools:text="@string/bodytype" />
+
+    <TextView
         android:id="@+id/emailAddressTextField"
         android:layout_width="125dp"
         android:layout_height="38dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="84dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/emailAddressTextView"
         app:layout_constraintTop_toBottomOf="@+id/userNameTextField" />
 
@@ -28,7 +74,7 @@
         android:layout_marginTop="16dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintHorizontal_bias="0.269"
         app:layout_constraintStart_toEndOf="@+id/userNameTextView"
         app:layout_constraintTop_toBottomOf="@+id/personalProfileWelcomeMessage" />
 
@@ -36,11 +82,12 @@
         android:id="@+id/personalProfileWelcomeMessage"
         android:layout_width="319dp"
         android:layout_height="46dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         android:text="@string/personalProfileWelcomeMessage"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/personalProfileWelcomeMessage" />
@@ -53,7 +100,7 @@
         android:text="@string/User_Name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.16"
+        app:layout_constraintHorizontal_bias="0.167"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/personalProfileWelcomeMessage"
         tools:text="@string/User_Name" />
@@ -62,11 +109,10 @@
         android:id="@+id/emailAddressTextView"
         android:layout_width="125dp"
         android:layout_height="38dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="20dp"
         android:text="@string/email_address1"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.163"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userNameTextView"
         tools:text="@string/email_address1" />
@@ -75,13 +121,13 @@
         android:id="@+id/heightTextFieldPP"
         android:layout_width="125dp"
         android:layout_height="38dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:autofillHints=""
         android:ems="10"
         android:inputType="number"
         android:maxLength="3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.644"
+        app:layout_constraintHorizontal_bias="0.256"
         app:layout_constraintStart_toEndOf="@+id/heightTextView"
         app:layout_constraintTop_toBottomOf="@+id/weightTextFieldPP" />
 
@@ -89,13 +135,13 @@
         android:id="@+id/weightTextFieldPP"
         android:layout_width="125dp"
         android:layout_height="38dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:autofillHints=""
         android:ems="10"
         android:inputType="numberDecimal"
         android:maxLength="3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.853"
+        app:layout_constraintHorizontal_bias="0.706"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailAddressTextField" />
 
@@ -103,11 +149,11 @@
         android:id="@+id/weightTextView"
         android:layout_width="125dp"
         android:layout_height="38dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="@string/weight"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toStartOf="@+id/weightTextFieldPP"
-        app:layout_constraintHorizontal_bias="0.373"
+        app:layout_constraintHorizontal_bias="0.623"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailAddressTextView"
         tools:text="@string/weight" />
@@ -116,11 +162,11 @@
         android:id="@+id/heightTextView"
         android:layout_width="125dp"
         android:layout_height="38dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="@string/height"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintHorizontal_bias="0.167"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weightTextView"
         tools:text="@string/height" />
@@ -129,46 +175,44 @@
         android:id="@+id/activityLevelSpinner"
         android:layout_width="219dp"
         android:layout_height="38dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.239"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintHorizontal_bias="0.926"
+        app:layout_constraintStart_toEndOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/heightTextFieldPP" />
 
     <Spinner
         android:id="@+id/fitnessGoalSpinner"
         android:layout_width="219dp"
         android:layout_height="38dp"
-        android:layout_marginTop="44dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.244"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activityLevelSpinner"
-        app:layout_constraintVertical_bias="0.037" />
+        app:layout_constraintHorizontal_bias="0.936"
+        app:layout_constraintStart_toEndOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/activityLevelSpinner" />
 
     <TextView
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="36dp"
         android:text="@string/fitness_goal"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.143"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activityLevelSpinner"
+        app:layout_constraintTop_toBottomOf="@+id/textView8"
         tools:text="@string/fitness_goal" />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="64dp"
         android:text="@string/activity_level"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/heightTextView"
         tools:text="@string/activity_level" />
@@ -177,12 +221,12 @@
         android:id="@+id/updateInformationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginBottom="60dp"
         android:text="@string/updateProfile"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fitnessGoalSpinner"
         tools:text="@string/updateProfile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

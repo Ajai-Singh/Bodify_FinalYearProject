@@ -49,7 +49,7 @@ public class DashBoard extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         setContentView(R.layout.activity_dash_board);
-        getSupportActionBar().setTitle("Welcome To Bodify");
+        //getSupportActionBar().setTitle("Welcome To Bodify");
         profile = findViewById(R.id.buttonProfile);
         gymLocations = findViewById(R.id.gymFinderButton);
         health = findViewById(R.id.healthButton);

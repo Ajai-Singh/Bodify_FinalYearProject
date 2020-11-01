@@ -4,20 +4,15 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.bodify.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,7 +20,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -35,7 +29,14 @@ public class Health extends AppCompatActivity {
     private BarChart barChart;
     private BarData barData;
     private BarDataSet barDataSet;
-    private ArrayList barEntries;
+    private ArrayList barEntries = new ArrayList();
+    private Double formattedCalorieIntake;
+    private Double proteinAmount;
+    private Double carbohydrateAmount;
+    private Double fatAmount;
+    private Double proteinCalories;
+    private Double carbohydrateCalories;
+    private Double fatCalories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class Health extends AppCompatActivity {
         updateFields();
         getBarChartEntries();
         XAxis xAxis = barChart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(getDate()));
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(getXaxisValues()));
         barDataSet = new BarDataSet(barEntries, "Data Set");
         barData = new BarData(barDataSet);
         barChart.setData(barData);
@@ -87,7 +88,6 @@ public class Health extends AppCompatActivity {
                     } else if (formattedBodyMassIndex > 30.0) {
                         fitnessLevel.setText("Obese");
                     }
-                    //calculate calories
                     Double weightInPounds = user.getWeight() * 2.20462;
                     Double requiredCalories = 0.0;
                     if (user.getActivityLevel().equals("1")) {
@@ -102,7 +102,7 @@ public class Health extends AppCompatActivity {
                     } else if (user.getFitnessGoal().equals("Gain Weight")) {
                         requiredCalories = requiredCalories + 500;
                     }
-                    Double formattedCalorieIntake = Double.parseDouble(decimalFormat.format(requiredCalories));
+                    formattedCalorieIntake = Double.parseDouble(decimalFormat.format(requiredCalories));
                     calorieIntake.setText(String.valueOf(formattedCalorieIntake));
                 }
             }
@@ -114,15 +114,60 @@ public class Health extends AppCompatActivity {
         });
     }
 
-    private void getBarChartEntries() {
-        //calculate fats carbs and protein and  then pass them into the Y-axis
-        barEntries = new ArrayList();
-        barEntries.add(new BarEntry(1, 50));
-        barEntries.add(new BarEntry(2, 100));
-        barEntries.add(new BarEntry(3, 150));
+    public void getBarChartEntries() {
+        mAuth = FirebaseAuth.getInstance();
+        final String userID = mAuth.getUid();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    if (user.getBodyType().equalsIgnoreCase("Excess body fat")) {
+                        proteinAmount = (user.getWeight() * 2.20462) * 0.75;
+                    } else if (user.getBodyType().equalsIgnoreCase("Average Shape")) {
+                        proteinAmount = (user.getWeight() * 2.20462) * 1;
+                    } else if (user.getBodyType().equalsIgnoreCase("Good Shape")) {
+                        proteinAmount = (user.getWeight() * 2.20462) * 1.25;
+                    }
+                    if (user.getPreferredMacroNutrient().equalsIgnoreCase("Carbohydrates")) {
+                        fatAmount = (user.getWeight() * 2.20462) * 0.3;
+                    } else if (user.getPreferredMacroNutrient().equalsIgnoreCase("Don't have a preference")) {
+                        fatAmount = (user.getWeight() * 2.20462) * 0.35;
+                    } else if (user.getPreferredMacroNutrient().equalsIgnoreCase("Fats")) {
+                        fatAmount = (user.getWeight() * 2.20462) * 0.4;
+                    }
+                    proteinCalories = proteinAmount * 4;
+                    fatCalories = fatAmount * 9;
+                    carbohydrateCalories = formattedCalorieIntake - (proteinCalories + fatCalories);
+                    carbohydrateAmount = carbohydrateCalories / 4;
+                    Toast.makeText(getApplicationContext(), "Test:" + fatAmount + "\n" + proteinAmount + "\n" + carbohydrateAmount, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+//        barEntries.add(new BarEntry(1, 50));
+//        barEntries.add(new BarEntry(2, 100));
+//        barEntries.add(new BarEntry(3, 150));
+//note outside the anoynmous inner method the macro values are null
+//        barEntries.add(new BarEntry(1,fatAmount.floatValue()));
+//        barEntries.add(new BarEntry(2, carbohydrateAmount.floatValue()));
+//        barEntries.add(new BarEntry(3, proteinAmount.floatValue()));
+//this works with hardcoded data
+//        Double f = 10.0;
+//        Double c = 60.0;
+//        Double p = 100.0;
+//        barEntries.add(new BarEntry(1,f.floatValue()));
+//        barEntries.add(new BarEntry(2, c.floatValue()));
+//        barEntries.add(new BarEntry(3, p.floatValue()));
+
     }
 
-    public ArrayList<String> getDate() {
+    public ArrayList<String> getXaxisValues() {
         ArrayList<String> xLabels = new ArrayList<>();
         xLabels.add("Fats");
         xLabels.add("Fats");
@@ -133,5 +178,4 @@ public class Health extends AppCompatActivity {
             label.add(xLabels.get(i));
         return label;
     }
-
-    }
+}

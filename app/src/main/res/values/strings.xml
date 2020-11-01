@@ -40,8 +40,8 @@
     <string name="bmi">Body Mass Indicator</string>
     <string name="fitnessLevel">Fitness Level</string>
     <string name="calorieIntake">Suggested Calorie Intake</string>
-    <string name="bodytype">Body Type</string>
-    <string name="preferredFoods">Prefer Fats Or Carbohydrates?</string>
+    <string name="bodytype">Body Composition</string>
+    <string name="preferredFoods">Preferred Macro-nutrient</string>
     <!--    <string name=""></string>-->
     <!--
     This string is used for square devices and overridden by hello_world in
