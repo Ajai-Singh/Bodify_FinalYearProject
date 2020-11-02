@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LogIn extends AppCompatActivity {
     private TextView createAcc;
-    private ProgressBar progressBar;
     private Button logIn;
     private EditText emailAddress, password;
     private FirebaseAuth mAuth;
@@ -33,7 +32,6 @@ public class LogIn extends AppCompatActivity {
         emailAddress = findViewById(R.id.userNameSignUp);
         password = findViewById(R.id.passwordTextField);
         createAcc = findViewById(R.id.createNewAccount);
-        progressBar = findViewById(R.id.progressBar);
         createAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +53,6 @@ public class LogIn extends AppCompatActivity {
                     password.setError("Password length must be >= len(6)");
                     password.requestFocus();
                 } else {
-                    progressBar.setVisibility(View.VISIBLE);
                     mAuth.signInWithEmailAndPassword(strEmailAddress, strPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -63,7 +60,6 @@ public class LogIn extends AppCompatActivity {
                                 Toast.makeText(LogIn.this, "User verified", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(getApplicationContext(), DashBoard.class));
                             }else {
-                                progressBar.setVisibility(View.GONE);
                                 Toast.makeText(LogIn.this, "Error occurred! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }

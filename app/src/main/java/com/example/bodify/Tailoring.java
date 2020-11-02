@@ -1,16 +1,18 @@
 package com.example.bodify;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,13 +25,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
 import static com.example.bodify.SignUp.MESSAGE_KEY;
 import static com.example.bodify.SignUp.MESSAGE_KEY1;
 
-public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private EditText weight, height;
-    private Spinner genderSpinner,fitnessGoalSpinner,activityLevelSpinner,bodyTypeSpinner,preferredFoodsSpinner;
+    private Spinner genderSpinner, fitnessGoalSpinner, activityLevelSpinner, bodyTypeSpinner, preferredFoodsSpinner;
     private Button submit;
     private ArrayList<String> genders;
     private ArrayList<String> fitnessGoals;
@@ -42,7 +43,6 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tailoring);
         //getSupportActionBar().setTitle("Personalize your profile");
-
         weight = findViewById(R.id.weightTextFieldPP);
         height = findViewById(R.id.heightTextFieldPP);
         genderSpinner = findViewById(R.id.genderSpinner);
@@ -59,8 +59,8 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
             public void onClick(View v) {
                 String strWeight = weight.getText().toString();
                 String strHeight = height.getText().toString();
-                                if(strWeight.matches("") || strHeight.matches(""))  {
-                    AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(Tailoring.this);
+                if (strWeight.matches("") || strHeight.matches("")) {
+                    AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Tailoring.this);
                     dlgAlert.setMessage("Not All Fields are Filled!");
                     dlgAlert.setTitle("Error...");
                     dlgAlert.setPositiveButton("OK", null);
@@ -89,17 +89,17 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 String userID = firebaseUser.getUid();
 
                 Double bodyMassIndex;
-                Double heightInMetres = intHeight/100.00;
-                bodyMassIndex = dblWeight /Math.pow(heightInMetres,2.0);
+                Double heightInMetres = intHeight / 100.00;
+                bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
                 DecimalFormat decimalFormat = new DecimalFormat("##.00");
                 Double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
-                final User user = new User(strUserName,strEmail,gender,activityLevel,fitnessGoal,dblWeight,formattedBodyMassIndex,intHeight,bodyType,preferredMacroNutrient);
+                final User user = new User(strUserName, strEmail, gender, activityLevel, fitnessGoal, dblWeight, formattedBodyMassIndex, intHeight, bodyType, preferredMacroNutrient);
                 databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(),DashBoard.class));
+                            startActivity(new Intent(getApplicationContext(), DashBoard.class));
                         } else {
                             Toast.makeText(getApplicationContext(), "Error Occurred!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -107,55 +107,162 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 });
             }
         });
-}
+    }
 
     public void updateSpinners() {
         genders = new ArrayList<>();
+        genders.add("Select Gender");
         genders.add("Male");
         genders.add("Female");
 
         fitnessGoals = new ArrayList<>();
+        fitnessGoals.add("Select Fitness Goal");
         fitnessGoals.add("Lose weight");
         fitnessGoals.add("Maintain weight");
         fitnessGoals.add("Gain weight");
 
         activityLevels = new ArrayList<>();
+        activityLevels.add("Select Activity Level");
         activityLevels.add("1");
         activityLevels.add("2");
         activityLevels.add("3");
 
         bodyTypes = new ArrayList<>();
+        bodyTypes.add("Select Body Composition");
         bodyTypes.add("Excess body fat");
         bodyTypes.add("Average Shape");
         bodyTypes.add("Good Shape");
 
         preferredFoods = new ArrayList<>();
+        preferredFoods.add("Preferred Macro-Nutrient");
         preferredFoods.add("Fats");
         preferredFoods.add("Carbohydrates");
         preferredFoods.add("Don't have a preference");
 
+        ArrayAdapter<String> adapterGender = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, genders) {
+            @Override
+            public boolean isEnabled(int position) {
+                if (position == 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
 
-        ArrayAdapter<String> adapterGender = new ArrayAdapter<>(Tailoring.this,android.R.layout.simple_spinner_dropdown_item,genders);
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView textview = (TextView) view;
+                if (position == 0) {
+                    textview.setTextColor(Color.GRAY);
+                } else {
+                    textview.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
         adapterGender.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(adapterGender);
         genderSpinner.setOnItemSelectedListener(Tailoring.this);
 
-        ArrayAdapter<String> adapterFitnessGoal = new ArrayAdapter<>(Tailoring.this,android.R.layout.simple_spinner_dropdown_item,fitnessGoals);
+        ArrayAdapter<String> adapterFitnessGoal = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, fitnessGoals) {
+            @Override
+            public boolean isEnabled(int position) {
+                if (position == 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView textview = (TextView) view;
+                if (position == 0) {
+                    textview.setTextColor(Color.GRAY);
+                } else {
+                    textview.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
         adapterFitnessGoal.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fitnessGoalSpinner.setAdapter(adapterFitnessGoal);
         fitnessGoalSpinner.setOnItemSelectedListener(Tailoring.this);
 
-        ArrayAdapter<String> adapterActivityLevels = new ArrayAdapter<>(Tailoring.this,android.R.layout.simple_spinner_dropdown_item,activityLevels);
+        ArrayAdapter<String> adapterActivityLevels = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, activityLevels){
+            @Override
+            public boolean isEnabled(int position) {
+                if (position == 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView textview = (TextView) view;
+                if (position == 0) {
+                    textview.setTextColor(Color.GRAY);
+                } else {
+                    textview.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
         adapterActivityLevels.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activityLevelSpinner.setAdapter(adapterActivityLevels);
         activityLevelSpinner.setOnItemSelectedListener(Tailoring.this);
 
-        ArrayAdapter<String> adapterBodyType = new ArrayAdapter<>(Tailoring.this,android.R.layout.simple_spinner_dropdown_item,bodyTypes);
+        ArrayAdapter<String> adapterBodyType = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, bodyTypes){
+            @Override
+            public boolean isEnabled(int position) {
+                if (position == 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView textview = (TextView) view;
+                if (position == 0) {
+                    textview.setTextColor(Color.GRAY);
+                } else {
+                    textview.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+
         adapterBodyType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         bodyTypeSpinner.setAdapter(adapterBodyType);
         bodyTypeSpinner.setOnItemSelectedListener(Tailoring.this);
 
-        ArrayAdapter<String> adapterPreferredFoods = new ArrayAdapter<>(Tailoring.this,android.R.layout.simple_spinner_dropdown_item,preferredFoods);
+        ArrayAdapter<String> adapterPreferredFoods = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, preferredFoods){
+            @Override
+            public boolean isEnabled(int position) {
+                if (position == 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView textview = (TextView) view;
+                if (position == 0) {
+                    textview.setTextColor(Color.GRAY);
+                } else {
+                    textview.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
         adapterPreferredFoods.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         preferredFoodsSpinner.setAdapter(adapterPreferredFoods);
         preferredFoodsSpinner.setOnItemSelectedListener(Tailoring.this);
@@ -163,16 +270,10 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        //String choice = parent.getItemAtPosition(position).toString();
-//        genders.set(0,"Male");
-//        preferredFoods.set(0,"Enjoy Carbohydrates");
-//        activityLevels.set(0,"1");
-//        bodyTypes.set(0,"Excess Body Fat");
-//        fitnessGoals.set(0,"Lose Weight");
+
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 }
