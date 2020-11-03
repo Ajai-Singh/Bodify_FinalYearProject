@@ -4,7 +4,7 @@ public class User {
     private String userName,email,gender,activityLevel,fitnessGoal,bodyType,preferredMacroNutrient;
     private Double weight,bodyMassIndicator;
     private int height;
-    private String imageUrl;
+    private String mImageUrl;
 
     public String getBodyType() {
         return bodyType;
@@ -22,12 +22,12 @@ public class User {
         this.preferredMacroNutrient = preferredMacroNutrient;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getmImageUrl() {
+        return mImageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setmImageUrl(String mImageUrl) {
+        this.mImageUrl = mImageUrl;
     }
 
     public String getActivityLevel() {
@@ -97,34 +97,17 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal,Double weight, Double bodyMassIndicator, int height,
-                String bodyType,String preferredMacroNutrient) {
+    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, String bodyType, String preferredMacroNutrient, Double weight, Double bodyMassIndicator, int height,String mImageUrl) {
         this.userName = userName;
         this.email = email;
         this.gender = gender;
         this.activityLevel = activityLevel;
         this.fitnessGoal = fitnessGoal;
+        this.bodyType = bodyType;
+        this.preferredMacroNutrient = preferredMacroNutrient;
         this.weight = weight;
         this.bodyMassIndicator = bodyMassIndicator;
         this.height = height;
-        this.bodyType = bodyType;
-        this.preferredMacroNutrient = preferredMacroNutrient;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userName='" + userName + '\'' +
-                ", email='" + email + '\'' +
-                ", gender='" + gender + '\'' +
-                ", activityLevel='" + activityLevel + '\'' +
-                ", fitnessGoal='" + fitnessGoal + '\'' +
-                ", bodyType='" + bodyType + '\'' +
-                ", preferredMacroNutrient='" + preferredMacroNutrient + '\'' +
-                ", weight=" + weight +
-                ", bodyMassIndicator=" + bodyMassIndicator +
-                ", height=" + height +
-                ", imageUrl='" + imageUrl + '\'' +
-                '}';
+        this.mImageUrl = mImageUrl;
     }
 }

@@ -59,7 +59,9 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
             public void onClick(View v) {
                 String strWeight = weight.getText().toString();
                 String strHeight = height.getText().toString();
-                if (strWeight.matches("") || strHeight.matches("")) {
+                if ((strWeight.matches("") || strHeight.matches("") || (fitnessGoalSpinner.getSelectedItemPosition() == 0) ||
+                        (activityLevelSpinner.getSelectedItemPosition() == 0) || (bodyTypeSpinner.getSelectedItemPosition() == 0) ||
+                        (genderSpinner.getSelectedItemPosition() == 0) || (preferredFoodsSpinner.getSelectedItemPosition() == 0))){
                     AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Tailoring.this);
                     dlgAlert.setMessage("Not All Fields are Filled!");
                     dlgAlert.setTitle("Error...");
@@ -71,40 +73,40 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             });
-                }
+                } else {
+                    String bodyType = bodyTypeSpinner.getSelectedItem().toString();
+                    String activityLevel = activityLevelSpinner.getSelectedItem().toString();
+                    String fitnessGoal = fitnessGoalSpinner.getSelectedItem().toString();
+                    String gender = genderSpinner.getSelectedItem().toString();
+                    String preferredMacroNutrient = preferredFoodsSpinner.getSelectedItem().toString();
 
-                String bodyType = bodyTypeSpinner.getSelectedItem().toString();
-                String activityLevel = activityLevelSpinner.getSelectedItem().toString();
-                String fitnessGoal = fitnessGoalSpinner.getSelectedItem().toString();
-                String gender = genderSpinner.getSelectedItem().toString();
-                String preferredMacroNutrient = preferredFoodsSpinner.getSelectedItem().toString();
+                    Double dblWeight = Double.parseDouble(strWeight);
+                    int intHeight = Integer.parseInt(strHeight);
+                    Intent intent = getIntent();
+                    String strUserName = intent.getStringExtra(MESSAGE_KEY);
+                    String imageDownloadUrl = intent.getStringExtra(MESSAGE_KEY1);
+                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                    String strEmail = firebaseUser.getEmail();
+                    String userID = firebaseUser.getUid();
 
-                Double dblWeight = Double.parseDouble(strWeight);
-                int intHeight = Integer.parseInt(strHeight);
-                Intent intent = getIntent();
-                String strUserName = intent.getStringExtra(MESSAGE_KEY);
-                String imageUrl = intent.getStringExtra(MESSAGE_KEY1);
-                FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                String strEmail = firebaseUser.getEmail();
-                String userID = firebaseUser.getUid();
-
-                Double bodyMassIndex;
-                Double heightInMetres = intHeight / 100.00;
-                bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
-                DecimalFormat decimalFormat = new DecimalFormat("##.00");
-                Double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
-                final User user = new User(strUserName, strEmail, gender, activityLevel, fitnessGoal, dblWeight, formattedBodyMassIndex, intHeight, bodyType, preferredMacroNutrient);
-                databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), DashBoard.class));
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Error Occurred!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Double bodyMassIndex;
+                    Double heightInMetres = intHeight / 100.00;
+                    bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
+                    DecimalFormat decimalFormat = new DecimalFormat("##.00");
+                    Double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
+                    User user = new User(strUserName, strEmail, gender, activityLevel, fitnessGoal, bodyType, preferredMacroNutrient, dblWeight, formattedBodyMassIndex, intHeight, imageDownloadUrl);
+                    databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getApplicationContext(), DashBoard.class));
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Error Occurred!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }

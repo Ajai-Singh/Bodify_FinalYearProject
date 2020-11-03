@@ -2,11 +2,13 @@ package com.example.bodify;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,8 +27,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.util.UUID;
+import com.squareup.picasso.Picasso;
 
 public class SignUp extends AppCompatActivity {
     private EditText emailAddress, userName, password, verifyPassword;
@@ -37,54 +38,63 @@ public class SignUp extends AppCompatActivity {
     private ImageView profilePlaceHolder;
     public static final String MESSAGE_KEY = "MESSAGE1";
     public static final String MESSAGE_KEY1 = "MESSAGE2";
-    private String imageUrl;
+    private Uri  mImageUri;
+    private String imageDownloadUrl;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1000) {
-            if(resultCode == Activity.RESULT_OK) {
-                Uri imageUri = data.getData();
-                profilePlaceHolder.setImageURI(imageUri);
-                uploadImageToFirebase(imageUri);
-            }
+        if(requestCode == 1000 && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+                mImageUri = data.getData();
+                Picasso.get().load(mImageUri).into(profilePlaceHolder);
+                uploadImageToFirebase();
         }
     }
 
-    private void uploadImageToFirebase(final Uri imageUri) {
-        final ProgressDialog pd = new ProgressDialog(this);
-        pd.setTitle("Uploading Image....");
-        pd.show();
-        final StorageReference ref = storageReference.child(UUID.randomUUID().toString());
-        ref.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                pd.dismiss();
-                Toast.makeText(getApplicationContext(),"Image Successfully Uploaded",Toast.LENGTH_SHORT).show();
-                imageUrl = ref.getPath();
-                //imageUrl = ref.getDownloadUrl().toString();
-                //imageUrl = ref.getDownloadUrl();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                pd.dismiss();
-                Toast.makeText(getApplicationContext(),"Error Occurred!" + e.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                double progressPercent = (100.00* snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                pd.setMessage("Percentage " + (int) progressPercent + " " + "%");
-            }
-        });
+    private String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void uploadImageToFirebase() {
+        if(mImageUri != null) {
+            final ProgressDialog pd = new ProgressDialog(this);
+            pd.setTitle("Uploading Image....");
+            pd.show();
+            final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
+            + "." + getFileExtension(mImageUri));
+            fileReference.putFile(mImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            pd.dismiss();
+                            Toast.makeText(getApplicationContext(),"Upload Successful",Toast.LENGTH_SHORT).show();
+                            imageDownloadUrl = fileReference.getDownloadUrl().toString();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    pd.dismiss();
+                    Toast.makeText(getApplicationContext(),"Error Occurred!" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    double progressPercent = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                    pd.setMessage("Percentage " + (int) progressPercent + " " + "%");
+                }
+            });
+        } else {
+            Toast.makeText(SignUp.this, "No file selected",Toast.LENGTH_SHORT).show();
+        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         //getSupportActionBar().setTitle("Sign Up Form");
-        storageReference = FirebaseStorage.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference("uploads");
         mAuth = FirebaseAuth.getInstance();
         userName = findViewById(R.id.userNameSignUp);
         emailAddress = findViewById(R.id.emailAddressSignUp);
@@ -101,8 +111,6 @@ public class SignUp extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"),1000);
-//                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                startActivityForResult(intent,1000);
             }
         });
         signInInstead.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +156,7 @@ public class SignUp extends AppCompatActivity {
                                 if(task.isSuccessful()) {
                                     Intent intent = new Intent(SignUp.this,Tailoring.class);
                                     intent.putExtra(MESSAGE_KEY,strUserName);
-                                    intent.putExtra(MESSAGE_KEY1,imageUrl);
+                                    intent.putExtra(MESSAGE_KEY1,imageDownloadUrl);
                                     Toast.makeText(getApplicationContext(),"User Created Successfully!",Toast.LENGTH_SHORT).show();
                                     startActivity(intent);
                                     userName.setText("");

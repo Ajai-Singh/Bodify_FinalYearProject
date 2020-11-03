@@ -3,6 +3,7 @@ package com.example.bodify;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,30 +22,31 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class DashBoard extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    private ImageView profileImageView;
     private ArrayList<String> motivatingMessages;
     private Button gymLocations, profile,health;
-    private ImageView profileImageView;
     private TextView welcome;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        displayMessage();
-        profileImageView = findViewById(R.id.personalProfile);
+        setContentView(R.layout.activity_dash_board);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        setContentView(R.layout.activity_dash_board);
-        //getSupportActionBar().setTitle("Welcome To Bodify");
+        profileImageView = findViewById(R.id.personalProfile);
+        showProfilePicture();
+        displayMessage();
         profile = findViewById(R.id.buttonProfile);
         gymLocations = findViewById(R.id.gymFinderButton);
         health = findViewById(R.id.healthButton);
         welcome = findViewById(R.id.welcomeUser);
-
+        //getSupportActionBar().setTitle("Welcome To Bodify");
         final String userID = mAuth.getUid();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -83,7 +85,6 @@ public class DashBoard extends AppCompatActivity {
         });
 
     }
-
 
     public void displayMessage() {
         motivatingMessages = new ArrayList<>();
@@ -127,6 +128,25 @@ public class DashBoard extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 });
+    }
+
+    public void showProfilePicture() {
+        String userID = mAuth.getUid();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    profileImageView.setImageURI(Uri.parse(user.getmImageUrl()));
+                    //Picasso.get().load(user.getmImageUrl()).into(profileImageView);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DashBoard.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
