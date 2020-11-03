@@ -68,7 +68,7 @@ public class DashBoard extends AppCompatActivity {
         gymLocations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), GymsNearMe.class));
+                startActivity(new Intent(getApplicationContext(), PermissionsActivity.class));
             }
         });
         profile.setOnClickListener(new View.OnClickListener() {

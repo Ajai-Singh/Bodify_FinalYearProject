@@ -22,13 +22,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
         -->
-        <meta-data
-            android:name="com.google.android.wearable.standalone"
-            android:value="true" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -74,6 +73,9 @@
         <activity android:name=".GymsNearMe" />
         <activity android:name=".PersonalProfile" />
         <activity android:name=".Health" />
+        <activity android:name=".PermissionsActivity" />
+        <activity android:name=".MapActivity"/>
+        <activity android:name=".MainActivity"/>
     </application>
 
 </manifest>
