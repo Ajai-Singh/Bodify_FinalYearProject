@@ -70,7 +70,7 @@ public class SignUp extends AppCompatActivity {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             pd.dismiss();
                             Toast.makeText(getApplicationContext(),"Upload Successful",Toast.LENGTH_SHORT).show();
-                            imageDownloadUrl = fileReference.getDownloadUrl().toString();
+                            imageDownloadUrl = fileReference.getPath();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override

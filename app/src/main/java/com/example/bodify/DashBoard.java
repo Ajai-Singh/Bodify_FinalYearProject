@@ -3,6 +3,8 @@ package com.example.bodify;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.bodify.Models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +25,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Random;
@@ -30,16 +35,22 @@ public class DashBoard extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ImageView profileImageView;
     private ArrayList<String> motivatingMessages;
-    private Button gymLocations, profile,health;
+    private Button gymLocations, profile, health;
     private TextView welcome;
+    private StorageReference storageReference;
+    private FirebaseStorage storage;
+    private String imageUrl;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
+        profileImageView = findViewById(R.id.personalProfile);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        profileImageView = findViewById(R.id.personalProfile);
         showProfilePicture();
         displayMessage();
         profile = findViewById(R.id.buttonProfile);
@@ -58,6 +69,7 @@ public class DashBoard extends AppCompatActivity {
                     welcome.append(user.getUserName());
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(DashBoard.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -80,7 +92,7 @@ public class DashBoard extends AppCompatActivity {
         health.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DashBoard.this,Health.class));
+                startActivity(new Intent(DashBoard.this, Health.class));
             }
         });
 
@@ -138,16 +150,56 @@ public class DashBoard extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 if (user != null) {
-                    profileImageView.setImageURI(Uri.parse(user.getmImageUrl()));
+//                    profileImageView.setImageURI(Uri.parse(user.getmImageUrl()));
                     //Picasso.get().load(user.getmImageUrl()).into(profileImageView);
+                    storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+
+                            // Use the bytes to display the image
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            profileImageView.setImageBitmap(bitmap);
+                        }
+                    });
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(DashBoard.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
+//    public void showProfilePicture() {
+//        String userID = mAuth.getUid();
+//        storageReference.child("imageURL")
+//                .getBytes(Long.MAX_VALUE)
+//                .addOnSuccessListener(new OnSuccessListener<byte[]>() {​​
+//                    @Override
+//                    public void onSuccess(byte[] bytes) {​​
+//                        // Use the bytes to display the image
+//                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                        //imageView.setImageBitmap(bitmap);
+//                    }​​
+//                }​​);
+//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+//        databaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                User user = snapshot.getValue(User.class);
+//                if (user != null) {
+//                    profileImageView.setImageURI(Uri.parse(user.getmImageUrl()));
+//                    //Picasso.get().load(user.getmImageUrl()).into(profileImageView);
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Toast.makeText(DashBoard.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
