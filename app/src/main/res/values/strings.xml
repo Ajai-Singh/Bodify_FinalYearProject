@@ -57,4 +57,5 @@
     <string name="title_activity_personal_profile">PersonalProfile</string>
     <string name="title_activity_permissions">PermissionsActivity</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_view_all_users">viewAllUsers</string>
 </resources>

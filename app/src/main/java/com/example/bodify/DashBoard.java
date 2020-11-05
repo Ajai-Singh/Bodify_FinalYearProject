@@ -35,7 +35,7 @@ public class DashBoard extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ImageView profileImageView;
     private ArrayList<String> motivatingMessages;
-    private Button gymLocations, profile, health;
+    private Button gymLocations, profile, health,chat;
     private TextView welcome;
     private StorageReference storageReference;
     private FirebaseStorage storage;
@@ -57,6 +57,7 @@ public class DashBoard extends AppCompatActivity {
         gymLocations = findViewById(R.id.gymFinderButton);
         health = findViewById(R.id.healthButton);
         welcome = findViewById(R.id.welcomeUser);
+        chat = findViewById(R.id.buttonChat);
         //getSupportActionBar().setTitle("Welcome To Bodify");
         final String userID = mAuth.getUid();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
@@ -95,7 +96,12 @@ public class DashBoard extends AppCompatActivity {
                 startActivity(new Intent(DashBoard.this, Health.class));
             }
         });
-
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(DashBoard.this,ViewAllUsers.class));
+            }
+        });
     }
 
     public void displayMessage() {
@@ -150,12 +156,9 @@ public class DashBoard extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 if (user != null) {
-//                    profileImageView.setImageURI(Uri.parse(user.getmImageUrl()));
-                    //Picasso.get().load(user.getmImageUrl()).into(profileImageView);
                     storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                         @Override
                         public void onSuccess(byte[] bytes) {
-
                             // Use the bytes to display the image
                             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                             profileImageView.setImageBitmap(bitmap);

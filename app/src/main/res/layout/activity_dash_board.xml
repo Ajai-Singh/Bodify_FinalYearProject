@@ -29,12 +29,12 @@
                     android:background="@color/white"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <com.github.chrisbanes.photoview.PhotoView
                         android:id="@+id/personalProfile"
                         android:layout_width="173dp"
                         android:layout_height="144dp"
                         android:layout_gravity="center"
-                        app:srcCompat="@android:drawable/ic_menu_gallery" />
+                        app:srcCompat="@android:drawable/ic_menu_gallery"/>
 
                     <TextView
                         android:id="@+id/welcomeUser"
@@ -176,12 +176,12 @@
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
                                     android:id="@+id/imageView4"
-                                    android:src="@drawable/goal"
+                                    android:src="@drawable/chat"
                                     android:layout_centerInParent="true"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Goal"
+                                    android:text="Chat"
                                     android:textSize="16sp"
                                     android:layout_below="@id/imageView4"
                                     android:layout_centerHorizontal="true"
@@ -190,7 +190,7 @@
                                 <Button
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:id="@+id/buttonGoal"
+                                    android:id="@+id/buttonChat"
                                     android:background="@android:color/transparent"/>
                             </RelativeLayout>
                         </androidx.cardview.widget.CardView>
