@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,40 +22,33 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class ViewAllUsers extends AppCompatActivity{
     private RecyclerView rv;
-    FirebaseRecyclerOptions<User> userFirebaseRecyclerOptions;
-    FirebaseRecyclerAdapter<User,UserHolder> adapter;
-    DatabaseReference databaseReference;
+    private FirebaseRecyclerOptions<User> userFirebaseRecyclerOptions;
+    private FirebaseRecyclerAdapter<User,UserHolder> adapter;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser firebaseUser = mAuth.getCurrentUser();
+    private ArrayList<User> users;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_users);
+        getAllUsers();
         rv = findViewById(R.id.recyclerView);
         rv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(linearLayoutManager);
-
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("User");
         userFirebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<User>().setQuery(ref,User.class).build();
         adapter = new FirebaseRecyclerAdapter<User,UserHolder>(userFirebaseRecyclerOptions) {
-
             @Override
             protected void onBindViewHolder(@NonNull UserHolder holder, int position, @NonNull User model) {
-                //I want to add a constraint somewhere here to remove a specific row
-                final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                final FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                //no matter what if I add a statement in here to avoid current user it will end up coming as a blank view
                 holder.setUserName(model.getUserName());
                 holder.setEmailAddress(model.getEmail());
                 holder.setImage(model.getmImageUrl());
-//                for(int i = 0; i < rv.getChildCount();i++) {
-//                    RecyclerView.ViewHolder test = rv.findContainingViewHolder(holder.email);
-//                    if(test.toString().equals(firebaseUser.getEmail())) {
-//                        int p = test.getAdapterPosition();
-//                        rv.getLayoutManager().removeViewAt(p);
-//                    }
-//                }
-
             }
             @NonNull
             @Override
@@ -64,12 +59,39 @@ public class ViewAllUsers extends AppCompatActivity{
 
 
         };
-
         adapter.startListening();
         rv.setAdapter(adapter);
     }
 
-    @Override
+    //steps
+    //step 1. read all User Objects
+    //Step 2. manually filter them
+    //get a arraylist of all the users and simply remove the ones you dont want
+    public void getAllUsers() {
+        users = new ArrayList<>();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+                    users.add(user);
+                    for (int i = 0; i < users.size(); i++) {
+                        if (users.get(i).getEmail().equalsIgnoreCase(firebaseUser.getEmail())) {
+                            users.remove(i);
+                    }
+                }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ViewAllUsers.this,"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+            @Override
     protected void onStart() {
         super.onStart();
         if(adapter != null) {

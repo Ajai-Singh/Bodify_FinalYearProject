@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class UserHolder extends RecyclerView.ViewHolder {
     public final ImageView image;
     public final TextView userName,email;
-    private ArrayList<String> test = new ArrayList<>();
     public UserHolder(@NonNull View itemView) {
         super(itemView);
         image = itemView.findViewById(R.id.cardViewProfilePicture);
