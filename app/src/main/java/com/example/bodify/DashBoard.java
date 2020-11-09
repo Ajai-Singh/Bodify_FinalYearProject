@@ -39,7 +39,6 @@ public class DashBoard extends AppCompatActivity {
     private TextView welcome;
     private StorageReference storageReference;
     private FirebaseStorage storage;
-    private String imageUrl;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -47,7 +46,6 @@ public class DashBoard extends AppCompatActivity {
         setContentView(R.layout.activity_dash_board);
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-
         profileImageView = findViewById(R.id.personalProfile);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -58,7 +56,7 @@ public class DashBoard extends AppCompatActivity {
         health = findViewById(R.id.healthButton);
         welcome = findViewById(R.id.welcomeUser);
         chat = findViewById(R.id.buttonChat);
-        //getSupportActionBar().setTitle("Welcome To Bodify");
+        getSupportActionBar().setTitle("Welcome To Bodify");
         final String userID = mAuth.getUid();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -159,7 +157,6 @@ public class DashBoard extends AppCompatActivity {
                     storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                         @Override
                         public void onSuccess(byte[] bytes) {
-                            // Use the bytes to display the image
                             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                             profileImageView.setImageBitmap(bitmap);
                         }
@@ -174,36 +171,6 @@ public class DashBoard extends AppCompatActivity {
         });
     }
 
-
-//    public void showProfilePicture() {
-//        String userID = mAuth.getUid();
-//        storageReference.child("imageURL")
-//                .getBytes(Long.MAX_VALUE)
-//                .addOnSuccessListener(new OnSuccessListener<byte[]>() {​​
-//                    @Override
-//                    public void onSuccess(byte[] bytes) {​​
-//                        // Use the bytes to display the image
-//                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                        //imageView.setImageBitmap(bitmap);
-//                    }​​
-//                }​​);
-//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
-//        databaseReference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                User user = snapshot.getValue(User.class);
-//                if (user != null) {
-//                    profileImageView.setImageURI(Uri.parse(user.getmImageUrl()));
-//                    //Picasso.get().load(user.getmImageUrl()).into(profileImageView);
-//                }
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Toast.makeText(DashBoard.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -214,7 +181,8 @@ public class DashBoard extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.logOut) {
-            mAuth.signOut();
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(getApplicationContext(),"Successfully Logged Out",Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getApplicationContext(), LogIn.class));
         }
         return true;
