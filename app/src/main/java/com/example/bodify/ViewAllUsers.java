@@ -40,12 +40,11 @@ public class ViewAllUsers extends AppCompatActivity {
                     User user = userSnapshot.getValue(User.class);
                     users.add(user);
                     if(!users.isEmpty()) {
-                    for (int i = 0; i < users.size(); i++) {
-                        if (users.get(i).getEmail().equalsIgnoreCase(firebaseUser.getEmail())) {
-                            users.remove(i);
-
+                        for (int i = 0; i < users.size(); i++) {
+                            if (users.get(i).getEmail().equalsIgnoreCase(firebaseUser.getEmail())) {
+                                users.remove(i);
+                            }
                         }
-                    }
                     }
                     recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setHasFixedSize(true);
