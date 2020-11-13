@@ -1,5 +1,5 @@
 <resources>
-    <string name="welcome_message">Welcome to Bodify, Sign Up below!</string>
+    <string name="welcome_message">Sign Up below!</string>
     <string name="app_name">Bodify</string>
     <string name="title_activity_sign_up">SignUp</string>
     <string name="User_Name">User Name</string>
@@ -10,7 +10,7 @@
     <string name="existing_account">Already have an existing Account? Log In here</string>
     <string name="register">Register</string>
     <string name="login">Log In</string>
-    <string name="Login_welcome_message">Welcome to Bodify, Log In below!</string>
+    <string name="Login_welcome_message">Log In below!</string>
     <string name="create_account">Not registered? create an Account</string>
     <string name="personal_information">Personal Information</string>
     <string name="weight">Weight in KGs</string>

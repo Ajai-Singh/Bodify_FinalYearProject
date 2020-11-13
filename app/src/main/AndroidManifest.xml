@@ -37,14 +37,14 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".LogIn">
+        <activity android:name=".Tailoring">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".SignUp" />
-        <activity android:name=".Tailoring" />
+        <activity android:name=".LogIn" />
         <activity android:name=".DashBoard" />
         <activity android:name=".GymsNearMe" />
         <activity android:name=".PersonalProfile" />
