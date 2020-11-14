@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -16,9 +15,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Objects;
+
 public class LogIn extends AppCompatActivity {
-    private TextView createAcc;
-    private Button logIn;
     private EditText emailAddress, password;
     private FirebaseAuth mAuth;
 
@@ -28,10 +27,10 @@ public class LogIn extends AppCompatActivity {
         //getSupportActionBar().setTitle("Log In Form");
         setContentView(R.layout.activity_log_in);
         mAuth = FirebaseAuth.getInstance();
-        logIn = findViewById(R.id.logInButton);
+        Button logIn = findViewById(R.id.logInButton);
         emailAddress = findViewById(R.id.userNameSignUp);
         password = findViewById(R.id.passwordTextField);
-        createAcc = findViewById(R.id.createNewAccount);
+        TextView createAcc = findViewById(R.id.createNewAccount);
         createAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,7 +59,7 @@ public class LogIn extends AppCompatActivity {
                                 Toast.makeText(LogIn.this, "User verified", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(getApplicationContext(), DashBoard.class));
                             }else {
-                                Toast.makeText(LogIn.this, "Error occurred! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LogIn.this, "Error occurred! " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

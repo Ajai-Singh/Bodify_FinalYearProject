@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
@@ -24,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -122,17 +125,18 @@ public class Health extends AppCompatActivity {
                     fatCalories = fatAmount * 9;
                     carbohydrateCalories = formattedCalorieIntake - (proteinCalories + fatCalories);
                     carbohydrateAmount = carbohydrateCalories / 4;
-                    macros.add(new BarEntry(1,fatAmount.floatValue()));
-                    macros.add(new BarEntry(2,carbohydrateAmount.floatValue()));
-                    macros.add(new BarEntry(3,proteinAmount.floatValue()));
+                    macros.add(new BarEntry(1, fatAmount.floatValue()));
+                    macros.add(new BarEntry(2, carbohydrateAmount.floatValue()));
+                    macros.add(new BarEntry(3, proteinAmount.floatValue()));
                 }
-                setUserMacros(formattedCalorieIntake,fatAmount,carbohydrateAmount,proteinAmount);
+                setUserMacros(formattedCalorieIntake, fatAmount, carbohydrateAmount, proteinAmount);
                 showChart(macros);
-                if(user == null) {
+                if (user == null) {
                     barChart.clear();
                     barChart.invalidate();
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(Health.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -147,13 +151,14 @@ public class Health extends AppCompatActivity {
         assert firebaseUser != null;
         Macro macro = new Macro(Math.round(calories),Math.round(fat),Math.round(carbs),Math.round(protein),userID);
         DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("Macros").push().setValue(macro).addOnFailureListener(new OnFailureListener() {
+        databaseReference.child("Macros").setValue(macro).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(Health.this,"Error Occurred: " + e.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     public void showChart(ArrayList<BarEntry> macros) {
         barEntries.add(macros.get(0));

@@ -19,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Objects;
-
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class ViewAllUsers extends AppCompatActivity {
@@ -81,7 +80,6 @@ public class ViewAllUsers extends AppCompatActivity {
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             Toast.makeText(ViewAllUsers.this, "Creating Chat", Toast.LENGTH_SHORT).show();
-
         }
     };
 }

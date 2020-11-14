@@ -25,13 +25,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 import static com.example.bodify.SignUp.MESSAGE_KEY;
 import static com.example.bodify.SignUp.MESSAGE_KEY1;
 
 public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private EditText weight, height;
     private Spinner genderSpinner, fitnessGoalSpinner, activityLevelSpinner, bodyTypeSpinner, preferredFoodsSpinner;
-    private Button submit;
     private ArrayList<String> genders;
     private ArrayList<String> fitnessGoals;
     private ArrayList<String> activityLevels;
@@ -51,7 +51,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         bodyTypeSpinner = findViewById(R.id.bodyTypeSpinner);
         preferredFoodsSpinner = findViewById(R.id.foodTypeSpinner);
         updateSpinners();
-        submit = findViewById(R.id.submitButton);
+        Button submit = findViewById(R.id.submitButton);
         final FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         submit.setOnClickListener(new View.OnClickListener() {
@@ -80,20 +80,21 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                     String gender = genderSpinner.getSelectedItem().toString();
                     String preferredMacroNutrient = preferredFoodsSpinner.getSelectedItem().toString();
 
-                    Double dblWeight = Double.parseDouble(strWeight);
+                    double dblWeight = Double.parseDouble(strWeight);
                     int intHeight = Integer.parseInt(strHeight);
                     Intent intent = getIntent();
                     String strUserName = intent.getStringExtra(MESSAGE_KEY);
                     String imageDownloadUrl = intent.getStringExtra(MESSAGE_KEY1);
                     FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                    assert firebaseUser != null;
                     String strEmail = firebaseUser.getEmail();
                     String userID = firebaseUser.getUid();
 
-                    Double bodyMassIndex;
-                    Double heightInMetres = intHeight / 100.00;
+                    double bodyMassIndex;
+                    double heightInMetres = intHeight / 100.00;
                     bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
                     DecimalFormat decimalFormat = new DecimalFormat("##.00");
-                    Double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
+                    double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
                     User user = new User(strUserName, strEmail, gender, activityLevel, fitnessGoal, bodyType, preferredMacroNutrient, dblWeight, formattedBodyMassIndex, intHeight, imageDownloadUrl);
                     databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -102,7 +103,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                                 Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(getApplicationContext(), DashBoard.class));
                             } else {
-                                Toast.makeText(getApplicationContext(), "Error Occurred!" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

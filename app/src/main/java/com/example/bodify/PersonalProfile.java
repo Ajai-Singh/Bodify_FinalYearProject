@@ -27,11 +27,10 @@ public class PersonalProfile extends AppCompatActivity implements AdapterView.On
     private TextView userName,email;
     private EditText height,weight;
     private Spinner activityLevelSpinner,fitnessGoalSpinner,bodyType,preferredMacroNutrient;
-    private Button updateProfile;
-    private ArrayList<String> activityLevels = new ArrayList<>();
-    private ArrayList<String> fitnessGoals = new ArrayList<>();
-    private ArrayList<String> bodyTypes = new ArrayList<>();
-    private ArrayList<String> preferredMacroNutrients = new ArrayList<>();
+    private final ArrayList<String> activityLevels = new ArrayList<>();
+    private final ArrayList<String> fitnessGoals = new ArrayList<>();
+    private final ArrayList<String> bodyTypes = new ArrayList<>();
+    private final ArrayList<String> preferredMacroNutrients = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +39,7 @@ public class PersonalProfile extends AppCompatActivity implements AdapterView.On
         email = findViewById(R.id.emailAddressTextField);
         height = findViewById(R.id.heightTextFieldPP);
         weight = findViewById(R.id.weightTextFieldPP);
-        updateProfile = findViewById(R.id.updateInformationButton);
+        Button updateProfile = findViewById(R.id.updateInformationButton);
         activityLevelSpinner = findViewById(R.id.activityLevelSpinner);
         fitnessGoalSpinner = findViewById(R.id.fitnessGoalSpinner);
         bodyType = findViewById(R.id.bodyCompositionSpinner);
@@ -48,6 +47,7 @@ public class PersonalProfile extends AppCompatActivity implements AdapterView.On
         updateSpinners();
         mAuth = FirebaseAuth.getInstance();
         final String userID = mAuth.getUid();
+        assert userID != null;
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -113,8 +113,11 @@ public class PersonalProfile extends AppCompatActivity implements AdapterView.On
                 Double dblHeight = Double.parseDouble(strInputtedHeight);
                 Double dblWeight = Double.parseDouble(strInputtedWeight);
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                assert firebaseUser != null;
                 String userID = firebaseUser.getUid();
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+                //Note update BMI TO DO LIST
+                //databaseReference.child("bmi").setValue(bmi);
                 databaseReference.child("weight").setValue(dblWeight);
                 databaseReference.child("height").setValue(dblHeight);
                 databaseReference.child("activityLevel").setValue(strActivityGoalSpinner);

@@ -1,11 +1,11 @@
 package com.example.bodify;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,39 +27,38 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class DashBoard extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ImageView profileImageView;
-    private ArrayList<String> motivatingMessages;
-    private Button gymLocations, profile, health,chat;
     private TextView welcome;
     private StorageReference storageReference;
-    private FirebaseStorage storage;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
-        storage = FirebaseStorage.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         profileImageView = findViewById(R.id.personalProfile);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         showProfilePicture();
         displayMessage();
-        profile = findViewById(R.id.buttonProfile);
-        gymLocations = findViewById(R.id.gymFinderButton);
-        health = findViewById(R.id.healthButton);
+        Button profile = findViewById(R.id.buttonProfile);
+        Button gymLocations = findViewById(R.id.gymFinderButton);
+        Button health = findViewById(R.id.healthButton);
         welcome = findViewById(R.id.welcomeUser);
-        chat = findViewById(R.id.buttonChat);
-        getSupportActionBar().setTitle("Welcome To Bodify");
+        Button chat = findViewById(R.id.buttonChat);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Welcome To Bodify");
         final String userID = mAuth.getUid();
+        assert userID != null;
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
@@ -103,7 +102,7 @@ public class DashBoard extends AppCompatActivity {
     }
 
     public void displayMessage() {
-        motivatingMessages = new ArrayList<>();
+        ArrayList<String> motivatingMessages = new ArrayList<>();
         Random random = new Random();
         motivatingMessages.add("YOU’RE THE ONLY ONE WHO CAN MAKE THE DIFFERENCE. WHATEVER YOUR DREAM IS, GO FOR IT. – MAGIC JOHNSON.");
         motivatingMessages.add("EXERCISE SHOULD BE REGARDED AS TRIBUTE TO THE HEART. – GENE TUNNEY.");
@@ -148,6 +147,7 @@ public class DashBoard extends AppCompatActivity {
 
     public void showProfilePicture() {
         String userID = mAuth.getUid();
+        assert userID != null;
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override

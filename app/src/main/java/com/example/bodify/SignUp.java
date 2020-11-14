@@ -28,11 +28,10 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import java.util.Objects;
 
 public class SignUp extends AppCompatActivity {
     private EditText emailAddress, userName, password, verifyPassword;
-    private Button registerButton, uploadProfilePicture;
-    private TextView signInInstead;
     private FirebaseAuth mAuth;
     private StorageReference storageReference;
     private ImageView profilePlaceHolder;
@@ -100,9 +99,9 @@ public class SignUp extends AppCompatActivity {
         emailAddress = findViewById(R.id.emailAddressSignUp);
         password = findViewById(R.id.passwordTextField);
         verifyPassword = findViewById(R.id.confirmPasswordTextField);
-        signInInstead = findViewById(R.id.existing_account);
-        registerButton = findViewById(R.id.signUpButton);
-        uploadProfilePicture = findViewById(R.id.uploadPicture);
+        TextView signInInstead = findViewById(R.id.existing_account);
+        Button registerButton = findViewById(R.id.signUpButton);
+        Button uploadProfilePicture = findViewById(R.id.uploadPicture);
         profilePlaceHolder = findViewById(R.id.ProfilePicture);
         uploadProfilePicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +163,7 @@ public class SignUp extends AppCompatActivity {
                                     password.setText("");
                                     verifyPassword.setText("");
                                 }else {
-                                    Toast.makeText(getApplicationContext(),"Error Occurred!" + task.getException().toString(),Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(),"Error Occurred!" + Objects.requireNonNull(task.getException()).toString(),Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
