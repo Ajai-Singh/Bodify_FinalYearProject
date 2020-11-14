@@ -214,12 +214,12 @@
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
                                     android:id="@+id/imageView5"
-                                    android:src="@drawable/finance"
+                                    android:src="@drawable/running"
                                     android:layout_centerInParent="true"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Finance"
+                                    android:text="Pedometer"
                                     android:textSize="16sp"
                                     android:layout_below="@id/imageView5"
                                     android:layout_centerHorizontal="true"
@@ -228,7 +228,7 @@
                                 <Button
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:id="@+id/buttonFinance"
+                                    android:id="@+id/buttonPedometer"
                                     android:background="@android:color/transparent"/>
                             </RelativeLayout>
                         </androidx.cardview.widget.CardView>

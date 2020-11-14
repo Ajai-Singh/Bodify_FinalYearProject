@@ -51,6 +51,7 @@ public class DashBoard extends AppCompatActivity {
         Button profile = findViewById(R.id.buttonProfile);
         Button gymLocations = findViewById(R.id.gymFinderButton);
         Button health = findViewById(R.id.healthButton);
+        Button pedometer = findViewById(R.id.buttonPedometer);
         welcome = findViewById(R.id.welcomeUser);
         Button chat = findViewById(R.id.buttonChat);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Welcome To Bodify");
@@ -97,6 +98,12 @@ public class DashBoard extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(DashBoard.this,ViewAllUsers.class));
+            }
+        });
+        pedometer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DashBoard.this,Pedometer.class));
             }
         });
     }
