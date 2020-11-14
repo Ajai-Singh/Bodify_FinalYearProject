@@ -1,11 +1,13 @@
 package com.example.bodify;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -14,7 +16,9 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,9 +31,7 @@ public class Health extends AppCompatActivity {
     private TextView bmi, weight, height, fitnessGoal, fitnessLevel, calorieIntake;
     private FirebaseAuth mAuth;
     private BarChart barChart;
-    private BarData barData;
-    private BarDataSet barDataSet;
-    private ArrayList<BarEntry> barEntries = new ArrayList<>();
+    private final ArrayList<BarEntry> barEntries = new ArrayList<>();
     private Double formattedCalorieIntake;
     private Double proteinAmount;
     private Double carbohydrateAmount;
@@ -56,8 +58,10 @@ public class Health extends AppCompatActivity {
     public void updateFields() {
         mAuth = FirebaseAuth.getInstance();
         final String userID = mAuth.getUid();
+        assert userID != null;
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
@@ -66,10 +70,10 @@ public class Health extends AppCompatActivity {
                     weight.setText(String.valueOf(user.getWeight()));
                     height.setText(String.valueOf(user.getHeight()));
                     fitnessGoal.setText(user.getFitnessGoal());
-                    Double heightInMetres = user.getHeight() / 100.00;
+                    double heightInMetres = user.getHeight() / 100.00;
                     Double bodyMassIndex = user.getWeight() / Math.pow(heightInMetres, 2.0);
                     DecimalFormat decimalFormat = new DecimalFormat("##.00");
-                    Double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
+                    double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
                     bmi.setText(String.valueOf(formattedBodyMassIndex));
                     if (formattedBodyMassIndex < 18.5) {
                         fitnessLevel.setText("Underweight");
@@ -80,14 +84,18 @@ public class Health extends AppCompatActivity {
                     } else if (formattedBodyMassIndex > 30.0) {
                         fitnessLevel.setText("Obese");
                     }
-                    Double weightInPounds = user.getWeight() * 2.20462;
-                    Double requiredCalories = 0.0;
-                    if (user.getActivityLevel().equals("1")) {
-                        requiredCalories = weightInPounds * 14;
-                    } else if (user.getActivityLevel().equals("2")) {
-                        requiredCalories = weightInPounds * 15;
-                    } else if (user.getActivityLevel().equals("3")) {
-                        requiredCalories = weightInPounds * 16;
+                    double weightInPounds = user.getWeight() * 2.20462;
+                    double requiredCalories = 0.0;
+                    switch (user.getActivityLevel()) {
+                        case "1":
+                            requiredCalories = weightInPounds * 14;
+                            break;
+                        case "2":
+                            requiredCalories = weightInPounds * 15;
+                            break;
+                        case "3":
+                            requiredCalories = weightInPounds * 16;
+                            break;
                     }
                     if (user.getFitnessGoal().equals("Lose Weight")) {
                         requiredCalories = requiredCalories - 500;
@@ -118,16 +126,31 @@ public class Health extends AppCompatActivity {
                     macros.add(new BarEntry(2,carbohydrateAmount.floatValue()));
                     macros.add(new BarEntry(3,proteinAmount.floatValue()));
                 }
+                setUserMacros(formattedCalorieIntake,fatAmount,carbohydrateAmount,proteinAmount);
                 showChart(macros);
                 if(user == null) {
                     barChart.clear();
                     barChart.invalidate();
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(Health.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void setUserMacros(Double calories,Double fat,Double carbs,Double protein) {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        final String userID = mAuth.getUid();
+        assert firebaseUser != null;
+        Macro macro = new Macro(Math.round(calories),Math.round(fat),Math.round(carbs),Math.round(protein),userID);
+        DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("Macros").push().setValue(macro).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(Health.this,"Error Occurred: " + e.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -137,9 +160,9 @@ public class Health extends AppCompatActivity {
         barEntries.add(macros.get(1));
         barEntries.add(macros.get(2));
         XAxis xAxis = barChart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(getXaxisValues()));
-        barDataSet = new BarDataSet(barEntries, "Data Set");
-        barData = new BarData(barDataSet);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(getXAxisValues()));
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Data Set");
+        BarData barData = new BarData(barDataSet);
         barChart.clear();
         barChart.setData(barData);
         barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
@@ -148,15 +171,12 @@ public class Health extends AppCompatActivity {
         barChart.invalidate();
     }
 
-    public ArrayList<String> getXaxisValues() {
+    public ArrayList<String> getXAxisValues() {
         ArrayList<String> xLabels = new ArrayList<>();
         xLabels.add("0");
         xLabels.add("Fats");
         xLabels.add("Carbohydrates");
         xLabels.add("Proteins");
-        ArrayList<String> label = new ArrayList<>();
-        for (int i = 0; i < xLabels.size(); i++)
-            label.add(xLabels.get(i));
-        return label;
+        return new ArrayList<>(xLabels);
     }
 }

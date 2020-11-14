@@ -1,9 +1,12 @@
 package com.example.bodify;
 
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Models.User;
@@ -15,6 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.Objects;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class ViewAllUsers extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -27,7 +33,7 @@ public class ViewAllUsers extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_users);
-        getSupportActionBar().setTitle("Chat Room");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Chat Room");
         getAllUsers();
     }
 
@@ -38,18 +44,15 @@ public class ViewAllUsers extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     User user = userSnapshot.getValue(User.class);
-                    users.add(user);
-                    if(!users.isEmpty()) {
-                        for (int i = 0; i < users.size(); i++) {
-                            if (users.get(i).getEmail().equalsIgnoreCase(firebaseUser.getEmail())) {
-                                users.remove(i);
-                            }
-                        }
+                    assert user != null;
+                    if(user.getEmail().equals(firebaseUser.getEmail())) {
+                        users.add(user);
                     }
                     recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(new LinearLayoutManager(ViewAllUsers.this));
                     adapter = new MainAdapter(users);
+                    new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerView);
                     recyclerView.setAdapter(adapter);
                 }
             }
@@ -59,4 +62,26 @@ public class ViewAllUsers extends AppCompatActivity {
             }
         });
     }
+    ItemTouchHelper.SimpleCallback itemTouch = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    .addBackgroundColor(ContextCompat.getColor(ViewAllUsers.this, R.color.grey))
+                    .addActionIcon(R.drawable.email)
+                    .create()
+                    .decorate();
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            Toast.makeText(ViewAllUsers.this, "Creating Chat", Toast.LENGTH_SHORT).show();
+
+        }
+    };
 }
