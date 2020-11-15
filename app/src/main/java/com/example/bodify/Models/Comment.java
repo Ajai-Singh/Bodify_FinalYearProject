@@ -1,43 +1,52 @@
 package com.example.bodify.Models;
 
-import java.util.Date;
+public class Comment{
 
-public class Comment {
-    private String comment,reply;
-    private Date date;
-    private int commentID;
+    private String messageText;
+    private String messageUser;
+    private String userId;
+    private String dateTime;
 
-    public String getComment() {
-        return comment;
+    public Comment(String messageText, String messageUser, String userId, String dateTime) {
+        this.messageText = messageText;
+        this.messageUser = messageUser;
+        this.userId = userId;
+        this.dateTime = dateTime;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public Comment(){
+
     }
 
-    public String getReply() {
-        return reply;
+    public String getMessageText() {
+        return messageText;
     }
 
-    public void setReply(String reply) {
-        this.reply = reply;
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
     }
 
-    public Date getDate() {
-        return date;
+    public String getMessageUser() {
+        return messageUser;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setMessageUser(String messageUser) {
+        this.messageUser = messageUser;
     }
 
-    public Comment(String comment, String reply, Date date, int commentID) {
-        this.comment = comment;
-        this.reply = reply;
-        this.date = date;
-        this.commentID = commentID;
+    public String getUserId() {
+        return userId;
     }
 
-    public Comment() {
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 }

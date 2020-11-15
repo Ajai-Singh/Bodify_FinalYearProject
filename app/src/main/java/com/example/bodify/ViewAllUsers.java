@@ -1,5 +1,6 @@
 package com.example.bodify;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -80,6 +81,7 @@ public class ViewAllUsers extends AppCompatActivity {
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             Toast.makeText(ViewAllUsers.this, "Creating Chat", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(ViewAllUsers.this,ChatRoom.class));
         }
     };
 }
