@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.bodify.Models.Comment;
+import com.example.bodify.Models.Message;
 import com.example.bodify.Models.User;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
@@ -32,7 +32,7 @@ public class ChatRoom extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText input;
     private FloatingActionButton fab;
-    private FirebaseListAdapter<Comment> adapter;
+    private FirebaseListAdapter<Message> adapter;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -75,7 +75,7 @@ public class ChatRoom extends AppCompatActivity {
                     String currentDateTime = dateFormat.format(date);
                     mAuth = FirebaseAuth.getInstance();
                     final String userID = mAuth.getUid();
-                    Comment comment = new Comment(input.getText().toString(), userName, userID, currentDateTime);
+                    Message comment = new Message(input.getText().toString(), userName, userID, currentDateTime);
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                     databaseReference.child("Chat").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -99,14 +99,14 @@ public class ChatRoom extends AppCompatActivity {
     public void displayMessages() {
         Query query = FirebaseDatabase.getInstance().getReference().child("Chat");
         ListView listOfMessages = findViewById(R.id.list_of_messages);
-        FirebaseListOptions<Comment> options =
-                new FirebaseListOptions.Builder<Comment>()
-                        .setQuery(query, Comment.class)
+        FirebaseListOptions<Message> options =
+                new FirebaseListOptions.Builder<Message>()
+                        .setQuery(query, Message.class)
                         .setLayout(R.layout.message)
                         .build();
-        adapter = new FirebaseListAdapter<Comment>(options) {
+        adapter = new FirebaseListAdapter<Message>(options) {
             @Override
-            protected void populateView(@NotNull View v, @NotNull Comment model, int position) {
+            protected void populateView(@NotNull View v, @NotNull Message model, int position) {
                 TextView messageText = v.findViewById(R.id.message_text);
                 TextView messageUser = v.findViewById(R.id.message_user);
                 TextView messageTime = v.findViewById(R.id.message_time);

@@ -1,20 +1,20 @@
 package com.example.bodify.Models;
 
-public class Comment{
+public class Message {
 
     private String messageText;
     private String messageUser;
     private String userId;
     private String dateTime;
 
-    public Comment(String messageText, String messageUser, String userId, String dateTime) {
+    public Message(String messageText, String messageUser, String userId, String dateTime) {
         this.messageText = messageText;
         this.messageUser = messageUser;
         this.userId = userId;
         this.dateTime = dateTime;
     }
 
-    public Comment(){
+    public Message(){
 
     }
 
