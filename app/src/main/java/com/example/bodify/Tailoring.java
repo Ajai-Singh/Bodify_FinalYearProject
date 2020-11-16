@@ -42,7 +42,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tailoring);
-        //getSupportActionBar().setTitle("Personalize your profile");
+        getSupportActionBar().setTitle("Personalize your profile");
         weight = findViewById(R.id.weightTextFieldPP);
         height = findViewById(R.id.heightTextFieldPP);
         genderSpinner = findViewById(R.id.genderSpinner);

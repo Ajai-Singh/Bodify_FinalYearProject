@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class PersonalProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
@@ -54,36 +55,28 @@ public class PersonalProfile extends AppCompatActivity implements AdapterView.On
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 if (user != null) {
-                    int activityLevelIndex;
-                    int fitnessGoalIndex;
-                    int bodyTypeIndex;
-                    int preferredMacroNutrientIndex;
                     userName.setText(user.getUserName());
                     email.setText(user.getEmail());
                     height.setText(String.valueOf(user.getHeight()));
                     weight.setText(String.valueOf(user.getWeight()));
                     for (int i = 0; i < activityLevels.size(); i++) {
                         if (activityLevels.get(i).equalsIgnoreCase(user.getActivityLevel())) {
-                            activityLevelIndex = i;
-                            activityLevelSpinner.setSelection(activityLevelIndex);
+                            activityLevelSpinner.setSelection(i);
                         }
                     }
                     for (int i = 0; i < fitnessGoals.size(); i++) {
                         if (fitnessGoals.get(i).equalsIgnoreCase(user.getFitnessGoal())) {
-                            fitnessGoalIndex = i;
-                            fitnessGoalSpinner.setSelection(fitnessGoalIndex);
+                            fitnessGoalSpinner.setSelection(i);
                         }
                     }
                     for(int i = 0; i < bodyTypes.size(); i++){
                         if(bodyTypes.get(i).equalsIgnoreCase(user.getBodyType())) {
-                            bodyTypeIndex = i;
-                            bodyType.setSelection(bodyTypeIndex);
+                            bodyType.setSelection(i);
                         }
                     }
                     for(int i = 0; i < preferredMacroNutrients.size(); i++){
-                        if(preferredMacroNutrients.get(i).equalsIgnoreCase(user.getBodyType())) {
-                            preferredMacroNutrientIndex = i;
-                            preferredMacroNutrient.setSelection(preferredMacroNutrientIndex);
+                        if(preferredMacroNutrients.get(i).equalsIgnoreCase(user.getPreferredMacroNutrient())) {
+                            preferredMacroNutrient.setSelection(i);
                         }
                     }
                 }
@@ -110,27 +103,26 @@ public class PersonalProfile extends AppCompatActivity implements AdapterView.On
                 weight.setError("Weight in KGs is required!");
                 weight.requestFocus();
             }else{
-                Double dblHeight = Double.parseDouble(strInputtedHeight);
-                Double dblWeight = Double.parseDouble(strInputtedWeight);
+                double dblHeight = Double.parseDouble(strInputtedHeight);
+                double dblWeight = Double.parseDouble(strInputtedWeight);
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 assert firebaseUser != null;
                 String userID = firebaseUser.getUid();
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
-                //Note update BMI TO DO LIST
-                //databaseReference.child("bmi").setValue(bmi);
+                double heightInMetres = dblHeight / 100.00;
+                double bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
+                DecimalFormat decimalFormat = new DecimalFormat("##.00");
+                double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
                 databaseReference.child("weight").setValue(dblWeight);
                 databaseReference.child("height").setValue(dblHeight);
                 databaseReference.child("activityLevel").setValue(strActivityGoalSpinner);
                 databaseReference.child("fitnessGoal").setValue(strFitnessGoalSpinner);
                 databaseReference.child("preferredMacroNutrient").setValue(strPreferredMacroNutrient);
                 databaseReference.child("bodyType").setValue(strBodyType);
+                databaseReference.child("bodyMassIndicator").setValue(formattedBodyMassIndex);
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int activityLevelIndex;
-                        int fitnessGoalIndex;
-                        int bodyTypeIndex;
-                        int preferredMacroNutrientIndex;
                         User user = snapshot.getValue(User.class);
                         if(user != null) {
                             height.setText(String.valueOf(user.getHeight()));
@@ -138,26 +130,22 @@ public class PersonalProfile extends AppCompatActivity implements AdapterView.On
 
                             for(int i = 0; i < activityLevels.size(); i++){
                                 if(activityLevels.get(i).equalsIgnoreCase(user.getActivityLevel())) {
-                                 activityLevelIndex = i;
-                                 activityLevelSpinner.setSelection(activityLevelIndex);
+                                    activityLevelSpinner.setSelection(i);
                                 }
                             }
                             for(int i = 0; i < fitnessGoals.size(); i++){
                                 if(fitnessGoals.get(i).equalsIgnoreCase(user.getFitnessGoal())) {
-                                    fitnessGoalIndex = i;
-                                    fitnessGoalSpinner.setSelection(fitnessGoalIndex);
+                                    fitnessGoalSpinner.setSelection(i);
                                 }
                             }
                             for(int i = 0; i < bodyTypes.size(); i++){
                                 if(bodyTypes.get(i).equalsIgnoreCase(user.getBodyType())) {
-                                    bodyTypeIndex = i;
-                                    bodyType.setSelection(bodyTypeIndex);
+                                    bodyType.setSelection(i);
                                 }
                             }
                             for(int i = 0; i < preferredMacroNutrients.size(); i++){
-                                if(preferredMacroNutrients.get(i).equalsIgnoreCase(user.getBodyType())) {
-                                    preferredMacroNutrientIndex = i;
-                                    preferredMacroNutrient.setSelection(preferredMacroNutrientIndex);
+                                if(preferredMacroNutrients.get(i).equalsIgnoreCase(user.getPreferredMacroNutrient())) {
+                                    preferredMacroNutrient.setSelection(i);
                                 }
                             }
                             Toast.makeText(PersonalProfile.this,"Update Success",Toast.LENGTH_SHORT).show();

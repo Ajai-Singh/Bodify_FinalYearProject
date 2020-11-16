@@ -246,12 +246,12 @@
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
                                     android:id="@+id/imageView6"
-                                    android:src="@drawable/comfort"
+                                    android:src="@drawable/friend"
                                     android:layout_centerInParent="true"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Comfort"
+                                    android:text="View All Users"
                                     android:textSize="16sp"
                                     android:layout_below="@id/imageView6"
                                     android:layout_centerHorizontal="true"
@@ -260,14 +260,12 @@
                                 <Button
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:id="@+id/buttonComfort"
+                                    android:id="@+id/buttonUsers"
                                     android:background="@android:color/transparent"/>
                             </RelativeLayout>
                         </androidx.cardview.widget.CardView>
                     </LinearLayout>
                 </LinearLayout>
-
-
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

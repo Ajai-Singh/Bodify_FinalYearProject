@@ -5,14 +5,11 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
-import android.app.Activity;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -32,15 +29,11 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.facebook.internal.FeatureManager.Feature.Places;
-
 public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
-
 
     public GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -57,6 +50,7 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
         setUPGClient();
     }
@@ -88,7 +82,7 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
         if(permissionLocation != PackageManager.PERMISSION_GRANTED) {
             listPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
             if(!listPermission.isEmpty()) {
-                ActivityCompat.requestPermissions(this,listPermission.toArray(new String[listPermission.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
+                ActivityCompat.requestPermissions(this,listPermission.toArray(new String[0]),REQUEST_ID_MULTIPLE_PERMISSIONS);
             }
         }
         else {
@@ -138,15 +132,11 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
     }
 
     private void getNearByGyms() {
-
-        StringBuilder stringBuilder =
-                new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        stringBuilder.append("location=" + currentLatitude +","+ currentLongitude);
-        stringBuilder.append("&radius=1500");
-        stringBuilder.append("&types=gym");
-        stringBuilder.append("&key="+getResources().getString(R.string.google_maps_key));
-        String url = stringBuilder.toString();
-        Object dataTransfer[] = new Object[2];
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + "location=" + currentLatitude + "," + currentLongitude +
+                "&radius=1500" +
+                "&types=gym" +
+                "&key=" + getResources().getString(R.string.google_maps_key);
+        Object[] dataTransfer = new Object[2];
         dataTransfer[0] = mMap;
         dataTransfer[1] = url;
 
@@ -180,47 +170,27 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
                             final Status status = result.getStatus();
                             switch (status.getStatusCode()) {
                                 case LocationSettingsStatusCodes.SUCCESS:
-                                    // All location settings are satisfied.
-                                    // You can initialize location requests here.
                                     int permissionLocation = ContextCompat
                                             .checkSelfPermission(GymsNearMe.this,
                                                     Manifest.permission.ACCESS_FINE_LOCATION);
                                     if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
-
-
                                         myLocation = LocationServices.FusedLocationApi
                                                 .getLastLocation(mGoogleApiClient);
-
-
                                     }
                                     break;
                                 case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                                    // Location settings are not satisfied.
-                                    // But could be fixed by showing the user a dialog.
                                     try {
-                                        // Show the dialog by calling startResolutionForResult(),
-                                        // and check the result in onActivityResult().
-                                        // Ask to turn on GPS automatically
                                         status.startResolutionForResult(GymsNearMe.this,
                                                 REQUEST_CHECK_SETTING_GPS);
 
                                     } catch (IntentSender.SendIntentException e) {
-                                        // Ignore the error.
                                     }
-
-
                                     break;
                                 case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                                    // Location settings are not satisfied.
-                                    // However, we have no way
-                                    // to fix the
-                                    // settings so we won't show the dialog.
-                                    // finish();
                                     break;
                             }
                         }
                     });
-
                 }
             }
         }

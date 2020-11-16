@@ -2,7 +2,6 @@ package com.example.bodify;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -25,9 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -38,7 +35,6 @@ public class ChatRoom extends AppCompatActivity {
     private FirebaseListAdapter<Comment> adapter;
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +64,6 @@ public class ChatRoom extends AppCompatActivity {
         displayMessages();
     }
 
-
     public void createMessage(final String userName) {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +75,7 @@ public class ChatRoom extends AppCompatActivity {
                     String currentDateTime = dateFormat.format(date);
                     mAuth = FirebaseAuth.getInstance();
                     final String userID = mAuth.getUid();
-                    Comment comment = new Comment(input.getText().toString(), userName,userID,currentDateTime);
+                    Comment comment = new Comment(input.getText().toString(), userName, userID, currentDateTime);
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                     databaseReference.child("Chat").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -88,7 +83,6 @@ public class ChatRoom extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(ChatRoom.this, "Message Saved", Toast.LENGTH_SHORT).show();
                                 input.setText("");
-                                displayMessages();
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -102,8 +96,6 @@ public class ChatRoom extends AppCompatActivity {
         });
     }
 
-    //I am able to write new messages to firebase realtime database
-    //I need to fix this method and populate the list with the messages from the database
     public void displayMessages() {
         Query query = FirebaseDatabase.getInstance().getReference().child("Chat");
         ListView listOfMessages = findViewById(R.id.list_of_messages);
@@ -112,7 +104,7 @@ public class ChatRoom extends AppCompatActivity {
                         .setQuery(query, Comment.class)
                         .setLayout(R.layout.message)
                         .build();
-        adapter = new FirebaseListAdapter<Comment>(options){
+        adapter = new FirebaseListAdapter<Comment>(options) {
             @Override
             protected void populateView(@NotNull View v, @NotNull Comment model, int position) {
                 TextView messageText = v.findViewById(R.id.message_text);
@@ -124,5 +116,19 @@ public class ChatRoom extends AppCompatActivity {
             }
         };
         listOfMessages.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
 }

@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.bodify.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,13 +44,13 @@ public class DashBoard extends AppCompatActivity {
         storageReference = storage.getReference();
         profileImageView = findViewById(R.id.personalProfile);
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
         showProfilePicture();
         displayMessage();
         Button profile = findViewById(R.id.buttonProfile);
         Button gymLocations = findViewById(R.id.gymFinderButton);
         Button health = findViewById(R.id.healthButton);
         Button pedometer = findViewById(R.id.buttonPedometer);
+        Button users = findViewById(R.id.buttonUsers);
         welcome = findViewById(R.id.welcomeUser);
         Button chat = findViewById(R.id.buttonChat);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Welcome To Bodify");
@@ -79,7 +78,7 @@ public class DashBoard extends AppCompatActivity {
         gymLocations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), PermissionsActivity.class));
+                startActivity(new Intent(getApplicationContext(), GymsNearMe.class));
             }
         });
         profile.setOnClickListener(new View.OnClickListener() {
@@ -97,13 +96,19 @@ public class DashBoard extends AppCompatActivity {
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DashBoard.this,ViewAllUsers.class));
+                startActivity(new Intent(DashBoard.this,ChatRoom.class));
             }
         });
         pedometer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(DashBoard.this,Pedometer.class));
+            }
+        });
+        users.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DashBoard.this,ViewAllUsers.class));
             }
         });
     }

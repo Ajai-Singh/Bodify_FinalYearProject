@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Models.User;
@@ -35,12 +34,6 @@ class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implement
         holder.setUserName(users.get(position).getUserName());
         holder.setEmailAddress(users.get(position).getEmail());
         holder.setImage(users.get(position).getmImageUrl());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(),"" + users.get(position).toString(),Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     @Override

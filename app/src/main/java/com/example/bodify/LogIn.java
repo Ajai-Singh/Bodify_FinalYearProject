@@ -14,7 +14,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.Objects;
 
 public class LogIn extends AppCompatActivity {
@@ -24,7 +23,7 @@ public class LogIn extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getSupportActionBar().setTitle("Log In Form");
+        getSupportActionBar().setTitle("Log In Form");
         setContentView(R.layout.activity_log_in);
         mAuth = FirebaseAuth.getInstance();
         Button logIn = findViewById(R.id.logInButton);

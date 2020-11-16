@@ -1,15 +1,12 @@
 package com.example.bodify;
 
 import android.os.AsyncTask;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 
 public class GetNearByPlacesData extends AsyncTask<Object,String,String> {
@@ -20,7 +17,7 @@ public class GetNearByPlacesData extends AsyncTask<Object,String,String> {
     @Override
     protected String doInBackground(Object... objects) {
         googleMap = (GoogleMap) objects[0];
-        url = (String) objects[1]; //fetches all nearby places
+        url = (String) objects[1];
 
         DownloadURL downloadURL = new DownloadURL();
         try {

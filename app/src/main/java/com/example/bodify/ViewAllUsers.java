@@ -1,6 +1,5 @@
 package com.example.bodify;
 
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -19,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
@@ -33,10 +33,11 @@ public class ViewAllUsers extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_users);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Chat Room");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("App Users");
         getAllUsers();
     }
 
+    //note for get all users I need to show all users except the one logged in
     public void getAllUsers() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -45,7 +46,7 @@ public class ViewAllUsers extends AppCompatActivity {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     User user = userSnapshot.getValue(User.class);
                     assert user != null;
-                    if(user.getEmail().equals(firebaseUser.getEmail())) {
+                    if(!user.getEmail().equals(firebaseUser.getEmail())) {
                         users.add(user);
                     }
                     recyclerView = findViewById(R.id.recyclerView);
@@ -62,9 +63,15 @@ public class ViewAllUsers extends AppCompatActivity {
             }
         });
     }
-    ItemTouchHelper.SimpleCallback itemTouch = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+        ItemTouchHelper.SimpleCallback itemTouch = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP|ItemTouchHelper.DOWN|
+            ItemTouchHelper.START| ItemTouchHelper.END,0) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            int fromPosition = viewHolder.getAdapterPosition();
+            int toPosition = target.getAdapterPosition();
+            Collections.swap(users,fromPosition,toPosition);
+            adapter.notifyItemMoved(fromPosition,toPosition);
             return false;
         }
 
@@ -80,8 +87,6 @@ public class ViewAllUsers extends AppCompatActivity {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            Toast.makeText(ViewAllUsers.this, "Creating Chat", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(ViewAllUsers.this,ChatRoom.class));
         }
     };
 }
