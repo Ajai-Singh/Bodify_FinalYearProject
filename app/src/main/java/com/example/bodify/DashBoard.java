@@ -53,6 +53,7 @@ public class DashBoard extends AppCompatActivity {
         Button users = findViewById(R.id.buttonUsers);
         welcome = findViewById(R.id.welcomeUser);
         Button chat = findViewById(R.id.buttonChat);
+        Button recipes = findViewById(R.id.buttonRecipes);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Welcome To Bodify");
         final String userID = mAuth.getUid();
         assert userID != null;
@@ -109,6 +110,12 @@ public class DashBoard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(DashBoard.this,ViewAllUsers.class));
+            }
+        });
+        recipes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DashBoard.this,APIs.class));
             }
         });
     }

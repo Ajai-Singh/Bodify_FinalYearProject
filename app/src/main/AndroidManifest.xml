@@ -3,13 +3,20 @@
     package="com.example.bodify">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-feature android:name="android.hardware.type.watch" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-    <uses-feature android:name="android.hardware.sensor.stepcounter" android:required="true"/>
-    <uses-feature android:name="android.hardware.sensor.stepdetector" android:required="true"/>
+
+    <uses-feature
+        android:name="android.hardware.sensor.stepcounter"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.stepdetector"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -57,7 +64,8 @@
         <activity android:name=".Health" />
         <activity android:name=".ViewAllUsers" />
         <activity android:name=".ChatRoom" />
-        <activity android:name=".Pedometer"/>
+        <activity android:name=".Pedometer" />
+        <activity android:name=".APIs" />
     </application>
 
 </manifest>
