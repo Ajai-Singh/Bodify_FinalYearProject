@@ -148,7 +148,7 @@ public class Health extends AppCompatActivity {
         assert firebaseUser != null;
         Macro macro = new Macro(Math.round(calories),Math.round(fat),Math.round(carbs),Math.round(protein),userID);
         DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("Macros").setValue(macro).addOnFailureListener(new OnFailureListener() {
+        databaseReference.child("Macros").child(userID).setValue(macro).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(Health.this,"Error Occurred: " + e.getMessage(),Toast.LENGTH_SHORT).show();

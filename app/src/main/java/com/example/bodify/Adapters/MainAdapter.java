@@ -1,4 +1,4 @@
-package com.example.bodify;
+package com.example.bodify.Adapters;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,12 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Models.User;
+import com.example.bodify.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
-class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implements View.OnClickListener {
+public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<User> users;
 
     public MainAdapter(ArrayList<User> users) {

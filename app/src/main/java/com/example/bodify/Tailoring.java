@@ -23,6 +23,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -42,7 +45,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tailoring);
-        getSupportActionBar().setTitle("Personalize your profile");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Personalize your profile");
         weight = findViewById(R.id.weightTextFieldPP);
         height = findViewById(R.id.heightTextFieldPP);
         genderSpinner = findViewById(R.id.genderSpinner);
@@ -153,7 +156,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
             }
 
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView textview = (TextView) view;
                 if (position == 0) {
@@ -179,7 +182,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
             }
 
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView textview = (TextView) view;
                 if (position == 0) {
@@ -204,7 +207,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 }
             }
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView textview = (TextView) view;
                 if (position == 0) {
@@ -229,7 +232,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 }
             }
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView textview = (TextView) view;
                 if (position == 0) {
@@ -255,7 +258,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 }
             }
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView textview = (TextView) view;
                 if (position == 0) {

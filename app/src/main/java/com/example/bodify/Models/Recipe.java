@@ -1,57 +1,71 @@
 package com.example.bodify.Models;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Recipe {
-    private ArrayList<String> ingredients = new ArrayList<>();
-    private String recipeName;
-    private int carbohydrates, fats, proteins, calories,recipeID,calculatorID;
+public class Recipe implements Serializable {
+    private int id; // this id corresponds to the id of the recipe
+    private String title,sourceUrl;
+    private String readyInMinutes,servings;
+    private String recipeID;
 
-    public ArrayList<String> getIngredients() {
-        return ingredients;
+    public int getId() {
+        return id;
     }
 
-    public void setIngredients(ArrayList<String> ingredients) {
-        this.ingredients = ingredients;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getRecipeName() {
-        return recipeName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setRecipeName(String recipeName) {
-        this.recipeName = recipeName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public int getCarbohydrates() {
-        return carbohydrates;
+    public String getSourceUrl() {
+        return sourceUrl;
     }
 
-    public void setCarbohydrates(int carbohydrates) {
-        this.carbohydrates = carbohydrates;
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
     }
 
-    public int getFats() {
-        return fats;
+    public String getReadyInMinutes() {
+        return readyInMinutes;
     }
 
-    public void setFats(int fats) {
-        this.fats = fats;
+    public void setReadyInMinutes(String readyInMinutes) {
+        this.readyInMinutes = readyInMinutes;
     }
 
-    public int getProteins() {
-        return proteins;
+    public String getServings() {
+        return servings;
     }
 
-    public void setProteins(int proteins) {
-        this.proteins = proteins;
+    public void setServings(String servings) {
+        this.servings = servings;
     }
 
-    public int getCalories() {
-        return calories;
+    public String getRecipeID() {
+        return recipeID;
     }
 
-    public void setCalories(int calories) {
-        this.calories = calories;
+    public void setRecipeID(String recipeID) {
+        this.recipeID = recipeID;
+    }
+
+    public Recipe() {
+
+    }
+
+    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, String servings,String recipeID) {
+        this.id = id;
+        this.title = title;
+        this.sourceUrl = sourceUrl;
+        this.readyInMinutes = readyInMinutes;
+        this.servings = servings;
+        this.recipeID = recipeID;
     }
 }

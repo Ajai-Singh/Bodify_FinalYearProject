@@ -115,7 +115,7 @@ public class DashBoard extends AppCompatActivity {
         recipes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DashBoard.this,APIs.class));
+                startActivity(new Intent(DashBoard.this, generateRecipes.class));
             }
         });
     }
