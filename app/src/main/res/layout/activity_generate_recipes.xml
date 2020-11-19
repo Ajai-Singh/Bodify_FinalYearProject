@@ -48,4 +48,42 @@
         android:text="Time Frame"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/scan_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="56dp"
+        android:text="@string/scan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeFrameSpinner" />
+
+    <TextView
+        android:id="@+id/scan_format"
+        android:layout_width="24dp"
+        android:layout_height="88dp"
+        android:layout_below="@id/scan_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:textIsSelectable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scan_button" />
+
+    <TextView
+        android:id="@+id/scan_content"
+        android:layout_width="2dp"
+        android:layout_height="53dp"
+        android:layout_below="@id/scan_format"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="260dp"
+        android:textIsSelectable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

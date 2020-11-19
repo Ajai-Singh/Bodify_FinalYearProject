@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.bodify.Adapters.MainAdapter;
 import com.example.bodify.Models.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,7 +38,6 @@ public class ViewAllUsers extends AppCompatActivity {
         getAllUsers();
     }
 
-    //note for get all users I need to show all users except the one logged in
     public void getAllUsers() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
         databaseReference.addValueEventListener(new ValueEventListener() {

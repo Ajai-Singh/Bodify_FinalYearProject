@@ -34,6 +34,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import com.example.bodify.BarcodeReader.IntentIntegrator;
+import com.example.bodify.BarcodeReader.IntentResult;
 
 public class generateRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private Spinner timeFrame;
@@ -41,12 +43,17 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
     public static final String API_KEY = "f900229f64f14de9a2698ea63260454b";
     ArrayList<Recipe> recipes = new ArrayList<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private Button scanBtn;
+    private TextView formatTxt, contentTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_recipes);
         Button randomMeals = findViewById(R.id.generateMealPlan);
+        scanBtn = (Button)findViewById(R.id.scan_button);
+        formatTxt = (TextView)findViewById(R.id.scan_format);
+        contentTxt = (TextView)findViewById(R.id.scan_content);
         timeFrame = findViewById(R.id.timeFrameSpinner);
         updateSpinners();
         AndroidNetworking.initialize(getApplicationContext());
@@ -90,6 +97,29 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
                 }
             }
         });
+
+        scanBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.getId()==R.id.scan_button){
+                    IntentIntegrator scanIntegrator = new IntentIntegrator(generateRecipes.this);
+                    scanIntegrator.initiateScan();
+                }
+            }
+        });
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanningResult != null) {
+            String scanContent = scanningResult.getContents();
+            String scanFormat = scanningResult.getFormatName();
+            formatTxt.setText("FORMAT: " + scanFormat);
+            contentTxt.setText("CONTENT: " + scanContent);
+        } else{
+            Toast.makeText(generateRecipes.this,"No scan data received!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void updateSpinners() {

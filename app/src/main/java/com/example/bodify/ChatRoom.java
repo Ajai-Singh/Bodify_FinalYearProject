@@ -130,5 +130,4 @@ public class ChatRoom extends AppCompatActivity {
         super.onStop();
         adapter.stopListening();
     }
-
 }

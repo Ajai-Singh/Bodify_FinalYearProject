@@ -43,6 +43,7 @@
     <string name="bodytype">Body Composition</string>
     <string name="preferredFoods">Preferred Macro-nutrient</string>
     <string name="message">Message</string>
+    <string name="scan">Scan</string>
     <!--    <string name=""></string>-->
     <!--
     This string is used for square devices and overridden by hello_world in
