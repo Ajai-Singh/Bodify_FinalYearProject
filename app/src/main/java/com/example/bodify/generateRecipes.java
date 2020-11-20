@@ -36,15 +36,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
+import com.google.gson.JsonObject;
 
 public class generateRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private Spinner timeFrame;
     private ArrayList<String> times;
     public static final String API_KEY = "f900229f64f14de9a2698ea63260454b";
-    ArrayList<Recipe> recipes = new ArrayList<>();
+    private final ArrayList<Recipe> recipes = new ArrayList<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private TextView formatTxt, contentTxt;
-
+    private AlertDialog.Builder builder;
+    private TextView itemNameFromScan,itemCalories,itemCaloriesFromFat,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +56,15 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
         formatTxt = findViewById(R.id.scan_format);
         contentTxt = findViewById(R.id.scan_content);
         timeFrame = findViewById(R.id.timeFrameSpinner);
+        itemNameFromScan = findViewById(R.id.itemNameTextView);
+        itemCalories = findViewById(R.id.itemCaloriesTextView);
+        itemCaloriesFromFat = findViewById(R.id.caloriesFromFatTextView);
+        itemTotalFat = findViewById(R.id.totalFatTextView);
+        itemSodium = findViewById(R.id.totalSodiumTextView);
+        itemTotalCarbohydrates = findViewById(R.id.totalCarbohydrateTextView);
+        itemSugars = findViewById(R.id.totalSugarTextView);
+        itemProtein = findViewById(R.id.totalProteinTextView);
+
         updateSpinners();
         AndroidNetworking.initialize(getApplicationContext());
         randomMeals.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +127,9 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
             String scanFormat = scanningResult.getFormatName();
             formatTxt.setText(scanFormat);
             contentTxt.setText(scanContent);
+            if(scanContent != null) {
+                returnNutritionalInformation(scanContent);
+            }
         } else{
             Toast.makeText(generateRecipes.this,"No scan data received!", Toast.LENGTH_SHORT).show();
         }
@@ -186,6 +200,66 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
             }
         });
     }
+
+    public void returnNutritionalInformation(String scanContent) {
+        //This line does show that the code works.
+        Toast.makeText(generateRecipes.this,scanContent,Toast.LENGTH_LONG).show();
+        AndroidNetworking.get("https://api.nutritionix.com/v1_1/item?upc="+scanContent+"&appId=493d4e98&appKey=95b2bb9b721a2b2898f4a4269228ce93")
+                .addPathParameter("pageNumber", "0")
+                .addQueryParameter("limit", "1")
+                .addHeaders("token", "1234")
+                .setTag("test")
+                .setPriority(Priority.LOW)
+                .build().getAsString(new StringRequestListener() {
+            @Override
+            public void onResponse(String response) {
+//                this is where the error is occuring
+                //this is coming up as null, I believe the reponse is correct but the parsing is wrong
+                //must look into
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray jsonArray = jsonObject.getJSONArray("info");
+                    for(int i = 0; i < jsonArray.length(); i++){
+                        String itemId = jsonArray.getJSONObject(i).getString("item_id");
+                        String itemName = jsonArray.getJSONObject(i).getString("item_name");
+                        int calories = jsonArray.getJSONObject(i).getInt("nf_calories");
+                        int caloriesFromFat = jsonArray.getJSONObject(i).getInt("nf_calories_from_fat");
+                        int totalFat = jsonArray.getJSONObject(i).getInt("nf_total_fat");
+                        int sodium = jsonArray.getJSONObject(i).getInt("nf_sodium");
+                        int totalCarbohydrates = jsonArray.getJSONObject(i).getInt("nf_total_carbohydrate");
+                        int sugars = jsonArray.getJSONObject(i).getInt("nf_sugars");
+                        int proteins = jsonArray.getJSONObject(i).getInt("nf_protein");
+
+                        itemNameFromScan.setText(itemName);
+                        itemCalories.setText(String.valueOf(calories));
+                        itemCaloriesFromFat.setText(String.valueOf(caloriesFromFat));
+                        itemTotalFat.setText(String.valueOf(totalFat));
+                        itemSodium.setText(String.valueOf(sodium));
+                        itemTotalCarbohydrates.setText(String.valueOf(totalCarbohydrates));
+                        itemSugars.setText(String.valueOf(sugars));
+                        itemProtein.setText(String.valueOf(proteins));
+                        Toast.makeText(getApplicationContext(),itemName,Toast.LENGTH_LONG).show();
+                    }
+
+                } catch (JSONException e) {
+                    Toast.makeText(generateRecipes.this, "Error Occurred" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(ANError anError) {
+                Toast.makeText(generateRecipes.this, "Error Occurred" + anError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+//    public void createPopUp() {
+//        builder = new AlertDialog.Builder(generateRecipes.this);
+//        @SuppressLint("InflateParams") View popup = getLayoutInflater().inflate(R.layout.popup,null);
+//        builder.setView(popup);
+//        builder.create();
+//        builder.show();
+//    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
