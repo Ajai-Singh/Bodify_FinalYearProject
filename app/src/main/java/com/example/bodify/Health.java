@@ -156,7 +156,6 @@ public class Health extends AppCompatActivity {
         });
     }
 
-
     public void showChart(ArrayList<BarEntry> macros) {
         barEntries.add(macros.get(0));
         barEntries.add(macros.get(1));

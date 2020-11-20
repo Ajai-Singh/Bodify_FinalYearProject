@@ -43,7 +43,6 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
     public static final String API_KEY = "f900229f64f14de9a2698ea63260454b";
     ArrayList<Recipe> recipes = new ArrayList<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private Button scanBtn;
     private TextView formatTxt, contentTxt;
 
     @Override
@@ -51,9 +50,9 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_recipes);
         Button randomMeals = findViewById(R.id.generateMealPlan);
-        scanBtn = (Button)findViewById(R.id.scan_button);
-        formatTxt = (TextView)findViewById(R.id.scan_format);
-        contentTxt = (TextView)findViewById(R.id.scan_content);
+        Button scanBtn = findViewById(R.id.scan_button);
+        formatTxt = findViewById(R.id.scan_format);
+        contentTxt = findViewById(R.id.scan_content);
         timeFrame = findViewById(R.id.timeFrameSpinner);
         updateSpinners();
         AndroidNetworking.initialize(getApplicationContext());
@@ -115,8 +114,8 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
         if (scanningResult != null) {
             String scanContent = scanningResult.getContents();
             String scanFormat = scanningResult.getFormatName();
-            formatTxt.setText("FORMAT: " + scanFormat);
-            contentTxt.setText("CONTENT: " + scanContent);
+            formatTxt.setText(scanFormat);
+            contentTxt.setText(scanContent);
         } else{
             Toast.makeText(generateRecipes.this,"No scan data received!", Toast.LENGTH_SHORT).show();
         }

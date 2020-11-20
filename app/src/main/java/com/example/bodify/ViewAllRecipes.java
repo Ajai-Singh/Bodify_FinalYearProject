@@ -52,8 +52,7 @@ public class ViewAllRecipes extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    ItemTouchHelper.SimpleCallback itemTouch = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP|ItemTouchHelper.DOWN|
-            ItemTouchHelper.START| ItemTouchHelper.END,ItemTouchHelper.LEFT) {
+    ItemTouchHelper.SimpleCallback itemTouch = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP|ItemTouchHelper.DOWN| ItemTouchHelper.START| ItemTouchHelper.END,ItemTouchHelper.LEFT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             int fromPosition = viewHolder.getAdapterPosition();
