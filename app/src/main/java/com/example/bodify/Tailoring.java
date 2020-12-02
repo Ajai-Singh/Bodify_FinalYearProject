@@ -29,8 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
-import static com.example.bodify.SignUp.MESSAGE_KEY;
-import static com.example.bodify.SignUp.MESSAGE_KEY1;
+import static com.example.bodify.FirebaseAuthentication.SignUp.MESSAGE_KEY;
+import static com.example.bodify.FirebaseAuthentication.SignUp.MESSAGE_KEY1;
 
 public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private EditText weight, height;

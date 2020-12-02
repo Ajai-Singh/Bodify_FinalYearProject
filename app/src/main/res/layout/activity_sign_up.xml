@@ -7,7 +7,7 @@
     android:background="@drawable/background"
     android:padding="@dimen/box_inset_layout_padding"
     android:visibility="visible"
-    tools:context=".SignUp"
+    tools:context=".FirebaseAuthentication.SignUp"
     tools:deviceIds="wear">
 
     <com.google.android.material.textfield.TextInputLayout

@@ -1,4 +1,4 @@
-package com.example.bodify;
+package com.example.bodify.FirebaseAuthentication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -17,6 +17,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.bodify.R;
+import com.example.bodify.Tailoring;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -153,7 +156,7 @@ public class SignUp extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()) {
-                                    Intent intent = new Intent(SignUp.this,Tailoring.class);
+                                    Intent intent = new Intent(SignUp.this, Tailoring.class);
                                     intent.putExtra(MESSAGE_KEY,strUserName);
                                     intent.putExtra(MESSAGE_KEY1,imageDownloadUrl);
                                     Toast.makeText(getApplicationContext(),"User Created Successfully!",Toast.LENGTH_SHORT).show();

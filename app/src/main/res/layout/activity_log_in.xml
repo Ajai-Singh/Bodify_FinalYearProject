@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".LogIn"
+    tools:context=".FirebaseAuthentication.LogIn"
     tools:deviceIds="wear">
 
     <EditText
