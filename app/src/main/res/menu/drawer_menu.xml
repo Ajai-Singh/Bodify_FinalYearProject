@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/personal_profile"
+            android:title="Personal Profile" />
+
+        <item
+            android:id="@+id/chat"
+            android:title="Chat" />
+
+        <item
+            android:id="@+id/users"
+            android:title="All users" />
+
+        <item
+            android:id="@+id/maps"
+            android:title="Nearby Users"/>
+    </group>
+</menu>

@@ -6,27 +6,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Recipe;
+import com.example.bodify.Models.ScanProduct;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,30 +32,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
-
 import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
 
-public class generateRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class GenerateRecipes extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private Spinner timeFrame;
     private ArrayList<String> times;
     public static final String API_KEY = "f900229f64f14de9a2698ea63260454b";
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private TextView formatTxt, contentTxt;
-    private AlertDialog.Builder builder;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +58,13 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
         formatTxt = findViewById(R.id.scan_format);
         contentTxt = findViewById(R.id.scan_content);
         timeFrame = findViewById(R.id.timeFrameSpinner);
-
-
         updateSpinners();
         AndroidNetworking.initialize(getApplicationContext());
         randomMeals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (timeFrame.getSelectedItemPosition() == 0) {
-                    AlertDialog.Builder dlgAlert = new AlertDialog.Builder(generateRecipes.this);
+                    AlertDialog.Builder dlgAlert = new AlertDialog.Builder(GenerateRecipes.this);
                     dlgAlert.setMessage("Not All Fields are Filled!");
                     dlgAlert.setTitle("Error...");
                     dlgAlert.setPositiveButton("OK", null);
@@ -104,10 +92,9 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
                                 }
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(generateRecipes.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GenerateRecipes.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -118,7 +105,7 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.scan_button) {
-                    IntentIntegrator scanIntegrator = new IntentIntegrator(generateRecipes.this);
+                    IntentIntegrator scanIntegrator = new IntentIntegrator(GenerateRecipes.this);
                     scanIntegrator.initiateScan();
                 }
             }
@@ -137,7 +124,7 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
                 returnNutritionalInformation(scanContent);
             }
         } else {
-            Toast.makeText(generateRecipes.this, "No scan data received!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(GenerateRecipes.this, "No scan data received!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -146,7 +133,7 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
         times.add("Select time frame.");
         times.add("Day");
         times.add("Week");
-        ArrayAdapter<String> adapterTimes = new ArrayAdapter<String>(generateRecipes.this, android.R.layout.simple_spinner_dropdown_item, times) {
+        ArrayAdapter<String> adapterTimes = new ArrayAdapter<String>(GenerateRecipes.this, android.R.layout.simple_spinner_dropdown_item, times) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
@@ -166,7 +153,7 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
         };
         adapterTimes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeFrame.setAdapter(adapterTimes);
-        timeFrame.setOnItemSelectedListener(generateRecipes.this);
+        timeFrame.setOnItemSelectedListener(GenerateRecipes.this);
     }
 
     public void createDayMealPlan(double calories, String time) {
@@ -194,7 +181,7 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
                         Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID);
                         recipes.add(recipe);
                     }
-                    Intent intent = new Intent(generateRecipes.this, ViewAllRecipes.class);
+                    Intent intent = new Intent(GenerateRecipes.this, ViewAllRecipes.class);
                     intent.putExtra("recipes", recipes);
                     startActivity(intent);
                 } catch (JSONException e) {
@@ -204,7 +191,7 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
 
             @Override
             public void onError(ANError anError) {
-                Toast.makeText(generateRecipes.this, "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(GenerateRecipes.this, "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -230,25 +217,24 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
                     int totalCarbohydrates = jsonObject.getInt("nf_total_carbohydrate");
                     int sugars = jsonObject.getInt("nf_sugars");
                     int proteins = jsonObject.getInt("nf_protein");
-
-
-                    createPost(itemName,calories,caloriesFromFat,totalFat,sodium,totalCarbohydrates,sugars,proteins);
+                    int servings = jsonObject.getInt("nf_servings_per_container");
+                    createPost(itemName, calories, caloriesFromFat, totalFat, sodium, totalCarbohydrates, sugars, proteins,servings);
                 } catch (JSONException e) {
-                    Toast.makeText(generateRecipes.this, "Error Occurred" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GenerateRecipes.this, "Error Occurred" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onError(ANError anError) {
-                Toast.makeText(generateRecipes.this, "Error Occurred" + anError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(GenerateRecipes.this, "Error Occurred" + anError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-
-    public void createPost(String itemName,int calories,int caloriesFromFat,int itemTotalFat,int itemSodium,int itemTotalCarbohydrates,int itemSugars,int itemProtein) {
-        TextView itemNameFromScan, itemCalories, itemCaloriesFromFat, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT;
-        AlertDialog.Builder builder = new AlertDialog.Builder(generateRecipes.this);
+    public void createPost(final String itemName, final int calories, final int caloriesFromFat, final int itemTotalFat, final int itemSodium, final int itemTotalCarbohydrates, final int itemSugars, final int itemProtein, final int servings) {
+        TextView itemNameFromScan, itemCalories, itemCaloriesFromFat, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT,itemServingsT;
+        Button add;
+        AlertDialog.Builder builder = new AlertDialog.Builder(GenerateRecipes.this);
         View view = getLayoutInflater().inflate(R.layout.popup, null);
         itemNameFromScan = view.findViewById(R.id.itemNameTextView);
         itemCalories = view.findViewById(R.id.itemCaloriesTextView);
@@ -258,6 +244,8 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
         itemTotalCarbohydratesT = view.findViewById(R.id.totalCarbohydrateTextView);
         itemSugarsT = view.findViewById(R.id.totalSugarTextView);
         itemProteinT = view.findViewById(R.id.totalProteinTextView);
+        itemServingsT = view.findViewById(R.id.amount);
+        add = view.findViewById(R.id.save);
         itemNameFromScan.setText(itemName);
         itemCalories.setText(String.valueOf(calories));
         itemCaloriesFromFat.setText(String.valueOf(caloriesFromFat));
@@ -266,8 +254,27 @@ public class generateRecipes extends AppCompatActivity implements AdapterView.On
         itemTotalCarbohydratesT.setText(String.valueOf(itemTotalCarbohydrates));
         itemSugarsT.setText(String.valueOf(itemSugars));
         itemProteinT.setText(String.valueOf(itemProtein));
-        //add button to create favourites
-
+        itemServingsT.setText(String.valueOf(servings));
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                assert firebaseUser != null;
+                String userID = firebaseUser.getUid();
+                ScanProduct scanProduct = new ScanProduct(itemName,calories,caloriesFromFat,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,userID,servings);
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                databaseReference.child("Favourites").push().setValue(scanProduct).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()) {
+                            Toast.makeText(GenerateRecipes.this, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(GenerateRecipes.this, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
         builder.setView(view);
         AlertDialog dialog = builder.create();
         dialog.show();

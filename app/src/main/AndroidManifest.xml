@@ -4,13 +4,22 @@
     package="com.example.bodify">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-feature android:name="android.hardware.type.watch" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-    <uses-feature android:name="android.hardware.sensor.stepcounter" android:required="true" />
-    <uses-feature android:name="android.hardware.sensor.stepdetector" android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.sensor.stepcounter"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.stepdetector"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -35,8 +44,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
@@ -48,14 +59,15 @@
         </activity>
         <activity android:name=".FirebaseAuthentication.SignUp" />
         <activity android:name=".Tailoring" />
-        <activity android:name=".DashBoard"/>
+        <activity android:name=".DashBoard" android:theme="@style/NoActionBar" />
         <activity android:name=".GymsNearMe" />
         <activity android:name=".PersonalProfile" />
         <activity android:name=".Health" />
         <activity android:name=".ViewAllUsers" />
         <activity android:name=".ChatRoom" />
         <activity android:name=".Pedometer" />
-        <activity android:name=".generateRecipes" />
-        <activity android:name=".ViewAllRecipes"/>
+        <activity android:name=".GenerateRecipes" />
+        <activity android:name=".ViewAllRecipes" />
     </application>
+
 </manifest>
