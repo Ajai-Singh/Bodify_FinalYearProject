@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,11 +34,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
-public class DashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class DashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseAuth mAuth;
     private ImageView profileImageView;
     private TextView welcome;
@@ -48,17 +50,16 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        drawer = findViewById(R.id.drawer_layout);
-//        NavigationView navigationView = findViewById(R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(this);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-        //profileImageView = findViewById(R.id.personalProfile);
         mAuth = FirebaseAuth.getInstance();
         //showProfilePicture();
         displayMessage();
@@ -67,30 +68,39 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         Button health = findViewById(R.id.healthButton);
         Button pedometer = findViewById(R.id.buttonPedometer);
         Button users = findViewById(R.id.buttonUsers);
-        //welcome = findViewById(R.id.welcomeUser);
         Button chat = findViewById(R.id.buttonChat);
         Button recipes = findViewById(R.id.buttonRecipes);
         Button diary = findViewById(R.id.buttonDiary);
-       // Objects.requireNonNull(getSupportActionBar()).setTitle("Welcome To Bodify");
         final String userID = mAuth.getUid();
         assert userID != null;
-//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
-//        databaseReference.addValueEventListener(new ValueEventListener() {
-//            @SuppressLint("SetTextI18n")
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                User user = snapshot.getValue(User.class);
-//                if (user != null) {
-//                    welcome.setText("User Logged in: ");
-//                    welcome.append(user.getUserName());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Toast.makeText(DashBoard.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    NavigationView navigationView = findViewById(R.id.nav_view);
+                    View headerView = navigationView.getHeaderView(0);
+                    TextView navUsername = headerView.findViewById(R.id.navigationDrawerName);
+                    navUsername.setText(user.getUserName());
+                    final ImageView navProfilePicture = headerView.findViewById(R.id.navPicture);
+                    storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            navProfilePicture.setImageBitmap(bitmap);
+                        }
+                    });
+                }
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DashBoard.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         gymLocations.setOnClickListener(new View.OnClickListener() {
@@ -114,19 +124,19 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DashBoard.this,ChatRoom.class));
+                startActivity(new Intent(DashBoard.this, ChatRoom.class));
             }
         });
         pedometer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DashBoard.this,Pedometer.class));
+                startActivity(new Intent(DashBoard.this, Pedometer.class));
             }
         });
         users.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DashBoard.this,ViewAllUsers.class));
+                startActivity(new Intent(DashBoard.this, ViewAllUsers.class));
             }
         });
         recipes.setOnClickListener(new View.OnClickListener() {
@@ -135,12 +145,12 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
                 startActivity(new Intent(DashBoard.this, GenerateRecipes.class));
             }
         });
-//        diary.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(DashBoard.this,Management.class));
-//            }
-//        });
+        diary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DashBoard.this, Management.class));
+            }
+        });
     }
 
     public void displayMessage() {
@@ -233,7 +243,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         int id = item.getItemId();
         if (id == R.id.logOut) {
             FirebaseAuth.getInstance().signOut();
-            Toast.makeText(getApplicationContext(),"Successfully Logged Out",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Successfully Logged Out", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getApplicationContext(), LogIn.class));
         }
         return true;
