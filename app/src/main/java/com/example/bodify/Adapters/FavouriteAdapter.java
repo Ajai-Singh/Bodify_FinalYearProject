@@ -3,6 +3,8 @@ package com.example.bodify.Adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Models.ScanProduct;
@@ -19,13 +21,13 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     @NonNull
     @Override
     public FavouriteAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favourite_item,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FavouriteAdapter.ViewHolder holder, final int position) {
-
+        holder.setItemName(scanProducts.get(position).getItemName());
     }
 
     @Override
@@ -38,9 +40,14 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView itemName;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemName = itemView.findViewById(R.id.itemNameTextField);
+        }
 
+        public void setItemName(String name) {
+            itemName.setText(name);
         }
     }
 }
