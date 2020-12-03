@@ -33,7 +33,9 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                 case R.id.home:
                     fragment = new MainActivity();
                     break;
-
+                case R.id.fav:
+                    fragment = new Favourites();
+                    break;
             }
             assert fragment != null;
             getSupportFragmentManager().beginTransaction().replace(R.id.fragLayout, fragment).commit();

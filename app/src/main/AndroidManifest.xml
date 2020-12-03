@@ -29,7 +29,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -56,12 +55,15 @@
         <activity android:name=".FirebaseAuthentication.LogIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".FirebaseAuthentication.SignUp" />
         <activity android:name=".Tailoring" />
-        <activity android:name=".DashBoard" android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".DashBoard"
+            android:theme="@style/NoActionBar" />
         <activity android:name=".GymsNearMe" />
         <activity android:name=".PersonalProfile" />
         <activity android:name=".Health" />
@@ -70,7 +72,9 @@
         <activity android:name=".Pedometer" />
         <activity android:name=".GenerateRecipes" />
         <activity android:name=".ViewAllRecipes" />
-        <activity android:name=".Management" android:theme="@style/NoActionBarMGMT" />
+        <activity
+            android:name=".Management"
+            android:theme="@style/NoActionBarMGMT" />
     </application>
 
 </manifest>
