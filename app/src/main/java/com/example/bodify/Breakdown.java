@@ -20,10 +20,11 @@ public class Breakdown extends Fragment {
     String [] months = {"jan","feb","Mar"};
     int[] earnings = {500,800,2000};
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_main,container,false);
+        View view = inflater.inflate(R.layout.activity_breakdown,container,false);
         anyChartView = view.findViewById(R.id.pieChart);
         return view;
     }

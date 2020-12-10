@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.bodify.Adapters.MainAdapter;
+import com.example.bodify.Adapters.ViewAllUsersAdapter;
 import com.example.bodify.Models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -52,7 +52,7 @@ public class ViewAllUsers extends AppCompatActivity {
                     recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(new LinearLayoutManager(ViewAllUsers.this));
-                    adapter = new MainAdapter(users);
+                    adapter = new ViewAllUsersAdapter(users);
                     new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerView);
                     recyclerView.setAdapter(adapter);
                 }

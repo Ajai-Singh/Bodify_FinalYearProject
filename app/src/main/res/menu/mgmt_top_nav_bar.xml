@@ -2,17 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <item
     android:id="@+id/home"
-    android:title="home"
+    android:title="Home"
     android:icon="@drawable/home"/>
 <item
     android:id="@+id/fav"
-    android:title="fav"
+    android:title="Favourites"
     android:icon="@drawable/like"/>
 <item
     android:id="@+id/scan"
-    android:title="scan"
+    android:title="Scan"
     android:icon="@drawable/barcode"/>
     <item
         android:id="@+id/breakdown"
-        android:title="Breakdown"/>
+        android:title="Breakdown"
+        android:icon="@drawable/ic_baseline_accessibility_24"/>
 </menu>

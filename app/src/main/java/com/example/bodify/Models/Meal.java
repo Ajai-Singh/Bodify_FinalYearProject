@@ -1,11 +1,23 @@
 package com.example.bodify.Models;
 
-public class ScanProduct {
-    String itemName,userID,id;
+public class Meal {
+    String itemName,userID,id,mealType;
     int calories,caloriesFromFat,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
 
-    public ScanProduct() {
+    public String getItemName() {
+        return itemName;
+    }
 
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public String getId() {
@@ -14,14 +26,6 @@ public class ScanProduct {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
     }
 
     public int getCalories() {
@@ -80,14 +84,6 @@ public class ScanProduct {
         this.itemProtein = itemProtein;
     }
 
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
     public int getNumberOfServings() {
         return numberOfServings;
     }
@@ -96,8 +92,21 @@ public class ScanProduct {
         this.numberOfServings = numberOfServings;
     }
 
-    public ScanProduct(String itemName, int calories, int caloriesFromFat, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, String userID,int numberOfServings) {
+    public String getMealType() {
+        return mealType;
+    }
+
+    public void setMealType(String mealType) {
+        this.mealType = mealType;
+    }
+
+    public Meal() {
+
+    }
+
+    public Meal(String itemName, String userID, int calories, int caloriesFromFat, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings, String mealType) {
         this.itemName = itemName;
+        this.userID = userID;
         this.calories = calories;
         this.caloriesFromFat = caloriesFromFat;
         this.itemTotalFat = itemTotalFat;
@@ -105,7 +114,25 @@ public class ScanProduct {
         this.itemTotalCarbohydrates = itemTotalCarbohydrates;
         this.itemSugars = itemSugars;
         this.itemProtein = itemProtein;
-        this.userID = userID;
         this.numberOfServings = numberOfServings;
+        this.mealType = mealType;
+    }
+
+    @Override
+    public String toString() {
+        return "Meal{" +
+                "itemName='" + itemName + '\'' +
+                ", userID='" + userID + '\'' +
+                ", id='" + id + '\'' +
+                ", mealType='" + mealType + '\'' +
+                ", calories=" + calories +
+                ", caloriesFromFat=" + caloriesFromFat +
+                ", itemTotalFat=" + itemTotalFat +
+                ", itemSodium=" + itemSodium +
+                ", itemTotalCarbohydrates=" + itemTotalCarbohydrates +
+                ", itemSugars=" + itemSugars +
+                ", itemProtein=" + itemProtein +
+                ", numberOfServings=" + numberOfServings +
+                '}';
     }
 }

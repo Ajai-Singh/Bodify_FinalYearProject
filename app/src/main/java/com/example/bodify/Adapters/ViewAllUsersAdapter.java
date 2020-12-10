@@ -16,22 +16,22 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
-public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> implements View.OnClickListener {
+public class ViewAllUsersAdapter extends RecyclerView.Adapter<ViewAllUsersAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<User> users;
 
-    public MainAdapter(ArrayList<User> users) {
+    public ViewAllUsersAdapter(ArrayList<User> users) {
         this.users = users;
     }
 
     @NonNull
     @Override
-    public MainAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewAllUsersAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewAllUsersAdapter.ViewHolder holder, final int position) {
         holder.setUserName(users.get(position).getUserName());
         holder.setEmailAddress(users.get(position).getEmail());
         holder.setImage(users.get(position).getmImageUrl());

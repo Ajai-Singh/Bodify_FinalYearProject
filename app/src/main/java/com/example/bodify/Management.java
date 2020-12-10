@@ -16,7 +16,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
         setContentView(R.layout.activity_management);
         BottomNavigationView bottomNavigationView = findViewById(R.id.topNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragLayout,new MainActivity()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragLayout,new Meals()).commit();
     }
 
     @Override
@@ -31,15 +31,17 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
             Fragment fragment = null;
             switch (item.getItemId()) {
                 case R.id.home:
-                    fragment = new MainActivity();
+                    fragment = new Meals();
                     break;
                 case R.id.fav:
                     fragment = new Favourites();
                     break;
-                case R.id.scan:
-                    fragment = new GenerateRecipes();
                 case R.id.breakdown:
                     fragment = new Breakdown();
+                    break;
+                case R.id.scan:
+                    fragment = new GenerateRecipes();
+                    break;
             }
             assert fragment != null;
             getSupportFragmentManager().beginTransaction().replace(R.id.fragLayout, fragment).commit();

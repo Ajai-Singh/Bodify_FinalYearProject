@@ -1,6 +1,5 @@
 package com.example.bodify;
 
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,13 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Adapters.FavouriteAdapter;
-import com.example.bodify.Models.ScanProduct;
+import com.example.bodify.Models.Favourite;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,12 +20,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class Favourites extends Fragment {
         RecyclerView recyclerView;
         RecyclerView.Adapter adapter;
-        ArrayList<ScanProduct> scanProducts = new ArrayList<>();
+        ArrayList<Favourite> favourites = new ArrayList<>();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
@@ -52,16 +48,15 @@ public class Favourites extends Fragment {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                                        ScanProduct scanProduct = userSnapshot.getValue(ScanProduct.class);
-                                        assert scanProduct != null;
-                                        scanProduct.setId(userSnapshot.getKey());
-                                        if (firebaseUser.getUid().equals(scanProduct.getUserID())) {
-                                                scanProducts.add(scanProduct);
+                                        Favourite favourite = userSnapshot.getValue(Favourite.class);
+                                        assert favourite != null;
+                                        favourite.setId(userSnapshot.getKey());
+                                        if (firebaseUser.getUid().equals(favourite.getUserID())) {
+                                                favourites.add(favourite);
                                         }
                                         recyclerView.setHasFixedSize(true);
                                         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                        adapter = new FavouriteAdapter(scanProducts,getContext());
-                                        new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerView);
+                                        adapter = new FavouriteAdapter(favourites,getContext());
                                         recyclerView.setAdapter(adapter);
                                 }
                         }
@@ -70,28 +65,5 @@ public class Favourites extends Fragment {
                                 Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                 });
-
         }
-
-        ItemTouchHelper.SimpleCallback itemTouch = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
-                @Override
-                public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                        return false;
-                }
-
-                @Override
-                public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
-
-                }
-
-                @Override
-                public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                        new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                                .addBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey))
-                                .addActionIcon(R.drawable.plus)
-                                .create()
-                                .decorate();
-                        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                }
-        };
 }
