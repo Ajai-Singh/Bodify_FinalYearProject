@@ -12,4 +12,7 @@
     android:id="@+id/scan"
     android:title="scan"
     android:icon="@drawable/barcode"/>
+    <item
+        android:id="@+id/breakdown"
+        android:title="Breakdown"/>
 </menu>

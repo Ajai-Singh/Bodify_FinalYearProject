@@ -1,11 +1,19 @@
 package com.example.bodify.Models;
 
 public class ScanProduct {
-    String itemName,userID;
+    String itemName,userID,id;
     int calories,caloriesFromFat,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
 
     public ScanProduct() {
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getItemName() {

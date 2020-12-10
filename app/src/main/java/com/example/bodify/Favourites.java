@@ -1,7 +1,5 @@
 package com.example.bodify;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,8 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-import java.util.Collections;
-
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class Favourites extends Fragment {
@@ -58,22 +54,23 @@ public class Favourites extends Fragment {
                                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                                         ScanProduct scanProduct = userSnapshot.getValue(ScanProduct.class);
                                         assert scanProduct != null;
+                                        scanProduct.setId(userSnapshot.getKey());
                                         if (firebaseUser.getUid().equals(scanProduct.getUserID())) {
                                                 scanProducts.add(scanProduct);
                                         }
                                         recyclerView.setHasFixedSize(true);
                                         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                        adapter = new FavouriteAdapter(scanProducts);
+                                        adapter = new FavouriteAdapter(scanProducts,getContext());
                                         new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerView);
                                         recyclerView.setAdapter(adapter);
                                 }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                                 Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                 });
+
         }
 
         ItemTouchHelper.SimpleCallback itemTouch = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
@@ -84,21 +81,7 @@ public class Favourites extends Fragment {
 
                 @Override
                 public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
-                        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(getContext());
-                        dlgAlert.setMessage("Would you like to remove this item from your favourites");
-                        dlgAlert.setTitle("Attention");
-                        dlgAlert.setPositiveButton("OK", null);
-                        dlgAlert.setCancelable(true);
-                        dlgAlert.setNegativeButton("NO",null);
-                        dlgAlert.create().show();
-                        dlgAlert.setPositiveButton("Ok",
-                                new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                                int position = viewHolder.getAdapterPosition();
-                                                scanProducts.remove(position);
-                                                adapter.notifyDataSetChanged();
-                                        }
-                                });
+
                 }
 
                 @Override
