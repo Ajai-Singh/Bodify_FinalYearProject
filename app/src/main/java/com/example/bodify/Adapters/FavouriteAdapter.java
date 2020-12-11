@@ -15,11 +15,8 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.bodify.ChatRoom;
 import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
@@ -28,10 +25,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.ViewHolder> implements View.OnClickListener {
@@ -123,8 +118,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                             }
                                         }
                                             Date now = new Date();
-                                            SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE"); // the day of the week spelled out completely
-                                            Log.i("Tag", simpleDateformat.format(now));
+                                            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
                                             Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories(),
                                                     favourite.getCaloriesFromFat(), favourite.getItemTotalFat(), favourite.getItemSodium(),
                                                     favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
