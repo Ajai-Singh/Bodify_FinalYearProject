@@ -2,7 +2,6 @@ package com.example.bodify;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
@@ -18,7 +19,6 @@ import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Meal;
-import com.example.bodify.Models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +38,8 @@ public class Breakdown extends Fragment {
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
     private TextView calories, fats, proteins, carbohydrates;
+    private double macroCalories, macroProteins, macroFats, macroCarbohydrates;
+    private ViewPager2 viewPager2;
 
     @Nullable
     @Override
@@ -48,14 +50,16 @@ public class Breakdown extends Fragment {
         fats = view.findViewById(R.id.dailyFatsTV);
         proteins = view.findViewById(R.id.dailyProteinsTV);
         carbohydrates = view.findViewById(R.id.dailyCarbsTV);
+        viewPager2 = view.findViewById(R.id.viewPager);
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        setFields();
+        getMacroObjectValues();
         calculateDailyMacros();
+        setFields();
     }
 
     public void setUpPieChart(double fat, double protein, double carbs) {
@@ -65,18 +69,15 @@ public class Breakdown extends Fragment {
         List<DataEntry> dataEntries = new ArrayList<>();
         for (int i = 0; i < macros.length; i++) {
             dataEntries.add(new ValueDataEntry(macros[i], macrosValues[i]));
-
         }
         pie.data(dataEntries);
         anyChartView.setChart(pie);
     }
 
     public void calculateDailyMacros() {
-
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(simpleDateformat.format(currentWeekDay));
         databaseReference.addValueEventListener(new ValueEventListener() {
             double calories, protein, carbohydrates, fats;
-
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
@@ -100,31 +101,36 @@ public class Breakdown extends Fragment {
         });
     }
 
-    public void updateMacrosInDatabase(final double protein, final double fats, final double carbohydrates, final double calories) {
-        assert userID != null;
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macro").child(userID);
+    public void getMacroObjectValues() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Macro macro = snapshot.getValue(Macro.class);
-                if (macro != null) {
-                    Log.i("TAG",String.valueOf(macro.getProteins()));
-                    Log.i("TAG1",String.valueOf(macro.getFats()));
-                    Log.i("TAG2",String.valueOf(macro.getCarbohydrates()));
-                    Log.i("TAG3",String.valueOf(macro.getCalorieConsumption()));
-//                    macro.setProteins(macro.getProteins() - protein);
-//                    macro.setFats(macro.getFats() - fats);
-//                    macro.setCarbohydrates(macro.getCarbohydrates() - carbohydrates);
-//                    macro.setCalorieConsumption(macro.getCalorieConsumption() - calories);
+                    Macro macro = snapshot.getValue(Macro.class);
+                    assert macro != null;
+                    macroCalories = macro.getCalorieConsumption();
+                    macroProteins = macro.getProteins();
+                    macroFats = macro.getFats();
+                    macroCarbohydrates = macro.getCarbohydrates();
                 }
-            }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
+
             }
         });
     }
+
+    public void updateMacrosInDatabase(final double protein, final double fats, final double carbohydrates, final double calories) {
+        assert userID != null;
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(userID);
+        databaseReference.child("proteins").setValue(macroProteins - protein);
+        databaseReference.child("fats").setValue(macroFats - fats);
+        databaseReference.child("carbohydrates").setValue(macroCarbohydrates - carbohydrates);
+        databaseReference.child("calorieConsumption").setValue(macroCalories - calories);
+    }
+
 
     public void setFields() {
         assert userID != null;
