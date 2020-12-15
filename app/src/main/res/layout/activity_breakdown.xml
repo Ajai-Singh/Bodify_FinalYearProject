@@ -118,9 +118,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/rl"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
@@ -136,6 +138,5 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="100dp"
             tools:layout_editor_absoluteX="8dp" />
-    </RelativeLayout>
-
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
