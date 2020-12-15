@@ -1,15 +1,19 @@
 package com.example.bodify;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.anychart.AnyChart;
@@ -17,14 +21,17 @@ import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
+import com.example.bodify.Adapters.MyAdapter;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Meal;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,8 +46,9 @@ public class Breakdown extends Fragment {
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
     private TextView calories, fats, proteins, carbohydrates;
     private double macroCalories, macroProteins, macroFats, macroCarbohydrates;
-    private ViewPager2 viewPager2;
-
+    private ViewPager viewPager;
+    private FragmentActivity fragmentActivity;
+    @SuppressLint("CutPasteId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,8 +58,35 @@ public class Breakdown extends Fragment {
         fats = view.findViewById(R.id.dailyFatsTV);
         proteins = view.findViewById(R.id.dailyProteinsTV);
         carbohydrates = view.findViewById(R.id.dailyCarbsTV);
-        viewPager2 = view.findViewById(R.id.viewPager);
+        viewPager = view.findViewById(R.id.viewPager);
+        TabLayout tabLayout = view.findViewById(R.id.tabLayout);
+        tabLayout.addTab(tabLayout.newTab().setText("Mon"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tue"));
+        tabLayout.addTab(tabLayout.newTab().setText("Wed"));
+        MyAdapter adapter = new MyAdapter(getContext(), fragmentActivity.getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
         return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Activity activity) {
+        fragmentActivity = (FragmentActivity) activity;
+        super.onAttach(activity);
     }
 
     @Override
@@ -78,6 +113,7 @@ public class Breakdown extends Fragment {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(simpleDateformat.format(currentWeekDay));
         databaseReference.addValueEventListener(new ValueEventListener() {
             double calories, protein, carbohydrates, fats;
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
@@ -106,13 +142,13 @@ public class Breakdown extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Macro macro = snapshot.getValue(Macro.class);
-                    assert macro != null;
-                    macroCalories = macro.getCalorieConsumption();
-                    macroProteins = macro.getProteins();
-                    macroFats = macro.getFats();
-                    macroCarbohydrates = macro.getCarbohydrates();
-                }
+                Macro macro = snapshot.getValue(Macro.class);
+                assert macro != null;
+                macroCalories = macro.getCalorieConsumption();
+                macroProteins = macro.getProteins();
+                macroFats = macro.getFats();
+                macroCarbohydrates = macro.getCarbohydrates();
+            }
 
 
             @Override
