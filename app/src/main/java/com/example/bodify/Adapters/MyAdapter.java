@@ -1,11 +1,13 @@
 package com.example.bodify.Adapters;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.bodify.Breakdown;
-import org.jetbrains.annotations.NotNull;
+import com.example.bodify.Tab1;
 
 public class MyAdapter extends FragmentPagerAdapter {
     Context context;
@@ -15,7 +17,7 @@ public class MyAdapter extends FragmentPagerAdapter {
         context = c;
         this.totalTabs = totalTabs;
     }
-    @NotNull
+
     @Override
     public Fragment getItem(int position) {
         switch (position) {
@@ -26,7 +28,8 @@ public class MyAdapter extends FragmentPagerAdapter {
             case 4:
             case 5:
             case 6:
-                return new Breakdown();
+                Tab1 tab1 = new Tab1();
+                return tab1;
             default:
                 return null;
         }
