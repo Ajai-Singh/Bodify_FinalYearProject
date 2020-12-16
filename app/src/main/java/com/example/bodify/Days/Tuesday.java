@@ -1,4 +1,4 @@
-package com.example.bodify;
+package com.example.bodify.Days;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +16,7 @@ import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Meal;
+import com.example.bodify.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,21 +26,21 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tab1 extends Fragment {
+public class Tuesday extends Fragment {
     private AnyChartView anyChartView;
     private TextView calories, fats, proteins, carbohydrates;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
     private double macroCalories, macroProteins, macroFats, macroCarbohydrates;
 
-    public Tab1() {
+    public Tuesday() {
 
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_tab1, container, false);
+        View view = inflater.inflate(R.layout.activity_monday, container, false);
         anyChartView = view.findViewById(R.id.pieChart);
         calories = view.findViewById(R.id.dailyCaloriesLeftTextView);
         fats = view.findViewById(R.id.dailyFatsTV);
@@ -51,7 +52,7 @@ public class Tab1 extends Fragment {
         return view;
     }
 
-        public void setUpPieChart(double fat, double protein, double carbs) {
+    public void setUpPieChart(double fat, double protein, double carbs) {
         double[] macrosValues = {fat, protein, carbs};
         String[] macros = {"Fat", "Protein", "Carbs"};
         Pie pie = AnyChart.pie();
@@ -64,8 +65,7 @@ public class Tab1 extends Fragment {
     }
 
     public void calculateDailyMacros() {
-//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(simpleDateformat.format(currentWeekDay));
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Friday");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Tuesday");
         databaseReference.addValueEventListener(new ValueEventListener() {
             double calories, protein, carbohydrates, fats;
             @Override
@@ -92,6 +92,7 @@ public class Tab1 extends Fragment {
     }
 
     public void getMacroObjectValues() {
+        assert userID != null;
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
