@@ -1,4 +1,4 @@
-package com.example.bodify.Days;
+package com.example.bodify.TrackingDaysMacros;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

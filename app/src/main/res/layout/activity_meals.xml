@@ -6,85 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".Meals">
 
-    <TextView
-        android:id="@+id/breakfastTextView"
-        android:layout_width="69dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="4dp"
-        android:text="Breakfast"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1db995"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/breakfastRCV"
-        android:layout_width="433dp"
-        android:layout_height="143dp"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp"
+        android:layout_width="410dp"
+        android:layout_height="685dp"
+        android:layout_below="@id/vp"
+        android:layout_centerInParent="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/breakfastTextView"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-    <TextView
-        android:id="@+id/lunchTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lunch"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/breakfastRCV" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lunchRCV"
-        android:layout_width="427dp"
-        android:layout_height="108dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lunchTextView"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/dinnerTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dinner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lunchRCV" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dinnerRCV"
-        android:layout_width="429dp"
-        android:layout_height="124dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="340dp" />
-
-    <TextView
-        android:id="@+id/otherTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Other"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.062"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dinnerRCV"></TextView>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/otherRCV"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="537dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

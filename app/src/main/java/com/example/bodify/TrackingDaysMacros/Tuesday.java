@@ -1,4 +1,4 @@
-package com.example.bodify.Days;
+package com.example.bodify.TrackingDaysMacros;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,14 +26,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Thursday extends Fragment {
+public class Tuesday extends Fragment {
     private AnyChartView anyChartView;
     private TextView calories, fats, proteins, carbohydrates;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
     private double macroCalories, macroProteins, macroFats, macroCarbohydrates;
 
-    public Thursday() {
+    public Tuesday() {
 
     }
 
@@ -65,7 +65,7 @@ public class Thursday extends Fragment {
     }
 
     public void calculateDailyMacros() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Tuesday");
         databaseReference.addValueEventListener(new ValueEventListener() {
             double calories, protein, carbohydrates, fats;
             @Override

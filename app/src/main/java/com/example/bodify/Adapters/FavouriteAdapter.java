@@ -116,14 +116,15 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                                 favourite = favourites.get(i);
                                             }
                                         }
-                                            Date now = new Date();
+                                            Date today = new Date();
                                             @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
                                             Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories(),
                                                     favourite.getCaloriesFromFat(), favourite.getItemTotalFat(), favourite.getItemSodium(),
                                                     favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
                                                     favourite.getItemProtein(), Integer.parseInt(adapterChoice), mealType);
                                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
-                                            databaseReference.child(simpleDateformat.format(now)).push().setValue(meal).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                            databaseReference.child(simpleDateformat.format(today)).push().setValue(meal).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {

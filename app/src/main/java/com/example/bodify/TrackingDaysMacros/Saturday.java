@@ -1,4 +1,4 @@
-package com.example.bodify.Days;
+package com.example.bodify.TrackingDaysMacros;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,14 +9,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
-import com.example.bodify.Favourites;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
@@ -29,14 +26,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Monday extends Fragment {
+public class Saturday extends Fragment {
     private AnyChartView anyChartView;
     private TextView calories, fats, proteins, carbohydrates;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
     private double macroCalories, macroProteins, macroFats, macroCarbohydrates;
 
-    public Monday() {
+    public Saturday() {
 
     }
 
@@ -55,7 +52,7 @@ public class Monday extends Fragment {
         return view;
     }
 
-        public void setUpPieChart(double fat, double protein, double carbs) {
+    public void setUpPieChart(double fat, double protein, double carbs) {
         double[] macrosValues = {fat, protein, carbs};
         String[] macros = {"Fat", "Protein", "Carbs"};
         Pie pie = AnyChart.pie();
@@ -68,22 +65,22 @@ public class Monday extends Fragment {
     }
 
     public void calculateDailyMacros() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Monday");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Saturday");
         databaseReference.addValueEventListener(new ValueEventListener() {
             double calories, protein, carbohydrates, fats;
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                        Meal meal = userSnapshot.getValue(Meal.class);
-                        assert meal != null;
-                        if (meal.getUserID().equals(userID)) {
-                            protein = protein + meal.getItemProtein() * meal.getNumberOfServings();
-                            fats = fats + meal.getItemTotalFat() * meal.getNumberOfServings();
-                            carbohydrates = carbohydrates + meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
-                            calories = calories + meal.getCalories() * meal.getNumberOfServings();
-                            updateMacrosInDatabase(protein, fats, carbohydrates, calories);
-                        }
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    Meal meal = userSnapshot.getValue(Meal.class);
+                    assert meal != null;
+                    if (meal.getUserID().equals(userID)) {
+                        protein = protein + meal.getItemProtein() * meal.getNumberOfServings();
+                        fats = fats + meal.getItemTotalFat() * meal.getNumberOfServings();
+                        carbohydrates = carbohydrates + meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
+                        calories = calories + meal.getCalories() * meal.getNumberOfServings();
+                        updateMacrosInDatabase(protein, fats, carbohydrates, calories);
                     }
+                }
                 setUpPieChart(fats, protein, carbohydrates);
             }
 
