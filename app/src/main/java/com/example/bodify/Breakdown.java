@@ -1,7 +1,9 @@
 package com.example.bodify;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 import com.example.bodify.Adapters.MyAdapter;
 import com.google.android.material.tabs.TabLayout;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Breakdown extends Fragment {
     private ViewPager viewPager;
+    String a;
 
     @Nullable
     @Override
@@ -23,6 +30,19 @@ public class Breakdown extends Fragment {
         View view = inflater.inflate(R.layout.activity_breakdown, container, false);
         viewPager = view.findViewById(R.id.viewPager);
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
+        Date currentWeekDay = new Date();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
+        Log.i("TEST",simpleDateformat.format(currentWeekDay));
+        ArrayList<String> days = new ArrayList<>();
+        days.add("Mon");
+        days.add("Tue");
+        days.add("Wed");
+        days.add("Thurs");
+        days.add("Fri");
+        days.add("Sat");
+        days.add("Sun");
+
         tabLayout.addTab(tabLayout.newTab().setText("Mon"));
         tabLayout.addTab(tabLayout.newTab().setText("Tue"));
         tabLayout.addTab(tabLayout.newTab().setText("Wed"));
@@ -30,7 +50,6 @@ public class Breakdown extends Fragment {
         tabLayout.addTab(tabLayout.newTab().setText("Fri"));
         tabLayout.addTab(tabLayout.newTab().setText("Sat"));
         tabLayout.addTab(tabLayout.newTab().setText("Sun"));
-        //tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         FragmentManager fragmentManager = getChildFragmentManager();
         MyAdapter myAdapter = new MyAdapter(getContext(), fragmentManager, tabLayout.getTabCount());
         viewPager.setAdapter(myAdapter);
@@ -39,6 +58,21 @@ public class Breakdown extends Fragment {
         final MyAdapter adapter = new MyAdapter(getContext(), getParentFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        String b = null;
+        for(int i = 0; i < days.size(); i ++) {
+            if(simpleDateformat.format(currentWeekDay).contains(days.get(i))) {
+                a = days.get(i);
+                Log.i("TEST1", String.valueOf(days.indexOf(a)));
+                b = String.valueOf(days.indexOf(a));
+                break;
+            }
+        }
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        Log.i("TEST",a);
+        assert b != null;
+        viewPager.setCurrentItem(Integer.parseInt(b));
+        //if the current day is empty send it to the favourites screen possibly.
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -63,5 +97,4 @@ public class Breakdown extends Fragment {
         FragmentActivity fragmentActivity = (FragmentActivity) activity;
         super.onAttach(activity);
     }
-
 }
