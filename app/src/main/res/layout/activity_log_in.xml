@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/bg"
     android:padding="@dimen/box_inset_layout_padding"
     tools:context=".FirebaseAuthentication.LogIn"
     tools:deviceIds="wear">
@@ -13,7 +13,7 @@
         android:id="@+id/userNameSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="21dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/email_address"
@@ -28,7 +28,7 @@
         android:id="@+id/togglePlaceHolder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="34dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,49 +55,38 @@
         android:id="@+id/logInButton"
         android:layout_width="94dp"
         android:layout_height="53dp"
-        android:layout_marginBottom="216dp"
         android:text="@string/login"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/togglePlaceHolder"
         tools:text="@string/login" />
 
     <TextView
         android:id="@+id/createNewAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="176dp"
         android:text="@string/create_account"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logInButton"
         tools:text="@string/create_account" />
 
     <TextView
         android:id="@+id/logInWelcomeMessage"
-        android:layout_width="361dp"
-        android:layout_height="82dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/Login_welcome_message"
+        android:layout_width="279dp"
+        android:layout_height="74dp"
+        android:layout_marginStart="66dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="66dp"
         android:gravity="center"
+        android:text="Welcome"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/Login_welcome_message" />
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/fbLogIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="14dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/createNewAccount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        tools:text="Welcome" />
 </androidx.constraintlayout.widget.ConstraintLayout>

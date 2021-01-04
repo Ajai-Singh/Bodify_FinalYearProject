@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/bg"
     android:padding="@dimen/box_inset_layout_padding"
     android:visibility="visible"
     tools:context=".FirebaseAuthentication.SignUp"
@@ -84,7 +84,6 @@
         android:id="@+id/userNameSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/User_Name"
@@ -92,39 +91,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUpWelcomeMessage"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="DuplicateIds" />
 
     <Button
         android:id="@+id/signUpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginTop="100dp"
         android:text="@string/register"
-        app:layout_constraintBottom_toBottomOf="@+id/existing_account"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uploadPicture"
         tools:ignore="NotSibling"
         tools:text="@string/register" />
-
-    <TextView
-        android:id="@+id/signUpWelcomeMessage"
-        android:layout_width="249dp"
-        android:layout_height="57dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/welcome_message"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/welcome_message" />
 
     <TextView
         android:id="@+id/existing_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/existing_account"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -136,9 +123,9 @@
         android:id="@+id/ProfilePicture"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toggleConfirmPlaceHolder"
         app:srcCompat="@android:drawable/ic_menu_gallery" />
@@ -147,10 +134,9 @@
         android:id="@+id/uploadPicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="68dp"
-        android:layout_marginBottom="8dp"
         android:text="@string/profilePickButton"
-        app:layout_constraintBottom_toTopOf="@+id/existing_account"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ProfilePicture" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 public class ChatRoom extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -40,6 +41,7 @@ public class ChatRoom extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Chat Room");
         fab = findViewById(R.id.fab);
         input = findViewById(R.id.input);
         mAuth = FirebaseAuth.getInstance();

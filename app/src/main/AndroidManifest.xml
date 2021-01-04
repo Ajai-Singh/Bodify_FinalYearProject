@@ -4,22 +4,11 @@
     package="com.example.bodify">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
     <uses-feature android:name="android.hardware.type.watch" />
-
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-
-    <uses-feature
-        android:name="android.hardware.sensor.stepcounter"
-        android:required="true" />
-    <uses-feature
-        android:name="android.hardware.sensor.stepdetector"
-        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -33,47 +22,23 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
         <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
 
-        <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" />
-        <activity
-            android:name="com.facebook.CustomTabActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="@string/fb_login_protocol_scheme" />
-            </intent-filter>
-        </activity>
         <activity android:name=".FirebaseAuthentication.LogIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".FirebaseAuthentication.SignUp" />
         <activity android:name=".Tailoring" />
-        <activity
-            android:name=".DashBoard"
-            android:theme="@style/NoActionBar" />
         <activity android:name=".GymsNearMe" />
         <activity android:name=".PersonalProfile" />
         <activity android:name=".Health" />
         <activity android:name=".ViewAllUsers" />
         <activity android:name=".ChatRoom" />
-        <activity android:name=".Pedometer" />
         <activity android:name=".ViewAllRecipes" />
-        <activity
-            android:name=".Management"
-            android:theme="@style/NoActionBarMGMT" />
+        <activity android:name=".Management" android:theme="@style/Theme.test" />
     </application>
-
 </manifest>

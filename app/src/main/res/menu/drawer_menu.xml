@@ -5,18 +5,31 @@
     <group android:checkableBehavior="none">
         <item
             android:id="@+id/personal_profile"
+            android:icon="@drawable/profile"
             android:title="Personal Profile" />
 
         <item
+            android:id="@+id/gymFinder"
+            android:icon="@drawable/location"
+            android:title="Gym Finder" />
+
+        <item
+            android:id="@+id/healthPage"
+            android:icon="@drawable/health"
+            android:title="Health" />
+        <item
             android:id="@+id/chat"
+            android:icon="@drawable/chat"
             android:title="Chat" />
 
         <item
             android:id="@+id/users"
+            android:icon="@drawable/friend"
             android:title="All users" />
 
         <item
-            android:id="@+id/maps"
-            android:title="Nearby Users"/>
+            android:id="@+id/logOut"
+            android:icon="@drawable/exit"
+            android:title="Log out"/>
     </group>
 </menu>

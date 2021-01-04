@@ -10,8 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.bodify.DashBoard;
+import com.example.bodify.Management;
 import com.example.bodify.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,7 +25,7 @@ public class LogIn extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle("Log In Form");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Log In Form");
         setContentView(R.layout.activity_log_in);
         mAuth = FirebaseAuth.getInstance();
         Button logIn = findViewById(R.id.logInButton);
@@ -59,7 +58,7 @@ public class LogIn extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()) {
                                 Toast.makeText(LogIn.this, "User verified", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), DashBoard.class));
+                                startActivity(new Intent(getApplicationContext(), Management.class));
                             }else {
                                 Toast.makeText(LogIn.this, "Error occurred! " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                             }

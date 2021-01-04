@@ -104,7 +104,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), DashBoard.class));
+                                startActivity(new Intent(getApplicationContext(), Management.class));
                             } else {
                                 Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                             }

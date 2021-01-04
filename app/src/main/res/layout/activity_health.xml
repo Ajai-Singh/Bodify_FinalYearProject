@@ -4,165 +4,171 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/bg"
     android:padding="@dimen/box_inset_layout_padding"
     tools:context=".Health"
     tools:deviceIds="wear">
 
     <TextView
         android:id="@+id/calorieIntakeTextField"
-        android:layout_width="113dp"
-        android:layout_height="27dp"
-        android:layout_marginTop="60dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.275"
-        app:layout_constraintStart_toEndOf="@+id/fitnessLevel"
-        app:layout_constraintTop_toBottomOf="@+id/currentFitnessGoal" />
-
-    <TextView
-        android:id="@+id/bmiText"
-        android:layout_width="136dp"
+        android:layout_width="80dp"
         android:layout_height="31dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/bmi"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/bmi" />
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/calorieIntake"
+        app:layout_constraintTop_toBottomOf="@+id/fitnessLevelTextField" />
 
     <TextView
         android:id="@+id/weightText"
-        android:layout_width="113dp"
-        android:layout_height="27dp"
+        android:layout_width="130dp"
+        android:layout_height="31dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="12dp"
         android:text="@string/weight"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bmiText"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
         tools:text="@string/weight" />
 
     <TextView
         android:id="@+id/heightText"
-        android:layout_width="113dp"
-        android:layout_height="27dp"
+        android:layout_width="130dp"
+        android:layout_height="31dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="12dp"
         android:text="@string/height"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weightText" />
 
     <TextView
         android:id="@+id/fitnessGoalText"
         android:layout_width="113dp"
-        android:layout_height="27dp"
+        android:layout_height="31dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="12dp"
         android:text="@string/fitness_goal"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/heightText" />
 
     <TextView
         android:id="@+id/fitnessLevel"
-        android:layout_width="113dp"
-        android:layout_height="27dp"
+        android:layout_width="120dp"
+        android:layout_height="31dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="16dp"
         android:text="@string/fitnessLevel"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fitnessGoalText" />
 
     <TextView
         android:id="@+id/calorieIntake"
-        android:layout_width="142dp"
-        android:layout_height="37dp"
+        android:layout_width="225dp"
+        android:layout_height="31dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="8dp"
         android:text="@string/calorieIntake"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fitnessLevel" />
 
     <TextView
         android:id="@+id/bmiTextField"
-        android:layout_width="113dp"
-        android:layout_height="27dp"
+        android:layout_width="70dp"
+        android:layout_height="31dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="72dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.147"
-        app:layout_constraintStart_toEndOf="@+id/bmiText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView9"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/currentWeight"
         android:layout_width="113dp"
-        android:layout_height="27dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="12dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.275"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/weightText"
         app:layout_constraintTop_toBottomOf="@+id/bmiTextField" />
 
     <TextView
         android:id="@+id/currentHeight"
         android:layout_width="113dp"
-        android:layout_height="27dp"
+        android:layout_height="31dp"
         android:layout_marginTop="12dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.275"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/heightText"
         app:layout_constraintTop_toBottomOf="@+id/currentWeight" />
 
     <TextView
         android:id="@+id/currentFitnessGoal"
         android:layout_width="113dp"
-        android:layout_height="27dp"
+        android:layout_height="31dp"
         android:layout_marginTop="12dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.275"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/fitnessGoalText"
         app:layout_constraintTop_toBottomOf="@+id/currentHeight" />
 
     <TextView
         android:id="@+id/fitnessLevelTextField"
-        android:layout_width="113dp"
-        android:layout_height="27dp"
+        android:layout_width="60dp"
+        android:layout_height="31dp"
         android:layout_marginTop="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.275"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/fitnessLevel"
         app:layout_constraintTop_toBottomOf="@+id/currentFitnessGoal" />
 
     <TextView
         android:id="@+id/fitnessGoalMessage"
         android:layout_width="382dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="268dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/fitnessGoalMessage"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.551"
+        app:layout_constraintHorizontal_bias="0.482"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calorieIntake"
         tools:text="@string/fitnessGoalMessage" />
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
-        android:layout_width="302dp"
-        android:layout_height="254dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="400dp"
+        android:layout_height="350dp"
+        android:layout_marginTop="8dp"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fitnessGoalMessage">
 
     </com.github.mikephil.charting.charts.BarChart>
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="190dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="20dp"
+        android:text="Body Mass Indicator: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

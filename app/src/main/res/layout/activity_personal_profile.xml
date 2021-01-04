@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/bg"
     android:padding="@dimen/box_inset_layout_padding"
     tools:context=".PersonalProfile">
 
@@ -13,220 +13,203 @@
         android:id="@+id/preferredMacroNutrientTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:text="@string/preferredFoods"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toStartOf="@+id/preferredMacroNutrientSpinner"
-        app:layout_constraintHorizontal_bias="0.615"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.187"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bodyCompositionTextField"
+        app:layout_constraintTop_toBottomOf="@+id/bodyCompositionSpinner"
         tools:text="@string/preferredFoods" />
 
     <Spinner
         android:id="@+id/bodyCompositionSpinner"
         android:layout_width="219dp"
         android:layout_height="38dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/bodyCompositionTextField"
-        app:layout_constraintTop_toBottomOf="@+id/fitnessGoalSpinner" />
+        app:layout_constraintHorizontal_bias="0.187"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bodyCompositionTextField" />
 
     <Spinner
         android:id="@+id/preferredMacroNutrientSpinner"
         android:layout_width="219dp"
         android:layout_height="38dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bodyCompositionSpinner" />
+        app:layout_constraintHorizontal_bias="0.145"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferredMacroNutrientTextField" />
 
     <TextView
         android:id="@+id/bodyCompositionTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="12dp"
         android:text="@string/bodytype"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.162"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/fitnessGoalSpinner"
         tools:text="@string/bodytype" />
 
     <TextView
         android:id="@+id/emailAddressTextField"
-        android:layout_width="125dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="84dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="170dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="140dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/emailAddressTextView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/userNameTextField" />
 
     <TextView
-        android:id="@+id/userNameTextField"
-        android:layout_width="125dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="16dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.269"
-        app:layout_constraintStart_toEndOf="@+id/userNameTextView"
-        app:layout_constraintTop_toBottomOf="@+id/personalProfileWelcomeMessage" />
-
-    <TextView
-        android:id="@+id/personalProfileWelcomeMessage"
-        android:layout_width="319dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/personalProfileWelcomeMessage"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.521"
+        android:id="@+id/userNameTextView"
+        android:layout_width="100dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="30dp"
+        android:text="User name: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/personalProfileWelcomeMessage" />
-
-    <TextView
-        android:id="@+id/userNameTextView"
-        android:layout_width="125dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/User_Name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.167"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/personalProfileWelcomeMessage"
-        tools:text="@string/User_Name" />
-
-    <TextView
-        android:id="@+id/emailAddressTextView"
-        android:layout_width="125dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/email_address1"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userNameTextView"
-        tools:text="@string/email_address1" />
+        tools:text="User name: " />
 
     <EditText
         android:id="@+id/heightTextFieldPP"
         android:layout_width="125dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="116dp"
         android:autofillHints=""
         android:ems="10"
         android:inputType="number"
         android:maxLength="3"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.256"
-        app:layout_constraintStart_toEndOf="@+id/heightTextView"
         app:layout_constraintTop_toBottomOf="@+id/weightTextFieldPP" />
 
     <EditText
         android:id="@+id/weightTextFieldPP"
         android:layout_width="125dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="153dp"
         android:autofillHints=""
         android:ems="10"
         android:inputType="numberDecimal"
         android:maxLength="3"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.706"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/weightTextView"
         app:layout_constraintTop_toBottomOf="@+id/emailAddressTextField" />
 
     <TextView
         android:id="@+id/weightTextView"
-        android:layout_width="125dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/weight"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toStartOf="@+id/weightTextFieldPP"
-        app:layout_constraintHorizontal_bias="0.623"
+        android:layout_width="120dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="20dp"
+        android:text="Weight(KGs):"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailAddressTextView"
-        tools:text="@string/weight" />
-
-    <TextView
-        android:id="@+id/heightTextView"
-        android:layout_width="125dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/height"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.167"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weightTextView"
-        tools:text="@string/height" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:text="Weight(KGs): " />
 
     <Spinner
         android:id="@+id/activityLevelSpinner"
         android:layout_width="219dp"
         android:layout_height="38dp"
-        android:layout_marginTop="56dp"
-        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.926"
-        app:layout_constraintStart_toEndOf="@+id/textView8"
-        app:layout_constraintTop_toBottomOf="@+id/heightTextFieldPP" />
+        app:layout_constraintHorizontal_bias="0.187"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <Spinner
         android:id="@+id/fitnessGoalSpinner"
         android:layout_width="219dp"
         android:layout_height="38dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.936"
-        app:layout_constraintStart_toEndOf="@+id/textView7"
-        app:layout_constraintTop_toBottomOf="@+id/activityLevelSpinner" />
+        app:layout_constraintHorizontal_bias="0.187"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <TextView
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="21dp"
         android:text="@string/fitness_goal"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.143"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/activityLevelSpinner"
         tools:text="@string/fitness_goal" />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="30dp"
         android:text="@string/activity_level"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.146"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/heightTextView"
+        app:layout_constraintTop_toBottomOf="@+id/textView10"
         tools:text="@string/activity_level" />
 
     <Button
         android:id="@+id/updateInformationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="68dp"
         android:text="@string/updateProfile"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.534"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferredMacroNutrientSpinner"
         tools:text="@string/updateProfile" />
+
+    <EditText
+        android:id="@+id/userNameTextField"
+        android:layout_width="170dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="83dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/userNameTextView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="20dp"
+        android:text="Email: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userNameTextView"
+        tools:text="Email: " />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="120dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="20dp"
+        android:text="Height(CMs): "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weightTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

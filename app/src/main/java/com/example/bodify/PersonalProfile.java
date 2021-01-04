@@ -22,11 +22,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PersonalProfile extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private FirebaseAuth mAuth;
-    private TextView userName,email;
-    private EditText height,weight;
+    private TextView email;
+    private EditText userName,height,weight;
     private Spinner activityLevelSpinner,fitnessGoalSpinner,bodyType,preferredMacroNutrient;
     private final ArrayList<String> activityLevels = new ArrayList<>();
     private final ArrayList<String> fitnessGoals = new ArrayList<>();
@@ -36,6 +37,7 @@ public class PersonalProfile extends AppCompatActivity implements AdapterView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_profile);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Personal Profile");
         userName = findViewById(R.id.userNameTextField);
         email = findViewById(R.id.emailAddressTextField);
         height = findViewById(R.id.heightTextFieldPP);
@@ -90,19 +92,24 @@ public class PersonalProfile extends AppCompatActivity implements AdapterView.On
         updateProfile.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            String strInputtedUserName = userName.getText().toString().trim();
             String strInputtedHeight = height.getText().toString().trim();
             String strInputtedWeight = weight.getText().toString().trim();
             String strFitnessGoalSpinner = fitnessGoalSpinner.getSelectedItem().toString();
             String strActivityGoalSpinner = activityLevelSpinner.getSelectedItem().toString();
             String strBodyType = bodyType.getSelectedItem().toString();
             String strPreferredMacroNutrient = preferredMacroNutrient.getSelectedItem().toString();
-            if(TextUtils.isEmpty(strInputtedHeight)){
+            if(TextUtils.isEmpty(strInputtedHeight)) {
                 height.setError("Height in CMs is required!");
                 height.requestFocus();
-            }else if(TextUtils.isEmpty(strInputtedWeight)){
+            }else if(TextUtils.isEmpty(strInputtedWeight)) {
                 weight.setError("Weight in KGs is required!");
                 weight.requestFocus();
-            }else{
+            }else if(TextUtils.isEmpty(strInputtedUserName)) {
+                userName.setError("Weight in KGs is required!");
+                userName.requestFocus();
+            }
+            else{
                 double dblHeight = Double.parseDouble(strInputtedHeight);
                 double dblWeight = Double.parseDouble(strInputtedWeight);
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
@@ -113,6 +120,7 @@ public class PersonalProfile extends AppCompatActivity implements AdapterView.On
                 double bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
                 DecimalFormat decimalFormat = new DecimalFormat("##.00");
                 double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
+                databaseReference.child("userName").setValue(strInputtedUserName);
                 databaseReference.child("weight").setValue(dblWeight);
                 databaseReference.child("height").setValue(dblHeight);
                 databaseReference.child("activityLevel").setValue(strActivityGoalSpinner);

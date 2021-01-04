@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Health extends AppCompatActivity {
     private TextView bmi, weight, height, fitnessGoal, fitnessLevel, calorieIntake;
@@ -44,6 +45,7 @@ public class Health extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_health);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Health");
         bmi = findViewById(R.id.bmiTextField);
         weight = findViewById(R.id.currentWeight);
         height = findViewById(R.id.currentHeight);

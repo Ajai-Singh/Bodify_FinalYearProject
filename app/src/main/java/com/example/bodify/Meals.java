@@ -20,13 +20,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Meals extends Fragment {
-    private ViewPager viewPager;
     private String a;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_meals,container,false);
-        viewPager = view.findViewById(R.id.vp);
+        ViewPager viewPager = view.findViewById(R.id.vp);
         TabLayout tabLayout = view.findViewById(R.id.tl);
         Date currentWeekDay = new Date();
         @SuppressLint("SimpleDateFormat")
