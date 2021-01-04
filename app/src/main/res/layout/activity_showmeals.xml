@@ -1,51 +1,99 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
-
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="600dp">
+
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
 
         <TextView
             android:id="@+id/breakfastTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
             android:layout_weight="10"
             android:text="Breakfast"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/breakfastRecyclerView"
-            android:layout_width="410dp"
-            android:layout_height="362dp"
-            android:layout_marginTop="16dp"
-            android:layout_weight="1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/breakfastTV" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/breakfastRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_weight="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/breakfastTV" />
 
         <TextView
             android:id="@+id/lunchTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
             android:layout_weight="10"
             android:text="Lunch"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/breakfastRecyclerView" />
 
-        <!--        <androidx.recyclerview.widget.RecyclerView-->
-        <!--            android:id="@+id/lunchRecyclerView"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="215dp"-->
-        <!--            android:layout_weight="1"-->
-        <!--            tools:layout_editor_absoluteX="16dp"-->
-        <!--            tools:layout_editor_absoluteY="316dp" />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lunchRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_weight="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lunchTV" />
+
+        <TextView
+            android:id="@+id/dinnerTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_weight="10"
+            android:text="Dinner"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lunchRecyclerView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dinnerRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_weight="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dinnerTV" />
+
+        <TextView
+            android:id="@+id/otherTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_weight="10"
+            android:text="Other"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dinnerRecyclerView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/otherRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_weight="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/otherTV" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

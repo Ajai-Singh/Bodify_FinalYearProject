@@ -1,14 +1,10 @@
 package com.example.bodify.Adapters;
 
 import android.content.Context;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
 import com.example.bodify.TrackingDaysMeals.MondayMeals;
-import com.example.bodify.TrackingDaysMeals.TuesdayMeals;
-
 import org.jetbrains.annotations.NotNull;
 
 public class ViewPagerAdapterMeals extends FragmentPagerAdapter {
@@ -20,6 +16,8 @@ public class ViewPagerAdapterMeals extends FragmentPagerAdapter {
         this.totalTabs = totalTabs;
     }
 
+
+    //for some reason when a meal is being saved to the db only some are saving what meal it is
     @NotNull
     @Override
     public Fragment getItem(int position) {

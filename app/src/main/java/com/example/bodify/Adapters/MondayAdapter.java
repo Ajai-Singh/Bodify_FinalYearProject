@@ -10,16 +10,16 @@ import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
 import java.util.ArrayList;
 //investigate if I can use the same adapter for all the days meals
-public class BreakfastAdapter extends RecyclerView.Adapter<BreakfastAdapter.ViewHolder> implements View.OnClickListener {
+public class MondayAdapter extends RecyclerView.Adapter<MondayAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Meal> meals;
 
-    public BreakfastAdapter(ArrayList<Meal> meals) {
+    public MondayAdapter(ArrayList<Meal> meals) {
         this.meals = meals;
     }
 
     @NonNull
     @Override
-    public BreakfastAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MondayAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_meal_item,parent,false);
         return new ViewHolder(view);
     }
@@ -28,9 +28,12 @@ public class BreakfastAdapter extends RecyclerView.Adapter<BreakfastAdapter.View
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.setItemName(meals.get(position).getItemName());
         holder.setCaloriesConsumed(meals.get(position).getCalories());
-        holder.setCarbs(meals.get(position).getItemTotalCarbohydrates());
         holder.setFats(meals.get(position).getItemTotalFat());
+        holder.appendFats();
         holder.setProteins(meals.get(position).getItemProtein());
+        holder.appendProteins();
+        holder.setCarbs(meals.get(position).getItemTotalCarbohydrates());
+        holder.appendCarbs();
     }
 
     @Override
@@ -43,7 +46,7 @@ public class BreakfastAdapter extends RecyclerView.Adapter<BreakfastAdapter.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView itemName,caloriesConsumed,fats,proteins,carbs;
+        private final TextView itemName,caloriesConsumed,fats,proteins,carbs;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemName = itemView.findViewById(R.id.mealName);
@@ -66,6 +69,15 @@ public class BreakfastAdapter extends RecyclerView.Adapter<BreakfastAdapter.View
         }
         public void setCarbs(int c) {
             carbs.setText(String.valueOf(c));
+        }
+        public void appendFats() {
+            fats.append("F(g)");
+        }
+        public void appendProteins() {
+            fats.append("P(g)");
+        }
+        public void appendCarbs() {
+            fats.append("C(g)");
         }
 
     }

@@ -69,8 +69,10 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                         startActivity(new Intent(Management.this, ViewAllUsers.class));
                         break;
                     case R.id.logOut:
-                        finish();
-                        startActivity(new Intent(Management.this, LogIn.class));
+//                        finish();
+//                        startActivity(new Intent(Management.this, LogIn.class));
+                        //need to figure out why the scanner is not working as a fragment
+                        startActivity(new Intent(Management.this, Test.class));
                         break;
                 }
                 drawerLayout.closeDrawer(Gravity.START);

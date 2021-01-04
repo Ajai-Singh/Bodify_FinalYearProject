@@ -40,5 +40,6 @@
         <activity android:name=".ChatRoom" />
         <activity android:name=".ViewAllRecipes" />
         <activity android:name=".Management" android:theme="@style/Theme.test" />
+        <activity android:name=".Test"/>
     </application>
 </manifest>
