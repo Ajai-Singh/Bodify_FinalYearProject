@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.ViewHolder> implements View.OnClickListener {
@@ -34,6 +35,9 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     private String mealType;
     private String adapterChoice;
     private ArrayList<Integer> servingNumbers;
+    private final Date today = new Date();
+    @SuppressLint("SimpleDateFormat")
+    private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
 
     public FavouriteAdapter(ArrayList<Favourite> favourites, Context context) {
         this.favourites = favourites;
@@ -66,18 +70,14 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 alertDialogMeals.setTitle("Select Meal");
                                 final String[] items = {"Breakfast", "Lunch", "Dinner", "Other"};
                                 Spinner servings = new Spinner(context);
-                                int checkedItem = 0;
                                 servingNumbers = new ArrayList<>();
-                                Favourite favourite = null;
-                                holder.getAdapterPosition();
                                 for (int i = 0; i < favourites.size(); i++) {
                                     if (i == holder.getAdapterPosition()) {
-                                        favourite = favourites.get(i);
+                                        Favourite favourite = favourites.get(i);
+                                        for (int e = 1; e <= favourite.getNumberOfServings(); e++) {
+                                            servingNumbers.add(e);
+                                        }
                                     }
-                                }
-                                assert favourite != null;
-                                for (int i = 1; i <= favourite.getNumberOfServings(); i++) {
-                                    servingNumbers.add(i);
                                 }
                                 ArrayAdapter<Integer> servingAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, servingNumbers);
                                 servings.setAdapter(servingAdapter);
@@ -94,7 +94,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                     }
                                 });
                                 alertDialogMeals.setView(servings);
-                                alertDialogMeals.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
+                                alertDialogMeals.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         switch (which) {
@@ -109,21 +109,34 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Favourite favourite = null;
-                                        int currentItem = holder.getAdapterPosition();
-                                        for (int i = 0; i < favourites.size(); i++) {
-                                            if (i == currentItem) {
-                                                favourite = favourites.get(i);
+                                        //A nicer looking way to error check a radio button could be to use set error and request focus
+                                        //not sure how possible this is with radio buttons. just a thought
+                                        if (!Arrays.asList(items).contains(mealType)) {
+                                            AlertDialog.Builder dlgAlert = new AlertDialog.Builder(context);
+                                            dlgAlert.setMessage("Not All Fields are Filled!");
+                                            dlgAlert.setTitle("Error...");
+                                            dlgAlert.setPositiveButton("OK", null);
+                                            dlgAlert.setCancelable(true);
+                                            dlgAlert.create().show();
+                                            dlgAlert.setPositiveButton("Ok",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                        }
+                                                    });
+                                        } else {
+                                            Favourite favourite = null;
+                                            for (int i = 0; i < favourites.size(); i++) {
+                                                if (i == holder.getAdapterPosition()) {
+                                                    favourite = favourites.get(i);
+                                                    break;
+                                                }
                                             }
-                                        }
-                                            Date today = new Date();
-                                            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
+                                            assert favourite != null;
                                             Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories(),
                                                     favourite.getCaloriesFromFat(), favourite.getItemTotalFat(), favourite.getItemSodium(),
                                                     favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
                                                     favourite.getItemProtein(), Integer.parseInt(adapterChoice), mealType);
                                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
-
                                             databaseReference.child(simpleDateformat.format(today)).push().setValue(meal).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -138,7 +151,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                                 }
                                             });
                                         }
-
+                                    }
                                 }).setNegativeButton("Close", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -159,10 +172,9 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                         }).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        int p = holder.getAdapterPosition();
                                         Favourite favourite = new Favourite();
                                         for (int i = 0; i < favourites.size(); i++) {
-                                            if (p == i) {
+                                            if (holder.getAdapterPosition() == i) {
                                                 favourite = favourites.get(i);
                                                 break;
                                             }
@@ -176,7 +188,6 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 AlertDialog alertDialog = builder.create();
                                 alertDialog.setTitle("Attention required!");
                                 alertDialog.show();
-                                break;
                         }
                         return false;
                     }

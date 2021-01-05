@@ -22,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MondayMeals extends Fragment {
+public class SaturdayMeals extends Fragment {
     private MealAdapter mondayBreakfastAdapter;
     private MealAdapter mondayLunchAdapter;
     private MealAdapter mondayDinnerAdapter;
@@ -38,7 +38,7 @@ public class MondayMeals extends Fragment {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
-    public MondayMeals() {
+    public SaturdayMeals() {
 
     }
 
@@ -62,7 +62,7 @@ public class MondayMeals extends Fragment {
     }
 
     public void populateBreakfastRCV() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Monday");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Saturday");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -89,7 +89,7 @@ public class MondayMeals extends Fragment {
     }
 
     public void populateLunchRCV() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Monday");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Saturday");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -116,7 +116,7 @@ public class MondayMeals extends Fragment {
     }
 
     public void populateDinnerRCV() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Monday");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Saturday");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -143,7 +143,7 @@ public class MondayMeals extends Fragment {
     }
 
     public void populateOtherRCV() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Monday");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Saturday");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
