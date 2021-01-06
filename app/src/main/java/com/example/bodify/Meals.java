@@ -16,16 +16,14 @@ import com.example.bodify.Adapters.ViewPagerAdapterMeals;
 import com.google.android.material.tabs.TabLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class Meals extends Fragment {
-    private String a;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_meals,container,false);
-        ViewPager viewPager = view.findViewById(R.id.vp);
+        final ViewPager viewPager = view.findViewById(R.id.vp);
         TabLayout tabLayout = view.findViewById(R.id.tl);
         Date currentWeekDay = new Date();
         @SuppressLint("SimpleDateFormat")
@@ -58,17 +56,29 @@ public class Meals extends Fragment {
         String b = null;
         for(int i = 0; i < days.size(); i ++) {
             if(simpleDateformat.format(currentWeekDay).contains(days.get(i))) {
-                a = days.get(i);
-                Log.i("TEST1", String.valueOf(days.indexOf(a)));
+                String a = days.get(i);
                 b = String.valueOf(days.indexOf(a));
                 break;
             }
         }
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-        Log.i("TEST",a);
         assert b != null;
         viewPager.setCurrentItem(Integer.parseInt(b));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         return view;
     }
 

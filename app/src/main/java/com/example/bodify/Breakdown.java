@@ -18,14 +18,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Breakdown extends Fragment {
-    private ViewPager viewPager;
-    private String a;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_breakdown, container, false);
-        viewPager = view.findViewById(R.id.viewPager);
+        final ViewPager viewPager = view.findViewById(R.id.viewPager);
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
         Date currentWeekDay = new Date();
         @SuppressLint("SimpleDateFormat")
@@ -58,13 +56,11 @@ public class Breakdown extends Fragment {
         String b = null;
         for(int i = 0; i < days.size(); i ++) {
             if(simpleDateformat.format(currentWeekDay).contains(days.get(i))) {
-                a = days.get(i);
-                Log.i("TEST1", String.valueOf(days.indexOf(a)));
+                String a = days.get(i);
                 b = String.valueOf(days.indexOf(a));
                 break;
             }
         }
-        Log.i("TEST",a);
         assert b != null;
         viewPager.setCurrentItem(Integer.parseInt(b));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

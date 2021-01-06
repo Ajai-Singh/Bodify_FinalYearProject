@@ -1,11 +1,9 @@
 package com.example.bodify.Adapters;
 
 import android.content.Context;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
 import com.example.bodify.TrackingDaysMacros.Friday;
 import com.example.bodify.TrackingDaysMacros.Monday;
 import com.example.bodify.TrackingDaysMacros.Remember;

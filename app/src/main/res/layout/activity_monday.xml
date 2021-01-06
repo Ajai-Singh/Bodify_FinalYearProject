@@ -9,18 +9,17 @@
 
     <com.anychart.AnyChartView
         android:id="@+id/pieChart"
-        android:layout_width="413dp"
-        android:layout_height="348dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/macroBreakdown"></com.anychart.AnyChartView>
+        app:layout_constraintTop_toBottomOf="@+id/macroBreakdown" />
 
     <TextView
         android:id="@+id/macroBreakdown"
         android:layout_width="300dp"
         android:layout_height="30dp"
-        android:layout_marginTop="10dp"
         android:text="Daily Macro Nutrient Breakdown"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
