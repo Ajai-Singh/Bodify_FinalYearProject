@@ -37,6 +37,8 @@ public class Wednesday extends Fragment {
 
     }
 
+    //A good approach to this would be to get just the whole pie chart displaying first.
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,7 +49,7 @@ public class Wednesday extends Fragment {
         proteins = view.findViewById(R.id.dailyProteinsTV);
         carbohydrates = view.findViewById(R.id.dailyCarbsTV);
         getMacroObjectValues();
-        calculateDailyMacros();
+        //calculateDailyMacros();
         setFields();
         return view;
     }
@@ -64,32 +66,32 @@ public class Wednesday extends Fragment {
         anyChartView.setChart(pie);
     }
 
-    public void calculateDailyMacros() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Wednesday");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            double calories, protein, carbohydrates, fats;
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    Meal meal = userSnapshot.getValue(Meal.class);
-                    assert meal != null;
-                    if (meal.getUserID().equals(userID)) {
-                        protein = protein + meal.getItemProtein() * meal.getNumberOfServings();
-                        fats = fats + meal.getItemTotalFat() * meal.getNumberOfServings();
-                        carbohydrates = carbohydrates + meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
-                        calories = calories + meal.getCalories() * meal.getNumberOfServings();
-                        updateMacrosInDatabase(protein, fats, carbohydrates, calories);
-                    }
-                }
-                setUpPieChart(fats, protein, carbohydrates);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+//    public void calculateDailyMacros() {
+//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Wednesday");
+//        databaseReference.addValueEventListener(new ValueEventListener() {
+//            double calories, protein, carbohydrates, fats;
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+//                    Meal meal = userSnapshot.getValue(Meal.class);
+//                    assert meal != null;
+//                    if (meal.getUserID().equals(userID)) {
+//                        protein = protein + meal.getItemProtein() * meal.getNumberOfServings();
+//                        fats = fats + meal.getItemTotalFat() * meal.getNumberOfServings();
+//                        carbohydrates = carbohydrates + meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
+//                        calories = calories + meal.getCalories() * meal.getNumberOfServings();
+//                        updateMacrosInDatabase(protein, fats, carbohydrates, calories);
+//                    }
+//                }
+//                setUpPieChart(fats, protein, carbohydrates);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     public void getMacroObjectValues() {
         assert userID != null;

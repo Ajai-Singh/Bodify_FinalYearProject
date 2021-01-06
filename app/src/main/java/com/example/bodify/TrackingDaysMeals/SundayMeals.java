@@ -72,7 +72,7 @@ public class SundayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Breakfast") && meal.getUserID().equals(userID)) {
                         breakfastMeals.add(meal);
-                        break;
+                        
                     }
                 }
                 breakfastRecyclerView.setHasFixedSize(true);
@@ -99,7 +99,7 @@ public class SundayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Lunch") && meal.getUserID().equals(userID)) {
                         lunchMeals.add(meal);
-                        break;
+                        
                     }
                 }
                 lunchRecyclerView.setHasFixedSize(true);
@@ -126,7 +126,7 @@ public class SundayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Dinner") && meal.getUserID().equals(userID)) {
                         dinnerMeals.add(meal);
-                        break;
+                        
                     }
                 }
                 dinnerRecyclerView.setHasFixedSize(true);
@@ -153,7 +153,7 @@ public class SundayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Other") && meal.getUserID().equals(userID)) {
                         otherMeals.add(meal);
-                        break;
+                        
                     }
                 }
                 otherRecyclerView.setHasFixedSize(true);

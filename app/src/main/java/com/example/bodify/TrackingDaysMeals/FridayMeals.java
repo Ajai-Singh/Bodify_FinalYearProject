@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.bodify.Adapters.MealAdapter;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
@@ -19,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -72,18 +75,17 @@ public class FridayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Breakfast") && meal.getUserID().equals(userID)) {
                         breakfastMeals.add(meal);
-                        break;
                     }
                 }
                 breakfastRecyclerView.setHasFixedSize(true);
                 breakfastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mondayBreakfastAdapter = new MealAdapter(breakfastMeals,getContext());
+                mondayBreakfastAdapter = new MealAdapter(breakfastMeals, getContext());
                 breakfastRecyclerView.setAdapter(mondayBreakfastAdapter);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(),"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -99,18 +101,17 @@ public class FridayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Lunch") && meal.getUserID().equals(userID)) {
                         lunchMeals.add(meal);
-                        break;
                     }
                 }
                 lunchRecyclerView.setHasFixedSize(true);
                 lunchRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mondayLunchAdapter = new MealAdapter(lunchMeals,getContext());
+                mondayLunchAdapter = new MealAdapter(lunchMeals, getContext());
                 lunchRecyclerView.setAdapter(mondayLunchAdapter);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(),"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -126,18 +127,17 @@ public class FridayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Dinner") && meal.getUserID().equals(userID)) {
                         dinnerMeals.add(meal);
-                        break;
                     }
                 }
                 dinnerRecyclerView.setHasFixedSize(true);
                 dinnerRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mondayDinnerAdapter = new MealAdapter(dinnerMeals,getContext());
+                mondayDinnerAdapter = new MealAdapter(dinnerMeals, getContext());
                 dinnerRecyclerView.setAdapter(mondayDinnerAdapter);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(),"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -153,18 +153,17 @@ public class FridayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Other") && meal.getUserID().equals(userID)) {
                         otherMeals.add(meal);
-                        break;
                     }
                 }
                 otherRecyclerView.setHasFixedSize(true);
                 otherRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mondayOtherAdapter = new MealAdapter(otherMeals,getContext());
+                mondayOtherAdapter = new MealAdapter(otherMeals, getContext());
                 otherRecyclerView.setAdapter(mondayOtherAdapter);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(),"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

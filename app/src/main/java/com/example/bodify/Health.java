@@ -150,6 +150,7 @@ public class Health extends AppCompatActivity {
         assert firebaseUser != null;
         Macro macro = new Macro(Math.round(calories),Math.round(fat),Math.round(carbs),Math.round(protein),userID);
         DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference();
+        assert userID != null;
         databaseReference.child("Macros").child(userID).setValue(macro).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {

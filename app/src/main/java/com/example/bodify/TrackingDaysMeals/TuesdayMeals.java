@@ -62,7 +62,7 @@ public class TuesdayMeals extends Fragment {
         return view;
     }
 
-    //seems to be a problem with it only showing one item in the rcv even though db has multiple records
+
     public void populateBreakfastRCV() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Tuesday");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -74,7 +74,7 @@ public class TuesdayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Breakfast") && meal.getUserID().equals(userID)) {
                         breakfastMeals.add(meal);
-                        break;
+                        
                     }
                 }
                 breakfastRecyclerView.setHasFixedSize(true);
@@ -101,7 +101,7 @@ public class TuesdayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Lunch") && meal.getUserID().equals(userID)) {
                         lunchMeals.add(meal);
-                        break;
+                        
                     }
                 }
                 lunchRecyclerView.setHasFixedSize(true);
@@ -128,7 +128,7 @@ public class TuesdayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Dinner") && meal.getUserID().equals(userID)) {
                         dinnerMeals.add(meal);
-                        break;
+                        
                     }
                 }
                 dinnerRecyclerView.setHasFixedSize(true);
@@ -155,7 +155,7 @@ public class TuesdayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Other") && meal.getUserID().equals(userID)) {
                         otherMeals.add(meal);
-                        break;
+                        
                     }
                 }
                 otherRecyclerView.setHasFixedSize(true);

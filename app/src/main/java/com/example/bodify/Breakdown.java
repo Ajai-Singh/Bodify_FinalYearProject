@@ -1,7 +1,6 @@
 package com.example.bodify;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,19 +9,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 import com.example.bodify.Adapters.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class Breakdown extends Fragment {
     private ViewPager viewPager;
-    String a;
+    private String a;
 
     @Nullable
     @Override
@@ -67,12 +64,9 @@ public class Breakdown extends Fragment {
                 break;
             }
         }
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
         Log.i("TEST",a);
         assert b != null;
         viewPager.setCurrentItem(Integer.parseInt(b));
-        //if the current day is empty send it to the favourites screen possibly.
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -90,11 +84,5 @@ public class Breakdown extends Fragment {
             }
         });
         return view;
-    }
-
-    @Override
-    public void onAttach(@NonNull Activity activity) {
-        FragmentActivity fragmentActivity = (FragmentActivity) activity;
-        super.onAttach(activity);
     }
 }

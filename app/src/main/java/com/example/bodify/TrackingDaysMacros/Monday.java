@@ -37,7 +37,9 @@ public class Monday extends Fragment {
     public Monday() {
 
     }
-
+    //one problem I can already note is the same problem that happened with the previous view pager adapter
+    //every time I go inbetween the pages it will perform the activity again and again...
+    //what the best thing to do will be to clear it in on create.
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

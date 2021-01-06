@@ -9,113 +9,125 @@
 
     <com.anychart.AnyChartView
         android:id="@+id/pieChart"
-        android:layout_width="315dp"
-        android:layout_height="329dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="413dp"
+        android:layout_height="348dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/macroBreakdown"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/macroBreakdown"></com.anychart.AnyChartView>
 
     <TextView
         android:id="@+id/macroBreakdown"
-        android:layout_width="238dp"
-        android:layout_height="23dp"
-        android:layout_marginBottom="336dp"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
         android:text="Daily Macro Nutrient Breakdown"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
-        android:text="Daily Calories"
+        android:layout_width="130dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Daily Calories: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <TextView
         android:id="@+id/dailyCaloriesLeftTextView"
-        android:layout_width="61dp"
-        android:layout_height="21dp"
-        android:layout_marginTop="18dp"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="136dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="Daily Fats: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+    <TextView
+        android:id="@+id/dailyFatsTV"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="164dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/dailyProteinsTV" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="130dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="21dp"
+        android:text="Daily Proteins: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="172dp"
-        android:text="Daily Fats"
+        android:id="@+id/dailyProteinsTV"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="136dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.245"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView15"
+        app:layout_constraintTop_toBottomOf="@+id/dailyCaloriesLeftTextView" />
 
     <TextView
-        android:id="@+id/dailyFatsTV"
-        android:layout_width="63dp"
-        android:layout_height="15dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="20dp"
+        android:id="@+id/textView12"
+        android:layout_width="190dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Daily Carbohydrates: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <TextView
-        android:id="@+id/textView15"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="Daily Proteins"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.089"
-        app:layout_constraintStart_toEndOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/dailyCaloriesLeftTextView" />
-
-    <TextView
-        android:id="@+id/dailyProteinsTV"
-        android:layout_width="63dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="20dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintEnd_toStartOf="@+id/dailyCarbsTV"
-        app:layout_constraintHorizontal_bias="0.296"
-        app:layout_constraintStart_toEndOf="@+id/dailyFatsTV"
-        app:layout_constraintTop_toBottomOf="@+id/textView15" />
-
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="172dp"
-        android:text="Daily Carbohydrates"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toEndOf="@+id/textView15"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/dailyCarbsTV"
-        android:layout_width="63dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="84dp"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="132dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView12"
+        app:layout_constraintTop_toBottomOf="@+id/dailyFatsTV" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Macro-nutrient Breakdown Analysis"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

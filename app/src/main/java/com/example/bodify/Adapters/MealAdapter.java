@@ -36,7 +36,6 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
         return new ViewHolder(view);
     }
 
-    //delete is working but for some reason when I delete it adds duplicates?
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.setItemName(meals.get(position).getItemName());
