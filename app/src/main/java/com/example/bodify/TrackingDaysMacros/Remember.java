@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
@@ -28,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,10 +102,10 @@ public class Remember extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot userSnapshot : snapshot.getChildren()) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     MacroCopy macroCopy = userSnapshot.getValue(MacroCopy.class);
                     assert macroCopy != null;
-                    if(macroCopy.getUserID().equals(userID)) {
+                    if (macroCopy.getUserID().equals(userID)) {
                         caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
                         fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
                         proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
@@ -138,7 +141,6 @@ public class Remember extends Fragment {
                 }
                 double[] macroValues = {loggedProteins, loggedFats, loggedCarbohydrates};
                 String[] macros = new String[]{"Fat", "Protein", "Carbs"};
-                Log.i("call", "being called");
                 Pie pie = AnyChart.pie();
                 List<DataEntry> dataEntries = new ArrayList<>();
                 for (int i = 0; i < macros.length; i++) {
@@ -159,23 +161,24 @@ public class Remember extends Fragment {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
         databaseReference.addValueEventListener(new ValueEventListener() {
             double loggedCalories, loggedProteins, loggedFats, loggedCarbohydrates;
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     Meal meal = userSnapshot.getValue(Meal.class);
                     assert meal != null;
                     if (meal.getUserID().equals(userID)) {
-                        loggedCalories = loggedCalories + meal.getCalories() * meal.getNumberOfServings();
-                        loggedProteins = loggedProteins + meal.getItemProtein() * meal.getNumberOfServings();
-                        loggedFats = loggedFats + meal.getItemTotalFat() * meal.getNumberOfServings();
-                        loggedCarbohydrates = loggedCarbohydrates + meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
+                        loggedCalories += meal.getCalories() * meal.getNumberOfServings();
+                        loggedProteins += meal.getItemProtein() * meal.getNumberOfServings();
+                        loggedFats += meal.getItemTotalFat() * meal.getNumberOfServings();
+                        loggedCarbohydrates += meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
                     }
                 }
                 updateMacroCopy(loggedCalories, loggedProteins, loggedFats, loggedCarbohydrates);
-                Log.i("A", "A" + loggedCalories);
-                Log.i("B", "B" + loggedProteins);
-                Log.i("C", "C" + loggedFats);
-                Log.i("D", "D" + loggedCarbohydrates);
+//                Log.i("A", "A" + loggedCalories);
+//                Log.i("B", "B" + loggedProteins);
+//                Log.i("C", "C" + loggedFats);
+//                Log.i("D", "D" + loggedCarbohydrates);
             }
 
             @Override
@@ -188,35 +191,46 @@ public class Remember extends Fragment {
     //problem with this method
     //okay so no error now but update is not happening, very close now
     public void updateMacroCopy(final double calories, final double proteins, final double fats, final double carbohydrates) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Thursday");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            double usersCalories,usersCarbohydrates,usersProteins,usersFats;
+        assert userID != null;
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Thursday").child(userID);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            double usersCalories, usersCarbohydrates, usersProteins, usersFats;
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    MacroCopy macroCopy = userSnapshot.getValue(MacroCopy.class);
-                    assert macroCopy != null;
-                    if(macroCopy.getUserID().equals(userID)) {
-                        usersCalories = macroCopy.getCalorieConsumption();
-                        usersCarbohydrates = macroCopy.getCarbohydrateConsumption();
-                        usersProteins = macroCopy.getProteinConsumption();
-                        usersFats = macroCopy.getFatConsumption();
-                    }
-                }
                 MacroCopy macroCopy = snapshot.getValue(MacroCopy.class);
-                DatabaseReference updateDBReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Thursday");
                 assert macroCopy != null;
+
+                usersCalories = macroCopy.getCalorieConsumption();
+                usersCarbohydrates = macroCopy.getCarbohydrateConsumption();
+                usersProteins = macroCopy.getProteinConsumption();
+                usersFats = macroCopy.getFatConsumption();
+                DatabaseReference updateDBReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Thursday").child(userID);
                 updateDBReference.child("calorieConsumption").setValue(usersCalories - calories);
                 updateDBReference.child("carbohydrateConsumption").setValue(usersCarbohydrates - carbohydrates);
                 updateDBReference.child("fatConsumption").setValue(usersFats - fats);
                 updateDBReference.child("proteinConsumption").setValue(usersProteins - proteins);
+
+
+//                Log.i("A", "A" + usersCalories);
+//                Log.i("B", "B" + usersCarbohydrates);
+//                Log.i("C", "C" + usersFats);
+//                Log.i("D", "D" + usersProteins);
+//                updateDBReference.child("calorieConsumption").setValue(1 - calories);
+//                updateDBReference.child("carbohydrateConsumption").setValue(1 - carbohydrates);
+//                updateDBReference.child("fatConsumption").setValue(1 - fats);
+//                updateDBReference.child("proteinConsumption").setValue(1 - proteins);
+//                Log.i("A", "A2" + usersCalories);
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 }
 
