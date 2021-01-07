@@ -109,8 +109,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        //A nicer looking way to error check a radio button could be to use set error and request focus
-                                        //not sure how possible this is with radio buttons. just a thought
+                                        //this sometimes works look into this problem
                                         if (!Arrays.asList(items).contains(mealType)) {
                                             AlertDialog.Builder dlgAlert = new AlertDialog.Builder(context);
                                             dlgAlert.setMessage("Not All Fields are Filled!");
