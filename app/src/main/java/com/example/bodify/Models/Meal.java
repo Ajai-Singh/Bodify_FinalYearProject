@@ -112,7 +112,7 @@ public class Meal {
 
     }
 
-    public Meal(String itemName, String userID, int calories, int caloriesFromFat, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings, String mealType) {
+    public Meal(String itemName, String userID, int calories, int caloriesFromFat, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings, String mealType,String dayOfWeek) {
         this.itemName = itemName;
         this.userID = userID;
         this.calories = calories;

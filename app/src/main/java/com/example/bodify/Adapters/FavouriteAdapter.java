@@ -134,7 +134,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                             Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories(),
                                                     favourite.getCaloriesFromFat(), favourite.getItemTotalFat(), favourite.getItemSodium(),
                                                     favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
-                                                    favourite.getItemProtein(), Integer.parseInt(adapterChoice), mealType);
+                                                    favourite.getItemProtein(), Integer.parseInt(adapterChoice), mealType,simpleDateformat.format(today));
                                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                             databaseReference.child(simpleDateformat.format(today)).push().setValue(meal).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override

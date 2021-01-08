@@ -256,7 +256,7 @@ public class GenerateRecipes extends Fragment implements AdapterView.OnItemSelec
         final int servings){
             TextView itemNameFromScan, itemCalories, itemCaloriesFromFat, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT, itemServingsT;
             Button add;
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             View view = getLayoutInflater().inflate(R.layout.popup, null);
             itemNameFromScan = view.findViewById(R.id.itemNameTextView);
             itemCalories = view.findViewById(R.id.itemCaloriesTextView);

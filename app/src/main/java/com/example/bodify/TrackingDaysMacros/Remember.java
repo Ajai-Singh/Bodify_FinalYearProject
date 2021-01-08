@@ -39,6 +39,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+//Note this is a throwaway class it is only being used to create functionality
+
 public class Remember extends Fragment {
     private AnyChartView anyChartView;
     private TextView caloriesTV, fatsTV, proteinsTV, carbohydratesTV;
@@ -46,6 +48,10 @@ public class Remember extends Fragment {
     private final String userID = mAuth.getUid();
     private BarChart barChart;
     private final ArrayList<BarEntry> barEntries = new ArrayList<>();
+
+    public Remember() {
+
+    }
 
     @Nullable
     @Override

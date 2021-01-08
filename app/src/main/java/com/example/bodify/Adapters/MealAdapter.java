@@ -16,9 +16,7 @@ import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Meal> meals;
@@ -32,7 +30,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
     @NonNull
     @Override
     public MealAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_meal_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_meal_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -63,20 +61,15 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                                     }).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Meal meal = null;
+                                    Meal meal = new Meal();
                                     for (int i = 0; i < meals.size(); i++) {
                                         if (holder.getAdapterPosition() == i) {
                                             meal = meals.get(i);
                                             break;
                                         }
                                     }
-                                    Date today = new Date();
-                                    //problem with deleting lies here i have passed in a regex for the specific child I need to do a for loop and delete
-                                    //TODO
-                                    @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
-                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(simpleDateformat.format(today));
-                                    assert meal != null;
-                                    databaseReference.child(meal.getId()).removeValue();
+                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meal.getDayOfWeek()).child(meal.getId());
+                                    databaseReference.removeValue();
                                     meals.clear();
                                     notifyDataSetChanged();
                                 }
@@ -103,7 +96,8 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView itemName,caloriesConsumed,fats,proteins,carbs,menuOptions;
+        private final TextView itemName, caloriesConsumed, fats, proteins, carbs, menuOptions;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemName = itemView.findViewById(R.id.mealName);
@@ -113,18 +107,23 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
             carbs = itemView.findViewById(R.id.carbsTV);
             menuOptions = itemView.findViewById(R.id.mealMenuOptions);
         }
+
         public void setItemName(String name) {
             itemName.setText(name);
         }
+
         public void setCaloriesConsumed(int calories) {
             caloriesConsumed.setText(String.valueOf(calories));
         }
+
         public void setFats(int f) {
             fats.setText(String.valueOf(f).concat("F"));
         }
+
         public void setProteins(int p) {
             proteins.setText(String.valueOf(p).concat("P"));
         }
+
         public void setCarbs(int c) {
             carbs.setText(String.valueOf(c).concat("C"));
         }
