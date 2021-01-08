@@ -1,6 +1,8 @@
 package com.example.bodify.TrackingDaysMacros;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,13 @@ import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.MacroCopy;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -35,6 +44,8 @@ public class Remember extends Fragment {
     private TextView caloriesTV, fatsTV, proteinsTV, carbohydratesTV;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
+    private BarChart barChart;
+    private final ArrayList<BarEntry> barEntries = new ArrayList<>();
 
     @Nullable
     @Override
@@ -45,10 +56,12 @@ public class Remember extends Fragment {
         fatsTV = view.findViewById(R.id.dailyFatsTV);
         proteinsTV = view.findViewById(R.id.dailyProteinsTV);
         carbohydratesTV = view.findViewById(R.id.dailyCarbsTV);
+        barChart = view.findViewById(R.id.breakdownBarChart);
         getValuesForMacroCopy();
         getMacroCopyValues();
         setUIComponents();
         setUpPieChart();
+        setUpBarChart();
         return view;
     }
 
@@ -60,7 +73,7 @@ public class Remember extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Macro macro = snapshot.getValue(Macro.class);
                 assert macro != null;
-                createMacroCopyInDatabase(macro.getCalorieConsumption(), macro.getCarbohydrates(),macro.getFats(),macro.getProteins());
+                createMacroCopyInDatabase(macro.getCalorieConsumption(), macro.getCarbohydrates(), macro.getFats(), macro.getProteins());
             }
 
             @Override
@@ -78,7 +91,7 @@ public class Remember extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Successfully saved", Toast.LENGTH_SHORT).show();
+                    Log.i("Saved", "Successfully saved");
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -90,26 +103,24 @@ public class Remember extends Fragment {
     }
 
     public void setUIComponents() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Thursday");
+        assert userID != null;
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Thursday").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    MacroCopy macroCopy = userSnapshot.getValue(MacroCopy.class);
-                    assert macroCopy != null;
-                    if (macroCopy.getUserID().equals(userID)) {
-                        caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
-                        fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
-                        proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
-                        carbohydratesTV.setText(String.valueOf(macroCopy.getCarbohydrateConsumption()));
-                        break;
-                    }
+                MacroCopy macroCopy = snapshot.getValue(MacroCopy.class);
+
+                if (macroCopy != null) {
+                    caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
+                    fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
+                    proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
+                    carbohydratesTV.setText(String.valueOf(macroCopy.getCarbohydrateConsumption()));
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -147,6 +158,62 @@ public class Remember extends Fragment {
                 Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void setUpBarChart() {
+        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
+        databaseReference1.addValueEventListener(new ValueEventListener() {
+            double loggedCalories, loggedProteins, loggedFats, loggedCarbohydrates;
+            final ArrayList<BarEntry> macros = new ArrayList<>();
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    Meal meal = userSnapshot.getValue(Meal.class);
+                    assert meal != null;
+                    if (meal.getUserID().equals(userID)) {
+                        loggedCalories += meal.getCalories() * meal.getNumberOfServings();
+                        loggedProteins += meal.getItemProtein() * meal.getNumberOfServings();
+                        loggedFats += meal.getItemTotalFat() * meal.getNumberOfServings();
+                        loggedCarbohydrates += meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
+                    }
+                }
+                macros.add(new BarEntry(1f, (float) loggedFats * 9));
+                macros.add(new BarEntry(2f, (float) loggedCarbohydrates * 4));
+                macros.add(new BarEntry(3f, (float) loggedProteins * 4));
+                showBarChart(macros);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void showBarChart(ArrayList<BarEntry> macros) {
+        barEntries.add(macros.get(0));
+        barEntries.add(macros.get(1));
+        barEntries.add(macros.get(2));
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(getXAxisValues()));
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Data Set");
+        BarData barData = new BarData(barDataSet);
+        barChart.clear();
+        barChart.setData(barData);
+        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(16f);
+        barChart.invalidate();
+    }
+
+    public ArrayList<String> getXAxisValues() {
+        ArrayList<String> xLabels = new ArrayList<>();
+        xLabels.add("0");
+        xLabels.add("Cals @ Fat");
+        xLabels.add("Cals @ Carbohydrate");
+        xLabels.add("Cals @ Protein");
+        return new ArrayList<>(xLabels);
     }
 
     public void getMacroCopyValues() {

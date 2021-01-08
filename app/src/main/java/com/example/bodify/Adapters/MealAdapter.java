@@ -71,6 +71,8 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                                         }
                                     }
                                     Date today = new Date();
+                                    //problem with deleting lies here i have passed in a regex for the specific child I need to do a for loop and delete
+                                    //TODO
                                     @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
                                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(simpleDateformat.format(today));
                                     assert meal != null;

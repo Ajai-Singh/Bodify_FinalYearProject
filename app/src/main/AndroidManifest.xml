@@ -4,8 +4,12 @@
     package="com.example.bodify">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-feature android:name="android.hardware.type.watch" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
@@ -28,6 +32,7 @@
         <activity android:name=".FirebaseAuthentication.LogIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -40,6 +45,7 @@
         <activity android:name=".ChatRoom" />
         <activity android:name=".ViewAllRecipes" />
         <activity android:name=".Management" android:theme="@style/Theme.test" />
-        <activity android:name=".Test"/>
+        <activity android:name=".Test" />
     </application>
+
 </manifest>
