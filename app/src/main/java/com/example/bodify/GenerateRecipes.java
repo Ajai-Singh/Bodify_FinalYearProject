@@ -186,7 +186,6 @@ public class GenerateRecipes extends Fragment implements AdapterView.OnItemSelec
                 @Override
                 public void onResponse(String response) {
                     mAuth = FirebaseAuth.getInstance();
-                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
                     final String userID = mAuth.getUid();
                     try {
                         JSONObject jsonObject = new JSONObject(response);

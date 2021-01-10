@@ -39,6 +39,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 v.getContext().startActivity(intent);
             }
         });
+        holder.menuOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
@@ -51,7 +57,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView recipeName,servingQuantity,cookDuration,url;
+        public TextView recipeName,servingQuantity,cookDuration,url,menuOptions;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -59,15 +65,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             servingQuantity = itemView.findViewById(R.id.Serving);
             cookDuration = itemView.findViewById(R.id.timeToCook);
             url = itemView.findViewById(R.id.source);
+            menuOptions = itemView.findViewById(R.id.recipeOptions);
         }
         public void setRecipeName(String rn) {
             recipeName.setText(rn);
         }
         public void setServingQuantity(String sq) {
-            servingQuantity.setText(sq);
+            servingQuantity.setText(sq.concat(" Servings"));
         }
         public void setCookDuration(String cd) {
-            cookDuration.setText(cd);
+            cookDuration.setText(cd.concat(" Mins"));
         }
         public void setUrl(String u) {
             url.setText(u);

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/addToFavs"
+        android:title="Add to Favourites" />
+    <item
+        android:id="@+id/addToTodaysDiary"
+        android:title="Add to Diary" />
+    <item
+        android:id="@+id/information"
+        android:title="Nutritional Information" />
+</menu>

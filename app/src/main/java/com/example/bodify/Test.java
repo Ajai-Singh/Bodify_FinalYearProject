@@ -7,23 +7,32 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
+import com.example.bodify.Adapters.RecipeAdapter;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.Models.Favourite;
@@ -36,123 +45,62 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Objects;
+
 import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
 
+import static java.security.AccessController.getContext;
+
 public class Test extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    private Spinner timeFrame;
-    private ArrayList<String> times;
-    public static final String API_KEY = "f900229f64f14de9a2698ea63260454b";
+    private Spinner mealsSpinner;
+    private ArrayList<String> mealType;
+    private EditText choice;
+    public static final String API_KEY = "de851175d709445bb3d6149a58107a93";
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private TextView formatTxt, contentTxt;
-    private Button randomMeals, scanBtn;
+    private Button search,scan;
+    private RecyclerView recyclerView;
+    private RecipeAdapter recipeAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_generate_recipes);
-        randomMeals = findViewById(R.id.generateMealPlan);
-        scanBtn = findViewById(R.id.scan_button);
-        formatTxt = findViewById(R.id.scan_format);
-        contentTxt = findViewById(R.id.scan_content);
-        timeFrame = findViewById(R.id.timeFrameSpinner);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
+        setContentView(R.layout.activity_generate_recepies1);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Food Finder");
+        mealsSpinner = findViewById(R.id.spinner);
+        choice = findViewById(R.id.foodName);
+        search = findViewById(R.id.searchMeals);
+        recyclerView = findViewById(R.id.recipeRCV);
+        scan = findViewById(R.id.button4);
         updateSpinners();
-        generateMeals();
-        scan();
-    }
-
-    public void generateMeals() {
-        AndroidNetworking.initialize(Test.this);
-        randomMeals.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (timeFrame.getSelectedItemPosition() == 0) {
-                    AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Test.this);
-                    dlgAlert.setMessage("Not All Fields are Filled!");
-                    dlgAlert.setTitle("Error...");
-                    dlgAlert.setPositiveButton("OK", null);
-                    dlgAlert.setCancelable(true);
-                    dlgAlert.create().show();
-                    dlgAlert.setPositiveButton("Ok",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            });
-                } else {
-                    final String userID = mAuth.getUid();
-                    assert userID != null;
-                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros");
-                    databaseReference.addValueEventListener(new ValueEventListener() {
-                        @SuppressLint("SetTextI18n")
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                Macro macro = dataSnapshot.getValue(Macro.class);
-                                assert macro != null;
-                                if (macro.getUserId().equals(userID)) {
-                                    createDayMealPlan(macro.getCalorieConsumption(), timeFrame.getSelectedItem().toString());
-                                    break;
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(Test.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-    public void scan () {
-        scanBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.scan_button) {
-                    IntentIntegrator scanIntegrator = new IntentIntegrator((Activity) Test.this);
-                    scanIntegrator.initiateScan();
-                }
-            }
-        });
+        mealSearch();
+        scanner();
     }
 
 
-    public void onActivityResult ( int requestCode, int resultCode, Intent intent){
-        super.onActivityResult(requestCode, resultCode, intent);
-        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanningResult != null) {
-            String scanContent = scanningResult.getContents();
-            String scanFormat = scanningResult.getFormatName();
-            formatTxt.setText(scanFormat);
-            contentTxt.setText(scanContent);
-            if (scanContent != null) {
-                returnNutritionalInformation(scanContent);
-            }
-        } else {
-            Toast.makeText(Test.this, "No scan data received!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void updateSpinners () {
-        times = new ArrayList<>();
-        times.add("Select time frame.");
-        times.add("Day");
-        times.add("Week");
-        ArrayAdapter<String> adapterTimes = new ArrayAdapter<String>(Test.this, android.R.layout.simple_spinner_dropdown_item, times) {
+    public void updateSpinners() {
+        mealType = new ArrayList<>();
+        mealType.add("Select meal type");
+        mealType.add("Main Course");
+        mealType.add("Side Dish");
+        mealType.add("Dessert");
+        mealType.add("Appetizer");
+        mealType.add("Salad");
+        mealType.add("Bread");
+        mealType.add("Breakfast");
+        mealType.add("Soup");
+        mealType.add("Beverage");
+        mealType.add("Sauce");
+        mealType.add("Drink");
+        ArrayAdapter<String> adapterMeals = new ArrayAdapter<String>(Test.this, android.R.layout.simple_spinner_dropdown_item, mealType) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
@@ -170,49 +118,99 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                 return view;
             }
         };
-        adapterTimes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        timeFrame.setAdapter(adapterTimes);
-        timeFrame.setOnItemSelectedListener(Test.this);
+        adapterMeals.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mealsSpinner.setAdapter(adapterMeals);
+        mealsSpinner.setOnItemSelectedListener(Test.this);
     }
 
-    public void createDayMealPlan ( double calories, String time){
-        AndroidNetworking.get("https://api.spoonacular.com/recipes/mealplans/generate?timeFrame=" + time + "&targetCalories=" + calories + "&diet=vegetarian&exclude=shellfish%2C%20olives&apiKey=" + API_KEY)
-                .addPathParameter("pageNumber", "0")
-                .addQueryParameter("limit", "1")
-                .addHeaders("token", "1234")
-                .setTag("test")
-                .setPriority(Priority.LOW)
-                .build().getAsString(new StringRequestListener() {
+    public void mealSearch() {
+        search.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(String response) {
-                mAuth = FirebaseAuth.getInstance();
-                FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                final String userID = mAuth.getUid();
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONArray jsonArray = jsonObject.getJSONArray("meals");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        int id = jsonArray.getJSONObject(i).getInt("id");
-                        String title = jsonArray.getJSONObject(i).getString("title");
-                        String readyInMinutes = jsonArray.getJSONObject(i).getString("readyInMinutes");
-                        String servings = jsonArray.getJSONObject(i).getString("servings");
-                        String sourceUrl = jsonArray.getJSONObject(i).getString("sourceUrl");
-                        Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID);
-                        recipes.add(recipe);
-                    }
-                    Intent intent = new Intent(Test.this, ViewAllRecipes.class);
-                    intent.putExtra("recipes", recipes);
-                    startActivity(intent);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            public void onClick(View v) {
+                if (mealsSpinner.getSelectedItemPosition() == 0 || TextUtils.isEmpty(choice.getText().toString())) {
+                    AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Test.this);
+                    dlgAlert.setMessage("Not All Fields are Filled!");
+                    dlgAlert.setTitle("Error...");
+                    dlgAlert.setPositiveButton("OK", null);
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                    dlgAlert.setPositiveButton("Ok",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            });
+                } else {
+                    AndroidNetworking.get("https://api.spoonacular.com/recipes/search?query="+choice.getText().toString()+
+                            "&type="+mealsSpinner.getSelectedItem().
+                            toString().toLowerCase()+"&apiKey="+API_KEY)
+                            .addPathParameter("pageNumber", "0")
+                            .addQueryParameter("limit", "1")
+                            .addHeaders("token", "1234")
+                            .setTag("test")
+                            .setPriority(Priority.LOW)
+                            .build().getAsString(new StringRequestListener() {
+                        @Override
+                        public void onResponse(String response) {
+                            mAuth = FirebaseAuth.getInstance();
+                            final String userID = mAuth.getUid();
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                JSONArray jsonArray = jsonObject.getJSONArray("results");
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    int id = jsonArray.getJSONObject(i).getInt("id");
+                                    String title = jsonArray.getJSONObject(i).getString("title");
+                                    String readyInMinutes = jsonArray.getJSONObject(i).getString("readyInMinutes");
+                                    String servings = jsonArray.getJSONObject(i).getString("servings");
+                                    String sourceUrl = jsonArray.getJSONObject(i).getString("sourceUrl");
+                                    Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID);
+                                    Log.i("R","" + recipe.toString());
+                                    recipes.add(recipe);
+                                }
+                                recyclerView.setHasFixedSize(true);
+                                recyclerView.setLayoutManager(new LinearLayoutManager(Test.this));
+                                recipeAdapter = new RecipeAdapter(recipes);
+                                recyclerView.setAdapter(recipeAdapter);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            Toast.makeText(Test.this, "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
+        });
+    }
 
+    public void scanner() {
+        scan.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onError(ANError anError) {
-                Toast.makeText(Test.this, "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                if (v.getId() == R.id.button4) {
+                    IntentIntegrator scanIntegrator = new IntentIntegrator(Test.this);
+                    scanIntegrator.initiateScan();
+                }
             }
         });
+    }
+
+    public void onActivityResult ( int requestCode, int resultCode, Intent intent){
+        super.onActivityResult(requestCode, resultCode, intent);
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanningResult != null) {
+            String scanContent = scanningResult.getContents();
+            String scanFormat = scanningResult.getFormatName();
+            Log.i("scan format","" + scanFormat);
+            Log.i("scan content","" + scanContent);
+            if (scanContent != null) {
+                returnNutritionalInformation(scanContent);
+            }
+        } else {
+            Toast.makeText(Test.this, "No scan data received!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void returnNutritionalInformation (String scanContent){
@@ -256,7 +254,7 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                              final int servings){
         TextView itemNameFromScan, itemCalories, itemCaloriesFromFat, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT, itemServingsT;
         Button add;
-        AlertDialog.Builder builder = new AlertDialog.Builder(Test.this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(Test.this);
         View view = getLayoutInflater().inflate(R.layout.popup, null);
         itemNameFromScan = view.findViewById(R.id.itemNameTextView);
         itemCalories = view.findViewById(R.id.itemCaloriesTextView);
@@ -303,12 +301,12 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
     }
 
     @Override
-    public void onItemSelected (AdapterView < ? > parent, View view,int position, long id){
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
     }
 
     @Override
-    public void onNothingSelected (AdapterView < ? > parent){
+    public void onNothingSelected(AdapterView<?> parent) {
     }
 }
 
