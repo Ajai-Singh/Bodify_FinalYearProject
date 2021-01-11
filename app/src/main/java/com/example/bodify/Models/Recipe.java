@@ -1,11 +1,16 @@
 package com.example.bodify.Models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class Recipe implements Serializable {
-    private int id; // this id corresponds to the id of the recipe
-    private String title,sourceUrl;
-    private String readyInMinutes,servings;
+
+    private int id;
+    private String title;
+    private String sourceUrl;
+    private String readyInMinutes;
+    private String servings;
     private String recipeID;
 
     public int getId() {
@@ -60,7 +65,7 @@ public class Recipe implements Serializable {
 
     }
 
-    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, String servings,String recipeID) {
+    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, String servings, String recipeID) {
         this.id = id;
         this.title = title;
         this.sourceUrl = sourceUrl;

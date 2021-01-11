@@ -52,10 +52,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Objects;
 
 import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
+import com.google.gson.Gson;
 
 import static java.security.AccessController.getContext;
 
@@ -66,7 +68,7 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
     public static final String API_KEY = "de851175d709445bb3d6149a58107a93";
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private Button search,scan;
+    private Button search, scan;
     private RecyclerView recyclerView;
     private RecipeAdapter recipeAdapter;
 
@@ -126,7 +128,7 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
     public void mealSearch() {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 if (mealsSpinner.getSelectedItemPosition() == 0 || TextUtils.isEmpty(choice.getText().toString())) {
                     AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Test.this);
                     dlgAlert.setMessage("Not All Fields are Filled!");
@@ -140,9 +142,8 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                                 }
                             });
                 } else {
-                    AndroidNetworking.get("https://api.spoonacular.com/recipes/search?query="+choice.getText().toString()+
-                            "&type="+mealsSpinner.getSelectedItem().
-                            toString().toLowerCase()+"&apiKey="+API_KEY)
+
+                    AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query="+choice.getText().toString()+"&maxCalories=800&maxFat=100&maxProtein=100&maxCarbs=100&type="+mealsSpinner.getSelectedItem().toString().toLowerCase() + "&apiKey=" + API_KEY)
                             .addPathParameter("pageNumber", "0")
                             .addQueryParameter("limit", "1")
                             .addHeaders("token", "1234")
@@ -151,33 +152,35 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                             .build().getAsString(new StringRequestListener() {
                         @Override
                         public void onResponse(String response) {
-                            mAuth = FirebaseAuth.getInstance();
-                            final String userID = mAuth.getUid();
+
                             try {
                                 JSONObject jsonObject = new JSONObject(response);
                                 JSONArray jsonArray = jsonObject.getJSONArray("results");
+                                JSONObject test;
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     int id = jsonArray.getJSONObject(i).getInt("id");
+                                    Log.i("id", "" + id);
                                     String title = jsonArray.getJSONObject(i).getString("title");
-                                    String readyInMinutes = jsonArray.getJSONObject(i).getString("readyInMinutes");
-                                    String servings = jsonArray.getJSONObject(i).getString("servings");
-                                    String sourceUrl = jsonArray.getJSONObject(i).getString("sourceUrl");
-                                    Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID);
-                                    Log.i("R","" + recipe.toString());
-                                    recipes.add(recipe);
+                                    String image = jsonArray.getJSONObject(i).getString("image");
+                                    Log.i("a", "" + title);
+                                    test = jsonArray.getJSONObject(i).getJSONObject("nutrition");
+                                    JSONArray jsonArray1 = test.getJSONArray("nutrients");
+                                    for (int e = 0; e < jsonArray.length(); e++) {
+                                        double amount = jsonArray1.getJSONObject(e).getDouble("amount");
+                                        Log.i("title", "" + amount);
+
+                                    }
+                                    createRecipe(id,title);
                                 }
-                                recyclerView.setHasFixedSize(true);
-                                recyclerView.setLayoutManager(new LinearLayoutManager(Test.this));
-                                recipeAdapter = new RecipeAdapter(recipes);
-                                recyclerView.setAdapter(recipeAdapter);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
                         }
 
                         @Override
                         public void onError(ANError anError) {
-                            Toast.makeText(Test.this, "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
+
                         }
                     });
                 }
@@ -197,14 +200,57 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
         });
     }
 
-    public void onActivityResult ( int requestCode, int resultCode, Intent intent){
+    public void createRecipe(final int id, final String title) {
+        mAuth = FirebaseAuth.getInstance();
+        final String userID = mAuth.getUid();
+        AndroidNetworking.get("https://api.spoonacular.com/recipes/"+id+"/information?&apiKey=de851175d709445bb3d6149a58107a93")
+                .addPathParameter("pageNumber", "0")
+                .addQueryParameter("limit", "1")
+                .addHeaders("token", "1234")
+                .setTag("test")
+                .setPriority(Priority.LOW)
+                .build().getAsString(new StringRequestListener() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject1 = new JSONObject(response);
+                    for (int o = 0; o < jsonObject1.length(); o++) {
+                        String readyInMinutes = jsonObject1.getString("readyInMinutes");
+                        String servings = jsonObject1.getString("servings");
+                        String sourceUrl = jsonObject1.getString("sourceUrl");
+                        Log.i("red", "" + readyInMinutes);
+                        Log.i("ser", "" + servings);
+                        Log.i("source", "" + sourceUrl);
+                        Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID);
+                        recipes.add(recipe);
+                    }
+
+                    Log.i("size",""+recipes.size());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(new LinearLayoutManager(Test.this));
+                recipeAdapter = new RecipeAdapter(recipes);
+                recyclerView.setAdapter(recipeAdapter);
+            }
+
+            @Override
+            public void onError(ANError anError) {
+
+            }
+        });
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanningResult != null) {
             String scanContent = scanningResult.getContents();
             String scanFormat = scanningResult.getFormatName();
-            Log.i("scan format","" + scanFormat);
-            Log.i("scan content","" + scanContent);
+            Log.i("scan format", "" + scanFormat);
+            Log.i("scan content", "" + scanContent);
             if (scanContent != null) {
                 returnNutritionalInformation(scanContent);
             }
@@ -213,7 +259,7 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
         }
     }
 
-    public void returnNutritionalInformation (String scanContent){
+    public void returnNutritionalInformation(String scanContent) {
         AndroidNetworking.get("https://api.nutritionix.com/v1_1/item?upc=" + scanContent + "&appId=493d4e98&appKey=95b2bb9b721a2b2898f4a4269228ce93")
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "1")
@@ -248,10 +294,10 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
         });
     }
 
-    public void createPost ( final String itemName, final int calories,
-                             final int caloriesFromFat, final int itemTotalFat, final int itemSodium,
-                             final int itemTotalCarbohydrates, final int itemSugars, final int itemProtein,
-                             final int servings){
+    public void createPost(final String itemName, final int calories,
+                           final int caloriesFromFat, final int itemTotalFat, final int itemSodium,
+                           final int itemTotalCarbohydrates, final int itemSugars, final int itemProtein,
+                           final int servings) {
         TextView itemNameFromScan, itemCalories, itemCaloriesFromFat, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT, itemServingsT;
         Button add;
         final AlertDialog.Builder builder = new AlertDialog.Builder(Test.this);
@@ -301,7 +347,8 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                               long id) {
 
     }
 
@@ -309,4 +356,6 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
     public void onNothingSelected(AdapterView<?> parent) {
     }
 }
+
+
 
