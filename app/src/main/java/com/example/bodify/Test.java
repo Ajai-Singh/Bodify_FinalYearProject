@@ -49,12 +49,12 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
     private EditText choice;
     public static final String API_KEY = "de851175d709445bb3d6149a58107a93";
     private final ArrayList<Recipe> recipes = new ArrayList<>();
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private String userID = mAuth.getCurrentUser().getUid();
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     private Button search, scan;
     private RecyclerView recyclerView;
     private RecipeAdapter recipeAdapter;
-    private ArrayList<Double> macros = new ArrayList<>();
+    private final ArrayList<Integer> macros = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,7 +70,6 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
         mealSearch();
         scanner();
     }
-
 
     public void updateSpinners() {
         mealType = new ArrayList<>();
@@ -126,7 +125,6 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                                 }
                             });
                 } else {
-
                     AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query="+choice.getText().toString()+"&apiKey="+API_KEY+"&addRecipeNutrition=true&type="+mealsSpinner.getSelectedItem().toString().toLowerCase())
                             .addPathParameter("pageNumber", "0")
                             .addQueryParameter("limit", "1")
@@ -140,34 +138,25 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                             try {
                                 JSONObject jsonObject = new JSONObject(response);
                                 JSONArray jsonArray = jsonObject.getJSONArray("results");
-                                JSONObject test;
+                                JSONObject jsonObject1;
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     int id = jsonArray.getJSONObject(i).getInt("id");
                                     String title = jsonArray.getJSONObject(i).getString("title");
                                     String readyInMinutes = jsonArray.getJSONObject(i).getString("readyInMinutes");
-                                    String servings = jsonArray.getJSONObject(i).getString("servings");
+                                    int servings = jsonArray.getJSONObject(i).getInt("servings");
                                     String sourceUrl = jsonArray.getJSONObject(i).getString("sourceUrl");
                                     String image = jsonArray.getJSONObject(i).getString("image");
-                                    Log.i("id", "" + id);
-                                    Log.i("title", "" + title);
-                                    Log.i("ready", "" + readyInMinutes);
-                                    Log.i("servings", "" + servings);
-                                    Log.i("source", "" + sourceUrl);
-                                    Log.i("image", "" + image);
-                                    test = jsonArray.getJSONObject(i).getJSONObject("nutrition");
-                                    JSONArray jsonArray1 = test.getJSONArray("nutrients");
+                                    jsonObject1 = jsonArray.getJSONObject(i).getJSONObject("nutrition");
+                                    JSONArray jsonArray1 = jsonObject1.getJSONArray("nutrients");
                                     for (int e = 0; e < jsonArray1.length(); e++) {
-                                        double amount = jsonArray1.getJSONObject(e).getDouble("amount");
-                                        Log.i("title", "" + amount);
-                                        macros.add(amount);
+                                        macros.add(jsonArray1.getJSONObject(e).getInt("amount"));
                                     }
-                                    Recipe recipe = new Recipe(id,title,sourceUrl,readyInMinutes,servings,userID,
-                                            macros.get(0),macros.get(1),macros.get(3),macros.get(8));
+                                    Recipe recipe = new Recipe(id,title,sourceUrl,readyInMinutes,servings,userID,macros.get(0),macros.get(1),macros.get(3),macros.get(8),macros.get(5),macros.get(7));
                                     recipes.add(recipe);
                                 }
                                 recyclerView.setHasFixedSize(true);
                                 recyclerView.setLayoutManager(new LinearLayoutManager(Test.this));
-                                recipeAdapter = new RecipeAdapter(recipes);
+                                recipeAdapter = new RecipeAdapter(recipes,Test.this);
                                 recyclerView.setAdapter(recipeAdapter);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -177,7 +166,7 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
 
                         @Override
                         public void onError(ANError anError) {
-
+                            Toast.makeText(Test.this, "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -214,7 +203,7 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
     }
 
     public void returnNutritionalInformation(String scanContent) {
-        AndroidNetworking.get("https://api.nutritionix.com/v1_1/item?upc=" + scanContent + "&appId=493d4e98&appKey=95b2bb9b721a2b2898f4a4269228ce93")
+        AndroidNetworking.get("https://api.nutritionix.com/v1_1/item?upc="+scanContent+"&appId=493d4e98&appKey=95b2bb9b721a2b2898f4a4269228ce93")
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "1")
                 .addHeaders("token", "1234")
@@ -226,16 +215,8 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     String itemId = jsonObject.getString("item_id");
-                    String itemName = jsonObject.getString("item_name");
-                    int calories = jsonObject.getInt("nf_calories");
-                    int caloriesFromFat = jsonObject.getInt("nf_calories_from_fat");
-                    int totalFat = jsonObject.getInt("nf_total_fat");
-                    int sodium = jsonObject.getInt("nf_sodium");
-                    int totalCarbohydrates = jsonObject.getInt("nf_total_carbohydrate");
-                    int sugars = jsonObject.getInt("nf_sugars");
-                    int proteins = jsonObject.getInt("nf_protein");
-                    int servings = jsonObject.getInt("nf_servings_per_container");
-                    createPost(itemName, calories, caloriesFromFat, totalFat, sodium, totalCarbohydrates, sugars, proteins, servings);
+                    createPost(jsonObject.getString("item_name"), jsonObject.getInt("nf_calories"), jsonObject.getInt("nf_calories_from_fat"), jsonObject.getInt("nf_total_fat"),
+                            jsonObject.getInt("nf_sodium"), jsonObject.getInt("nf_total_carbohydrate"), jsonObject.getInt("nf_sugars"), jsonObject.getInt("nf_protein"), jsonObject.getInt("nf_servings_per_container"));
                 } catch (JSONException e) {
                     Toast.makeText(Test.this, "Error Occurred" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -255,15 +236,15 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
         TextView itemNameFromScan, itemCalories, itemCaloriesFromFat, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT, itemServingsT;
         Button add;
         final AlertDialog.Builder builder = new AlertDialog.Builder(Test.this);
-        View view = getLayoutInflater().inflate(R.layout.popup, null);
-        itemNameFromScan = view.findViewById(R.id.itemNameTextView);
-        itemCalories = view.findViewById(R.id.itemCaloriesTextView);
+        View view = getLayoutInflater().inflate(R.layout.scanner_popup, null);
+        itemNameFromScan = view.findViewById(R.id.mealItemNameTextView);
+        itemCalories = view.findViewById(R.id.mealItemCaloriesTextView);
         itemCaloriesFromFat = view.findViewById(R.id.caloriesFromFatTextView);
-        itemTotalFatT = view.findViewById(R.id.totalFatTextView);
-        itemSodiumT = view.findViewById(R.id.totalSodiumTextView);
-        itemTotalCarbohydratesT = view.findViewById(R.id.totalCarbohydrateTextView);
-        itemSugarsT = view.findViewById(R.id.totalSugarTextView);
-        itemProteinT = view.findViewById(R.id.totalProteinTextView);
+        itemTotalFatT = view.findViewById(R.id.mealTotalFatTextView);
+        itemSodiumT = view.findViewById(R.id.mealTotalSodiumTextView);
+        itemTotalCarbohydratesT = view.findViewById(R.id.mealTotalCarbohydrateTextView);
+        itemSugarsT = view.findViewById(R.id.mealTotalSugarTextView);
+        itemProteinT = view.findViewById(R.id.mealTotalProteinTextView);
         itemServingsT = view.findViewById(R.id.amount);
         add = view.findViewById(R.id.save);
         itemNameFromScan.setText(itemName);
@@ -281,7 +262,7 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 assert firebaseUser != null;
                 String userID = firebaseUser.getUid();
-                Favourite favourite = new Favourite(itemName, calories, caloriesFromFat, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, userID, servings);
+                Favourite favourite = new Favourite(itemName, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, userID, servings);
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                 databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

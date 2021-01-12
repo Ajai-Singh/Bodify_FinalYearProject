@@ -141,7 +141,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     fragment = new Breakdown();
                     break;
                 case R.id.scan:
-                    fragment = new GenerateRecipes();
+                    fragment = new Meals();
                     break;
             }
             assert fragment != null;

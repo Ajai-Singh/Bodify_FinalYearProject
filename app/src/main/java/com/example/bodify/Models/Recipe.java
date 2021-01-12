@@ -10,9 +10,10 @@ public class Recipe implements Serializable {
     private String title;
     private String sourceUrl;
     private String readyInMinutes;
-    private String servings;
+    private int servings;
     private String recipeID;
-    private double calories,fats,carbohydrates,proteins;
+    private String dayOfWeek;
+    private int calories,fats,carbohydrates,proteins,sugar,sodium;
 
     public int getId() {
         return id;
@@ -46,11 +47,11 @@ public class Recipe implements Serializable {
         this.readyInMinutes = readyInMinutes;
     }
 
-    public String getServings() {
+    public int getServings() {
         return servings;
     }
 
-    public void setServings(String servings) {
+    public void setServings(int servings) {
         this.servings = servings;
     }
 
@@ -62,44 +63,60 @@ public class Recipe implements Serializable {
         this.recipeID = recipeID;
     }
 
-    public double getCalories() {
+    public int getSugar() {
+        return sugar;
+    }
+
+    public void setSugar(int sugar) {
+        this.sugar = sugar;
+    }
+
+    public int getCalories() {
         return calories;
     }
 
-    public void setCalories(double calories) {
+    public void setCalories(int calories) {
         this.calories = calories;
     }
 
-    public double getFats() {
+    public int getFats() {
         return fats;
     }
 
-    public void setFats(double fats) {
+    public void setFats(int fats) {
         this.fats = fats;
     }
 
-    public double getCarbohydrates() {
+    public int getCarbohydrates() {
         return carbohydrates;
     }
 
-    public void setCarbohydrates(double carbohydrates) {
+    public void setCarbohydrates(int carbohydrates) {
         this.carbohydrates = carbohydrates;
     }
 
-    public double getProteins() {
+    public int getProteins() {
         return proteins;
     }
 
-    public void setProteins(double proteins) {
+    public void setProteins(int proteins) {
         this.proteins = proteins;
+    }
+
+    public int getSodium() {
+        return sodium;
+    }
+
+    public void setSodium(int sodium) {
+        this.sodium = sodium;
     }
 
     public Recipe() {
 
     }
 
-    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, String servings, String recipeID, double calories, double fats, double carbohydrates, double proteins) {
-        this.id = id;
+    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, int servings, String recipeID, int calories, int fats, int carbohydrates, int proteins,int sugar,int sodium) {
+        this.id = id; // realistically I dont need the Recipe id but will keep for now
         this.title = title;
         this.sourceUrl = sourceUrl;
         this.readyInMinutes = readyInMinutes;
@@ -109,5 +126,7 @@ public class Recipe implements Serializable {
         this.fats = fats;
         this.carbohydrates = carbohydrates;
         this.proteins = proteins;
+        this.sugar = sugar;
+        this.sodium = sodium;
     }
 }

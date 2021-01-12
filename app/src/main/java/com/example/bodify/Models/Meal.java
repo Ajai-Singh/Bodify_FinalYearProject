@@ -2,7 +2,7 @@ package com.example.bodify.Models;
 
 public class Meal {
     String itemName,userID,id,mealType,dayOfWeek;
-    int calories,caloriesFromFat,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
+    int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
 
     public String getItemName() {
         return itemName;
@@ -35,15 +35,7 @@ public class Meal {
     public void setCalories(int calories) {
         this.calories = calories;
     }
-
-    public int getCaloriesFromFat() {
-        return caloriesFromFat;
-    }
-
-    public void setCaloriesFromFat(int caloriesFromFat) {
-        this.caloriesFromFat = caloriesFromFat;
-    }
-
+    
     public int getItemTotalFat() {
         return itemTotalFat;
     }
@@ -112,11 +104,10 @@ public class Meal {
 
     }
 
-    public Meal(String itemName, String userID, int calories, int caloriesFromFat, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings, String mealType,String dayOfWeek) {
+    public Meal(String itemName, String userID, int calories, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings, String mealType,String dayOfWeek) {
         this.itemName = itemName;
         this.userID = userID;
         this.calories = calories;
-        this.caloriesFromFat = caloriesFromFat;
         this.itemTotalFat = itemTotalFat;
         this.itemSodium = itemSodium;
         this.itemTotalCarbohydrates = itemTotalCarbohydrates;
@@ -134,7 +125,6 @@ public class Meal {
                 ", id='" + id + '\'' +
                 ", mealType='" + mealType + '\'' +
                 ", calories=" + calories +
-                ", caloriesFromFat=" + caloriesFromFat +
                 ", itemTotalFat=" + itemTotalFat +
                 ", itemSodium=" + itemSodium +
                 ", itemTotalCarbohydrates=" + itemTotalCarbohydrates +

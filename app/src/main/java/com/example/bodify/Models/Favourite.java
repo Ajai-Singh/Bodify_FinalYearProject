@@ -2,7 +2,7 @@ package com.example.bodify.Models;
 
 public class Favourite {
     String itemName,userID,id;
-    int calories,caloriesFromFat,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
+    int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
 
     public Favourite() {
 
@@ -30,14 +30,6 @@ public class Favourite {
 
     public void setCalories(int calories) {
         this.calories = calories;
-    }
-
-    public int getCaloriesFromFat() {
-        return caloriesFromFat;
-    }
-
-    public void setCaloriesFromFat(int caloriesFromFat) {
-        this.caloriesFromFat = caloriesFromFat;
     }
 
     public int getItemTotalFat() {
@@ -96,10 +88,9 @@ public class Favourite {
         this.numberOfServings = numberOfServings;
     }
 
-    public Favourite(String itemName, int calories, int caloriesFromFat, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, String userID, int numberOfServings) {
+    public Favourite(String itemName, int calories, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, String userID, int numberOfServings) {
         this.itemName = itemName;
         this.calories = calories;
-        this.caloriesFromFat = caloriesFromFat;
         this.itemTotalFat = itemTotalFat;
         this.itemSodium = itemSodium;
         this.itemTotalCarbohydrates = itemTotalCarbohydrates;
@@ -116,7 +107,6 @@ public class Favourite {
                 ", userID='" + userID + '\'' +
                 ", id='" + id + '\'' +
                 ", calories=" + calories +
-                ", caloriesFromFat=" + caloriesFromFat +
                 ", itemTotalFat=" + itemTotalFat +
                 ", itemSodium=" + itemSodium +
                 ", itemTotalCarbohydrates=" + itemTotalCarbohydrates +

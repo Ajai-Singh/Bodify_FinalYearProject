@@ -131,8 +131,8 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                                 }
                                             }
                                             assert favourite != null;
-                                            Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories(),
-                                                    favourite.getCaloriesFromFat(), favourite.getItemTotalFat(), favourite.getItemSodium(),
+                                            Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories()
+                                                    , favourite.getItemTotalFat(), favourite.getItemSodium(),
                                                     favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
                                                     favourite.getItemProtein(), Integer.parseInt(adapterChoice), mealType,simpleDateformat.format(today));
                                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
