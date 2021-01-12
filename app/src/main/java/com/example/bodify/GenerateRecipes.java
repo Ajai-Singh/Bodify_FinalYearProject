@@ -196,7 +196,8 @@ public class GenerateRecipes extends Fragment implements AdapterView.OnItemSelec
                             String readyInMinutes = jsonArray.getJSONObject(i).getString("readyInMinutes");
                             String servings = jsonArray.getJSONObject(i).getString("servings");
                             String sourceUrl = jsonArray.getJSONObject(i).getString("sourceUrl");
-                            Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID);
+                            Recipe recipe = new Recipe();
+                            //Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID);
                             recipes.add(recipe);
                         }
                         Intent intent = new Intent(getContext(), ViewAllRecipes.class);

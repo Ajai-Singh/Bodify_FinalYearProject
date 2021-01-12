@@ -1,7 +1,5 @@
 package com.example.bodify;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,47 +16,32 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.example.bodify.Adapters.RecipeAdapter;
-import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.Models.Favourite;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Objects;
-
 import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
-import com.google.gson.Gson;
-
-import static java.security.AccessController.getContext;
 
 public class Test extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private Spinner mealsSpinner;
@@ -68,9 +50,11 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
     public static final String API_KEY = "de851175d709445bb3d6149a58107a93";
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private String userID = mAuth.getCurrentUser().getUid();
     private Button search, scan;
     private RecyclerView recyclerView;
     private RecipeAdapter recipeAdapter;
+    private ArrayList<Double> macros = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,7 +127,7 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                             });
                 } else {
 
-                    AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query="+choice.getText().toString()+"&maxCalories=800&maxFat=100&maxProtein=100&maxCarbs=100&type="+mealsSpinner.getSelectedItem().toString().toLowerCase() + "&apiKey=" + API_KEY)
+                    AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query="+choice.getText().toString()+"&apiKey="+API_KEY+"&addRecipeNutrition=true&type="+mealsSpinner.getSelectedItem().toString().toLowerCase())
                             .addPathParameter("pageNumber", "0")
                             .addQueryParameter("limit", "1")
                             .addHeaders("token", "1234")
@@ -159,19 +143,32 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                                 JSONObject test;
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     int id = jsonArray.getJSONObject(i).getInt("id");
-                                    Log.i("id", "" + id);
                                     String title = jsonArray.getJSONObject(i).getString("title");
+                                    String readyInMinutes = jsonArray.getJSONObject(i).getString("readyInMinutes");
+                                    String servings = jsonArray.getJSONObject(i).getString("servings");
+                                    String sourceUrl = jsonArray.getJSONObject(i).getString("sourceUrl");
                                     String image = jsonArray.getJSONObject(i).getString("image");
-                                    Log.i("a", "" + title);
+                                    Log.i("id", "" + id);
+                                    Log.i("title", "" + title);
+                                    Log.i("ready", "" + readyInMinutes);
+                                    Log.i("servings", "" + servings);
+                                    Log.i("source", "" + sourceUrl);
+                                    Log.i("image", "" + image);
                                     test = jsonArray.getJSONObject(i).getJSONObject("nutrition");
                                     JSONArray jsonArray1 = test.getJSONArray("nutrients");
-                                    for (int e = 0; e < jsonArray.length(); e++) {
+                                    for (int e = 0; e < jsonArray1.length(); e++) {
                                         double amount = jsonArray1.getJSONObject(e).getDouble("amount");
                                         Log.i("title", "" + amount);
-
+                                        macros.add(amount);
                                     }
-                                    createRecipe(id,title);
+                                    Recipe recipe = new Recipe(id,title,sourceUrl,readyInMinutes,servings,userID,
+                                            macros.get(0),macros.get(1),macros.get(3),macros.get(8));
+                                    recipes.add(recipe);
                                 }
+                                recyclerView.setHasFixedSize(true);
+                                recyclerView.setLayoutManager(new LinearLayoutManager(Test.this));
+                                recipeAdapter = new RecipeAdapter(recipes);
+                                recyclerView.setAdapter(recipeAdapter);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -198,49 +195,6 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                 }
             }
         });
-    }
-
-    public void createRecipe(final int id, final String title) {
-        mAuth = FirebaseAuth.getInstance();
-        final String userID = mAuth.getUid();
-        AndroidNetworking.get("https://api.spoonacular.com/recipes/"+id+"/information?&apiKey=de851175d709445bb3d6149a58107a93")
-                .addPathParameter("pageNumber", "0")
-                .addQueryParameter("limit", "1")
-                .addHeaders("token", "1234")
-                .setTag("test")
-                .setPriority(Priority.LOW)
-                .build().getAsString(new StringRequestListener() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject1 = new JSONObject(response);
-                    for (int o = 0; o < jsonObject1.length(); o++) {
-                        String readyInMinutes = jsonObject1.getString("readyInMinutes");
-                        String servings = jsonObject1.getString("servings");
-                        String sourceUrl = jsonObject1.getString("sourceUrl");
-                        Log.i("red", "" + readyInMinutes);
-                        Log.i("ser", "" + servings);
-                        Log.i("source", "" + sourceUrl);
-                        Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID);
-                        recipes.add(recipe);
-                    }
-
-                    Log.i("size",""+recipes.size());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(new LinearLayoutManager(Test.this));
-                recipeAdapter = new RecipeAdapter(recipes);
-                recyclerView.setAdapter(recipeAdapter);
-            }
-
-            @Override
-            public void onError(ANError anError) {
-
-            }
-        });
-
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {

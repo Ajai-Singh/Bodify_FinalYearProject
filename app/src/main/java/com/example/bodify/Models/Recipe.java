@@ -12,6 +12,7 @@ public class Recipe implements Serializable {
     private String readyInMinutes;
     private String servings;
     private String recipeID;
+    private double calories,fats,carbohydrates,proteins;
 
     public int getId() {
         return id;
@@ -61,16 +62,52 @@ public class Recipe implements Serializable {
         this.recipeID = recipeID;
     }
 
+    public double getCalories() {
+        return calories;
+    }
+
+    public void setCalories(double calories) {
+        this.calories = calories;
+    }
+
+    public double getFats() {
+        return fats;
+    }
+
+    public void setFats(double fats) {
+        this.fats = fats;
+    }
+
+    public double getCarbohydrates() {
+        return carbohydrates;
+    }
+
+    public void setCarbohydrates(double carbohydrates) {
+        this.carbohydrates = carbohydrates;
+    }
+
+    public double getProteins() {
+        return proteins;
+    }
+
+    public void setProteins(double proteins) {
+        this.proteins = proteins;
+    }
+
     public Recipe() {
 
     }
 
-    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, String servings, String recipeID) {
+    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, String servings, String recipeID, double calories, double fats, double carbohydrates, double proteins) {
         this.id = id;
         this.title = title;
         this.sourceUrl = sourceUrl;
         this.readyInMinutes = readyInMinutes;
         this.servings = servings;
         this.recipeID = recipeID;
+        this.calories = calories;
+        this.fats = fats;
+        this.carbohydrates = carbohydrates;
+        this.proteins = proteins;
     }
 }
