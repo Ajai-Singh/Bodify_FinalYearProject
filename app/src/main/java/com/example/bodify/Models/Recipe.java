@@ -1,10 +1,6 @@
 package com.example.bodify.Models;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
-
-public class Recipe implements Serializable {
+public class Recipe {
 
     private int id;
     private String title;
@@ -12,8 +8,8 @@ public class Recipe implements Serializable {
     private String readyInMinutes;
     private int servings;
     private String recipeID;
-    private String dayOfWeek;
     private int calories,fats,carbohydrates,proteins,sugar,sodium;
+    private String imageUrl;
 
     public int getId() {
         return id;
@@ -111,12 +107,20 @@ public class Recipe implements Serializable {
         this.sodium = sodium;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public Recipe() {
 
     }
 
-    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, int servings, String recipeID, int calories, int fats, int carbohydrates, int proteins,int sugar,int sodium) {
-        this.id = id; // realistically I dont need the Recipe id but will keep for now
+    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, int servings, String recipeID, int calories, int fats, int carbohydrates, int proteins,int sugar,int sodium,String imageUrl) {
+        this.id = id;
         this.title = title;
         this.sourceUrl = sourceUrl;
         this.readyInMinutes = readyInMinutes;
@@ -128,5 +132,6 @@ public class Recipe implements Serializable {
         this.proteins = proteins;
         this.sugar = sugar;
         this.sodium = sodium;
+        this.imageUrl = imageUrl;
     }
 }

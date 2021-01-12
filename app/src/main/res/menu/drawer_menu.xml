@@ -28,6 +28,11 @@
             android:title="All users" />
 
         <item
+            android:id="@+id/foodFinder"
+            android:icon="@drawable/diet"
+            android:title="Food Finder"/>
+
+        <item
             android:id="@+id/logOut"
             android:icon="@drawable/exit"
             android:title="Log out"/>

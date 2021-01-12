@@ -41,11 +41,10 @@
         <activity android:name=".GymsNearMe" />
         <activity android:name=".PersonalProfile" />
         <activity android:name=".Health" />
-        <activity android:name=".ViewAllUsers" />
+        <activity android:name=".ViewAllUsers" android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ChatRoom" />
-<!--        <activity android:name=".ViewAllRecipes" />-->
         <activity android:name=".Management" android:theme="@style/Theme.test" />
-        <activity android:name=".Test" />
+        <activity android:name=".Test" android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>

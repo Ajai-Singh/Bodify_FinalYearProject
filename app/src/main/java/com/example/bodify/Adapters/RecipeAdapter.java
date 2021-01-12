@@ -12,26 +12,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.R;
-import com.example.bodify.Test;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,8 +46,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private String userID = mAuth.getCurrentUser().getUid();
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
     public RecipeAdapter(ArrayList<Recipe> recipes, Context context) {
         this.recipes = recipes;
@@ -80,12 +79,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(context, holder.menuOptions);
                 popupMenu.inflate(R.menu.recipe_menu_options);
-                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @SuppressLint("NonConstantResourceId")
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         TextView itemNameFromScan, itemCalories, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT, itemServingsT;
+                        ImageView imageView;
                         switch (item.getItemId()) {
                             case R.id.information:
                                 final AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -99,6 +98,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 itemSugarsT = view.findViewById(R.id.mealTotalSugarTextView);
                                 itemProteinT = view.findViewById(R.id.mealTotalProteinTextView);
                                 itemServingsT = view.findViewById(R.id.mealAmount);
+                                imageView = view.findViewById(R.id.recipeImage);
                                 itemNameFromScan.setText(recipes.get(position).getTitle());
                                 itemCalories.setText(String.valueOf(recipes.get(position).getCalories()));
                                 itemTotalFatT.setText(String.valueOf(recipes.get(position).getFats()));
@@ -107,6 +107,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 itemSugarsT.setText(String.valueOf(recipes.get(position).getSugar()));
                                 itemProteinT.setText(String.valueOf(recipes.get(position).getProteins()));
                                 itemServingsT.setText(String.valueOf(recipes.get(position).getServings()));
+                                Glide.with(context).load(recipes.get(position).getImageUrl()).into(imageView);
                                 builder.setView(view);
                                 AlertDialog dialog = builder.create();
                                 dialog.show();

@@ -109,9 +109,14 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
     }
 
     public void mealSearch() {
+
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                if(!recipes.isEmpty()) {
+                    recipes.clear();
+                    recipeAdapter.notifyDataSetChanged();
+                }
                 if (mealsSpinner.getSelectedItemPosition() == 0 || TextUtils.isEmpty(choice.getText().toString())) {
                     AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Test.this);
                     dlgAlert.setMessage("Not All Fields are Filled!");
@@ -151,7 +156,7 @@ public class Test extends AppCompatActivity implements AdapterView.OnItemSelecte
                                     for (int e = 0; e < jsonArray1.length(); e++) {
                                         macros.add(jsonArray1.getJSONObject(e).getInt("amount"));
                                     }
-                                    Recipe recipe = new Recipe(id,title,sourceUrl,readyInMinutes,servings,userID,macros.get(0),macros.get(1),macros.get(3),macros.get(8),macros.get(5),macros.get(7));
+                                    Recipe recipe = new Recipe(id,title,sourceUrl,readyInMinutes,servings,userID,macros.get(0),macros.get(1),macros.get(3),macros.get(8),macros.get(5),macros.get(7),image);
                                     recipes.add(recipe);
                                 }
                                 recyclerView.setHasFixedSize(true);

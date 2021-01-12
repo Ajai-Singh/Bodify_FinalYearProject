@@ -34,7 +34,8 @@
             android:layout_height="wrap_content"
             android:hint="Input"
             android:id="@+id/input"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText"
+            android:autofillHints="" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ListView

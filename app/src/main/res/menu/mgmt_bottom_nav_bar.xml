@@ -8,10 +8,7 @@
     android:id="@+id/fav"
     android:title="Favourites"
     android:icon="@drawable/like"/>
-<item
-    android:id="@+id/scan"
-    android:title="Scan"
-    android:icon="@drawable/barcode"/>
+
     <item
         android:id="@+id/breakdown"
         android:title="Breakdown"

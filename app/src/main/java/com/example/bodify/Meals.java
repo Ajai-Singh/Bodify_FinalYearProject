@@ -81,5 +81,4 @@ public class Meals extends Fragment {
         });
         return view;
     }
-
 }

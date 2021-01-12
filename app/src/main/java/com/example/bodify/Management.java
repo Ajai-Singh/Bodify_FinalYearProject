@@ -68,11 +68,12 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     case R.id.users:
                         startActivity(new Intent(Management.this, ViewAllUsers.class));
                         break;
-                    case R.id.logOut:
-//                        finish();
-//                        startActivity(new Intent(Management.this, LogIn.class));
-                        //need to figure out why the scanner is not working as a fragment
+                    case R.id.foodFinder:
                         startActivity(new Intent(Management.this, Test.class));
+                        break;
+                    case R.id.logOut:
+                        finish();
+                        startActivity(new Intent(Management.this, LogIn.class));
                         break;
                 }
                 drawerLayout.closeDrawer(Gravity.START);
@@ -139,9 +140,6 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     break;
                 case R.id.breakdown:
                     fragment = new Breakdown();
-                    break;
-                case R.id.scan:
-                    fragment = new Meals();
                     break;
             }
             assert fragment != null;
