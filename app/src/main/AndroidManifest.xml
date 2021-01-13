@@ -44,7 +44,7 @@
         <activity android:name=".ViewAllUsers" android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ChatRoom" />
         <activity android:name=".Management" android:theme="@style/Theme.test" />
-        <activity android:name=".Test" android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".FoodFinder" android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>
