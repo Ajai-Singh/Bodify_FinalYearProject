@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,9 @@ import com.example.bodify.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +40,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private final Context context;
     private String mealType;
     private String adapterChoice;
-    private ArrayList<Integer> servingNumbers;
+    private ArrayList<String> servingNumbers;
     private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
@@ -106,15 +110,33 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         final String[] items = {"Breakfast", "Lunch", "Dinner", "Other"};
                         Spinner servings = new Spinner(context);
                         servingNumbers = new ArrayList<>();
+                        servingNumbers.add("Select Quantity");
                         for (int i = 0; i < recipes.size(); i++) {
                             if (i == holder.getAdapterPosition()) {
                                 Recipe recipe = recipes.get(i);
                                 for (int e = 1; e <= recipe.getServings(); e++) {
-                                    servingNumbers.add(e);
+                                    servingNumbers.add(String.valueOf(e));
                                 }
                             }
                         }
-                        ArrayAdapter<Integer> servingAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, servingNumbers);
+                        ArrayAdapter servingAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, servingNumbers) {
+                            @Override
+                            public boolean isEnabled(int position) {
+                                return position != 0;
+                            }
+
+                            @Override
+                            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
+                                View view = super.getDropDownView(position, convertView, parent);
+                                TextView textview = (TextView) view;
+                                if (position == 0) {
+                                    textview.setTextColor(Color.GRAY);
+                                } else {
+                                    textview.setTextColor(Color.BLACK);
+                                }
+                                return view;
+                            }
+                        };
                         servings.setAdapter(servingAdapter);
                         servingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         servings.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

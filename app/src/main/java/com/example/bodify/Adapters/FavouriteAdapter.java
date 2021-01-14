@@ -3,6 +3,7 @@ package com.example.bodify.Adapters;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +35,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     private final Context context;
     private String mealType;
     private String adapterChoice;
-    private ArrayList<Integer> servingNumbers;
+    private ArrayList<String> servingNumbers;
     private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
@@ -64,15 +68,33 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                         final String[] items = {"Breakfast", "Lunch", "Dinner", "Other"};
                         Spinner servings = new Spinner(context);
                         servingNumbers = new ArrayList<>();
+                        servingNumbers.add("Select Quantity");
                         for (int i = 0; i < favourites.size(); i++) {
                             if (i == holder.getAdapterPosition()) {
                                 Favourite favourite = favourites.get(i);
                                 for (int e = 1; e <= favourite.getNumberOfServings(); e++) {
-                                    servingNumbers.add(e);
+                                    servingNumbers.add(String.valueOf(e));
                                 }
                             }
                         }
-                        ArrayAdapter<Integer> servingAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, servingNumbers);
+                        ArrayAdapter<String> servingAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, servingNumbers){
+                            @Override
+                            public boolean isEnabled(int position) {
+                                return position != 0;
+                            }
+
+                            @Override
+                            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
+                                View view = super.getDropDownView(position, convertView, parent);
+                                TextView textview = (TextView) view;
+                                if (position == 0) {
+                                    textview.setTextColor(Color.GRAY);
+                                } else {
+                                    textview.setTextColor(Color.BLACK);
+                                }
+                                return view;
+                            }
+                        };
                         servings.setAdapter(servingAdapter);
                         servingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         servings.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -97,7 +119,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                     break;
                             }
                         }).setPositiveButton("Ok", (dialog, which) -> {
-                            if (!Arrays.asList(items).contains(mealType)) {
+                            if (!Arrays.asList(items).contains(mealType) || servings.getSelectedItemPosition() == 0) {
                                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(context);
                                 dlgAlert.setMessage("Not All Fields are Filled!");
                                 dlgAlert.setTitle("Error...");

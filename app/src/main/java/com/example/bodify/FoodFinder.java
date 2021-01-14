@@ -66,7 +66,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
     private final ArrayList<Integer> macros = new ArrayList<>();
     private String quantityAdapterChoice;
     private String mealAdapterChoice;
-    private ArrayList<Integer> servingNumbers;
+    private ArrayList<String> servingNumbers;
     private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
@@ -386,8 +386,9 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 mealTypes.add("Dinner");
                 mealTypes.add("Other");
                 servingNumbers = new ArrayList<>();
-                for (int i = 0; i <= servings; i++) {
-                    servingNumbers.add(i);
+                servingNumbers.add("Select Quantity");
+                for (int i = 1; i <= servings; i++) {
+                    servingNumbers.add(String.valueOf(i));
                 }
                 ArrayAdapter servingAdapter = new ArrayAdapter(FoodFinder.this, android.R.layout.simple_spinner_dropdown_item, servingNumbers) {
                     @Override

@@ -2,8 +2,11 @@ package com.example.bodify;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
+import com.example.bodify.FirebaseAuthentication.SignUp;
 import com.example.bodify.Models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -99,6 +106,16 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
+                                NotificationManager notificationManager = getSystemService(NotificationManager.class);
+                                notificationManager.createNotificationChannel(notificationChannel);
+                            }
+                            String message = "Thank you for creating an account with us!";
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(Tailoring.this,"My Notification").setSmallIcon(
+                                    R.drawable.info).setContentTitle("Welcome").setContentText(message).setAutoCancel(true);
+                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(Tailoring.this);
+                            notificationManagerCompat.notify(0,builder.build());
                             Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), Management.class));
                         } else {
@@ -143,11 +160,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         ArrayAdapter<String> adapterGender = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, genders) {
             @Override
             public boolean isEnabled(int position) {
-                if (position == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return position != 0;
             }
 
             @Override
@@ -169,11 +182,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         ArrayAdapter<String> adapterFitnessGoal = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, fitnessGoals) {
             @Override
             public boolean isEnabled(int position) {
-                if (position == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return position != 0;
             }
 
             @Override
