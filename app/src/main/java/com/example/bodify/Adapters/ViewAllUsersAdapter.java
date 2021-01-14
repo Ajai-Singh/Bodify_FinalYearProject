@@ -48,8 +48,8 @@ public class ViewAllUsersAdapter extends RecyclerView.Adapter<ViewAllUsersAdapte
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public  ImageView image;
-        public  TextView userName,email;
+        public ImageView image;
+        public TextView userName,email;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

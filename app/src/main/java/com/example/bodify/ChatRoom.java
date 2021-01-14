@@ -67,33 +67,22 @@ public class ChatRoom extends AppCompatActivity {
     }
 
     public void createMessage(final String userName) {
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (input.getText().toString().isEmpty()) {
-                    Toast.makeText(ChatRoom.this, "Message is empty!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Date date = new Date();
-                    String currentDateTime = dateFormat.format(date);
-                    mAuth = FirebaseAuth.getInstance();
-                    final String userID = mAuth.getUid();
-                    Message comment = new Message(input.getText().toString(), userName, userID, currentDateTime);
-                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                    databaseReference.child("Chat").push().setValue(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(ChatRoom.this, "Message Saved", Toast.LENGTH_SHORT).show();
-                                input.setText("");
-                            }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(ChatRoom.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+        fab.setOnClickListener(view -> {
+            if (input.getText().toString().isEmpty()) {
+                Toast.makeText(ChatRoom.this, "Message is empty!", Toast.LENGTH_SHORT).show();
+            } else {
+                Date date = new Date();
+                String currentDateTime = dateFormat.format(date);
+                mAuth = FirebaseAuth.getInstance();
+                final String userID = mAuth.getUid();
+                Message comment = new Message(input.getText().toString(), userName, userID, currentDateTime);
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                databaseReference.child("Chat").push().setValue(comment).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(ChatRoom.this, "Message Saved", Toast.LENGTH_SHORT).show();
+                        input.setText("");
+                    }
+                }).addOnFailureListener(e -> Toast.makeText(ChatRoom.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
         });
     }

@@ -11,7 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="115dp">
+        android:layout_height="120dp">
 
 
         <TextView
@@ -51,9 +51,8 @@
             android:id="@+id/source"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/com_facebook_blue"
+            android:textColor="@color/sourceUrl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,12 +61,12 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="20dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="13dp"
             android:src="@drawable/clock"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/timeToCook"
             app:layout_constraintTop_toBottomOf="@+id/source"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.981" />
 
         <TextView
             android:id="@+id/recipeOptions"
@@ -76,7 +75,6 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:text="&#8942;"

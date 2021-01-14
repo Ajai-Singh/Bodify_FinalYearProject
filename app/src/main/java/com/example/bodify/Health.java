@@ -16,7 +16,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -151,12 +150,7 @@ public class Health extends AppCompatActivity {
         Macro macro = new Macro(Math.round(calories),Math.round(fat),Math.round(carbs),Math.round(protein),userID);
         DatabaseReference  databaseReference = FirebaseDatabase.getInstance().getReference();
         assert userID != null;
-        databaseReference.child("Macros").child(userID).setValue(macro).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(Health.this,"Error Occurred: " + e.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
+        databaseReference.child("Macros").child(userID).setValue(macro).addOnFailureListener(e -> Toast.makeText(Health.this,"Error Occurred: " + e.getMessage(),Toast.LENGTH_SHORT).show());
     }
 
     public void showChart(ArrayList<BarEntry> macros) {

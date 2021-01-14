@@ -25,7 +25,7 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 public class ViewAllUsers extends AppCompatActivity {
     RecyclerView recyclerView;
-    RecyclerView.Adapter adapter;
+    ViewAllUsersAdapter viewAllUsers;
     ArrayList<User> users = new ArrayList<>();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser firebaseUser = mAuth.getCurrentUser();
@@ -52,9 +52,9 @@ public class ViewAllUsers extends AppCompatActivity {
                     recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(new LinearLayoutManager(ViewAllUsers.this));
-                    adapter = new ViewAllUsersAdapter(users);
+                    viewAllUsers = new ViewAllUsersAdapter(users);
                     new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerView);
-                    recyclerView.setAdapter(adapter);
+                    recyclerView.setAdapter(viewAllUsers);
                 }
             }
             @Override
@@ -71,7 +71,7 @@ public class ViewAllUsers extends AppCompatActivity {
             int fromPosition = viewHolder.getAdapterPosition();
             int toPosition = target.getAdapterPosition();
             Collections.swap(users,fromPosition,toPosition);
-            adapter.notifyItemMoved(fromPosition,toPosition);
+            viewAllUsers.notifyItemMoved(fromPosition,toPosition);
             return false;
         }
 

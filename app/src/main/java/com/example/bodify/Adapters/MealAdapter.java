@@ -1,11 +1,8 @@
 package com.example.bodify.Adapters;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
@@ -41,48 +38,33 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
         holder.setFats(meals.get(position).getItemTotalFat() * meals.get(position).getNumberOfServings());
         holder.setProteins(meals.get(position).getItemProtein() * meals.get(position).getNumberOfServings());
         holder.setCarbs(meals.get(position).getItemTotalCarbohydrates() * meals.get(position).getNumberOfServings());
-        holder.menuOptions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(context, holder.menuOptions);
-                popupMenu.inflate(R.menu.meal_menu_options);
-                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @SuppressLint("NonConstantResourceId")
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.deleteMeal) {
-                            builder.setMessage("Are you sure you want to delete this meal")
-                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }
-                                    }).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Meal meal = new Meal();
-                                    for (int i = 0; i < meals.size(); i++) {
-                                        if (holder.getAdapterPosition() == i) {
-                                            meal = meals.get(i);
-                                            break;
-                                        }
+        holder.menuOptions.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(context, holder.menuOptions);
+            popupMenu.inflate(R.menu.meal_menu_options);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.deleteMeal) {
+                    builder.setMessage("Are you sure you want to delete this meal")
+                            .setNegativeButton("No", (dialog, which) -> dialog.cancel()).setPositiveButton("Yes", (dialog, which) -> {
+                                Meal meal = new Meal();
+                                for (int i = 0; i < meals.size(); i++) {
+                                    if (holder.getAdapterPosition() == i) {
+                                        meal = meals.get(i);
+                                        break;
                                     }
-                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meal.getDayOfWeek()).child(meal.getId());
-                                    databaseReference.removeValue();
-                                    meals.clear();
-                                    notifyDataSetChanged();
                                 }
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meal.getDayOfWeek()).child(meal.getId());
+                                databaseReference.removeValue();
+                                meals.clear();
+                                notifyDataSetChanged();
                             });
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.setTitle("Attention required!");
-                            alertDialog.show();
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();
-            }
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.setTitle("Attention required!");
+                    alertDialog.show();
+                }
+                return false;
+            });
+            popupMenu.show();
         });
     }
 

@@ -25,9 +25,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <meta-data
-            android:name="com.google.android.wearable.standalone"
-            android:value="true" />
 
         <activity android:name=".FirebaseAuthentication.LogIn">
             <intent-filter>
@@ -39,12 +36,19 @@
         <activity android:name=".FirebaseAuthentication.SignUp" />
         <activity android:name=".Tailoring" />
         <activity android:name=".GymsNearMe" />
-        <activity android:name=".PersonalProfile" />
+        <activity android:name=".Settings" />
         <activity android:name=".Health" />
-        <activity android:name=".ViewAllUsers" android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".ViewAllUsers"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ChatRoom" />
-        <activity android:name=".Management" android:theme="@style/Theme.test" />
-        <activity android:name=".FoodFinder" android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Management"
+            android:theme="@style/Theme.test" />
+        <activity
+            android:name=".FoodFinder"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".PersonalProfile"/>
     </application>
 
 </manifest>

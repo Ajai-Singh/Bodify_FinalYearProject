@@ -28,6 +28,5 @@
         android:layout_width="147dp"
         android:layout_height="35dp"
         android:textSize="20sp"
-        android:layout_marginStart="25dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 </LinearLayout>

@@ -1,7 +1,7 @@
 package com.example.bodify;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,11 +23,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 import static com.example.bodify.FirebaseAuthentication.SignUp.MESSAGE_KEY;
 import static com.example.bodify.FirebaseAuthentication.SignUp.MESSAGE_KEY1;
@@ -57,60 +57,55 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         Button submit = findViewById(R.id.submitButton);
         final FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String strWeight = weight.getText().toString();
-                String strHeight = height.getText().toString();
-                if ((strWeight.matches("") || strHeight.matches("") || (fitnessGoalSpinner.getSelectedItemPosition() == 0) ||
-                        (activityLevelSpinner.getSelectedItemPosition() == 0) || (bodyTypeSpinner.getSelectedItemPosition() == 0) ||
-                        (genderSpinner.getSelectedItemPosition() == 0) || (preferredFoodsSpinner.getSelectedItemPosition() == 0))){
-                    AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Tailoring.this);
-                    dlgAlert.setMessage("Not All Fields are Filled!");
-                    dlgAlert.setTitle("Error...");
-                    dlgAlert.setPositiveButton("OK", null);
-                    dlgAlert.setCancelable(true);
-                    dlgAlert.create().show();
-                    dlgAlert.setPositiveButton("Ok",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            });
-                } else {
-                    String bodyType = bodyTypeSpinner.getSelectedItem().toString();
-                    String activityLevel = activityLevelSpinner.getSelectedItem().toString();
-                    String fitnessGoal = fitnessGoalSpinner.getSelectedItem().toString();
-                    String gender = genderSpinner.getSelectedItem().toString();
-                    String preferredMacroNutrient = preferredFoodsSpinner.getSelectedItem().toString();
-
-                    double dblWeight = Double.parseDouble(strWeight);
-                    int intHeight = Integer.parseInt(strHeight);
-                    Intent intent = getIntent();
-                    String strUserName = intent.getStringExtra(MESSAGE_KEY);
-                    String imageDownloadUrl = intent.getStringExtra(MESSAGE_KEY1);
-                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                    assert firebaseUser != null;
-                    String strEmail = firebaseUser.getEmail();
-                    String userID = firebaseUser.getUid();
-
-                    double bodyMassIndex;
-                    double heightInMetres = intHeight / 100.00;
-                    bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
-                    DecimalFormat decimalFormat = new DecimalFormat("##.00");
-                    double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
-                    User user = new User(strUserName, strEmail, gender, activityLevel, fitnessGoal, bodyType, preferredMacroNutrient, dblWeight, formattedBodyMassIndex, intHeight, imageDownloadUrl);
-                    databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), Management.class));
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+        submit.setOnClickListener(v -> {
+            String strWeight = weight.getText().toString();
+            String strHeight = height.getText().toString();
+            if ((strWeight.matches("") || strHeight.matches("") || (fitnessGoalSpinner.getSelectedItemPosition() == 0) ||
+                    (activityLevelSpinner.getSelectedItemPosition() == 0) || (bodyTypeSpinner.getSelectedItemPosition() == 0) ||
+                    (genderSpinner.getSelectedItemPosition() == 0) || (preferredFoodsSpinner.getSelectedItemPosition() == 0))){
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Tailoring.this);
+                dlgAlert.setMessage("Not All Fields are Filled!");
+                dlgAlert.setTitle("Error...");
+                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setCancelable(true);
+                dlgAlert.create().show();
+                dlgAlert.setPositiveButton("Ok",
+                        (dialog, which) -> {
+                        });
+            } else {
+                String bodyType = bodyTypeSpinner.getSelectedItem().toString();
+                String activityLevel = activityLevelSpinner.getSelectedItem().toString();
+                String fitnessGoal = fitnessGoalSpinner.getSelectedItem().toString();
+                String gender = genderSpinner.getSelectedItem().toString();
+                String preferredMacroNutrient = preferredFoodsSpinner.getSelectedItem().toString();
+                double dblWeight = Double.parseDouble(strWeight);
+                int intHeight = Integer.parseInt(strHeight);
+                Intent intent = getIntent();
+                String strUserName = intent.getStringExtra(MESSAGE_KEY);
+                String imageDownloadUrl = intent.getStringExtra(MESSAGE_KEY1);
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                assert firebaseUser != null;
+                String strEmail = firebaseUser.getEmail();
+                String userID = firebaseUser.getUid();
+                double bodyMassIndex;
+                double heightInMetres = intHeight / 100.00;
+                bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
+                DecimalFormat decimalFormat = new DecimalFormat("##.00");
+                double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat todaysDate = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = new Date();
+                User user = new User(strUserName, strEmail, gender, activityLevel, fitnessGoal, bodyType, preferredMacroNutrient, dblWeight, formattedBodyMassIndex, intHeight, imageDownloadUrl,todaysDate.format(date));
+                databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(), Management.class));
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    });
-                }
+                    }
+                });
             }
         });
     }
@@ -200,11 +195,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         ArrayAdapter<String> adapterActivityLevels = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, activityLevels){
             @Override
             public boolean isEnabled(int position) {
-                if (position == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return position != 0;
             }
             @Override
             public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
@@ -225,11 +216,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         ArrayAdapter<String> adapterBodyType = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, bodyTypes){
             @Override
             public boolean isEnabled(int position) {
-                if (position == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return position != 0;
             }
             @Override
             public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
@@ -251,11 +238,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         ArrayAdapter<String> adapterPreferredFoods = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, preferredFoods){
             @Override
             public boolean isEnabled(int position) {
-                if (position == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return position != 0;
             }
             @Override
             public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {

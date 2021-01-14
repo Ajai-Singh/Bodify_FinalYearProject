@@ -5,6 +5,8 @@ public class User {
     private Double weight,bodyMassIndicator;
     private int height;
     private String mImageUrl;
+    private String date;
+    private String userID;
 
     public String getBodyType() {
         return bodyType;
@@ -94,10 +96,26 @@ public class User {
         this.gender = gender;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
     public User() {
     }
 
-    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, String bodyType, String preferredMacroNutrient, Double weight, Double bodyMassIndicator, int height,String mImageUrl) {
+    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, String bodyType, String preferredMacroNutrient, Double weight, Double bodyMassIndicator, int height,String mImageUrl,String date) {
         this.userName = userName;
         this.email = email;
         this.gender = gender;
@@ -109,5 +127,6 @@ public class User {
         this.bodyMassIndicator = bodyMassIndicator;
         this.height = height;
         this.mImageUrl = mImageUrl;
+        this.date = date;
     }
 }

@@ -19,7 +19,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import com.example.bodify.FirebaseAuthentication.LogIn;
 import com.example.bodify.Models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +35,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
     private DrawerLayout drawerLayout;
     private StorageReference storageReference;
 
+    @SuppressLint({"WrongConstant", "NonConstantResourceId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,37 +48,36 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
         drawerLayout = findViewById(R.id.a);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @SuppressLint({"WrongConstant", "NonConstantResourceId"})
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.personal_profile:
-                        startActivity(new Intent(Management.this, PersonalProfile.class));
-                        break;
-                    case R.id.gymFinder:
-                        startActivity(new Intent(Management.this, GymsNearMe.class));
-                        break;
-                    case R.id.healthPage:
-                        startActivity(new Intent(Management.this, Health.class));
-                        break;
-                    case R.id.chat:
-                        startActivity(new Intent(Management.this, ChatRoom.class));
-                        break;
-                    case R.id.users:
-                        startActivity(new Intent(Management.this, ViewAllUsers.class));
-                        break;
-                    case R.id.foodFinder:
-                        startActivity(new Intent(Management.this, FoodFinder.class));
-                        break;
-                    case R.id.logOut:
-                        finish();
-                        startActivity(new Intent(Management.this, LogIn.class));
-                        break;
-                }
-                drawerLayout.closeDrawer(Gravity.START);
-                return true;
+        navigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.personalProfile:
+                    startActivity(new Intent(Management.this, PersonalProfile.class));
+                    break;
+                case R.id.gymFinder:
+                    startActivity(new Intent(Management.this, GymsNearMe.class));
+                    break;
+                case R.id.healthPage:
+                    startActivity(new Intent(Management.this, Health.class));
+                    break;
+                case R.id.chat:
+                    startActivity(new Intent(Management.this, ChatRoom.class));
+                    break;
+                case R.id.users:
+                    startActivity(new Intent(Management.this, ViewAllUsers.class));
+                    break;
+                case R.id.foodFinder:
+                    startActivity(new Intent(Management.this, FoodFinder.class));
+                    break;
+                case R.id.settings:
+                    startActivity(new Intent(Management.this, Settings.class));
+                    break;
+                case R.id.logOut:
+                    finish();
+                    startActivity(new Intent(Management.this, LogIn.class));
+                    break;
             }
+            drawerLayout.closeDrawer(Gravity.START);
+            return true;
         });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -100,12 +99,9 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     TextView navUsername = headerView.findViewById(R.id.navigationDrawerName);
                     navUsername.setText(user.getUserName());
                     final CircleImageView navProfilePicture = headerView.findViewById(R.id.navPicture);
-                    storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            navProfilePicture.setImageBitmap(bitmap);
-                        }
+                    storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        navProfilePicture.setImageBitmap(bitmap);
                     });
                 }
             }
@@ -126,26 +122,23 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
         }
     }
 
-    private final BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @SuppressLint("NonConstantResourceId")
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment fragment = null;
-            switch (item.getItemId()) {
-                case R.id.home:
-                    fragment = new Meals();
-                    break;
-                case R.id.fav:
-                    fragment = new Favourites();
-                    break;
-                case R.id.breakdown:
-                    fragment = new Breakdown();
-                    break;
-            }
-            assert fragment != null;
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragLayout, fragment).commit();
-            return true;
+    @SuppressLint("NonConstantResourceId")
+    private final BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = item -> {
+        Fragment fragment = null;
+        switch (item.getItemId()) {
+            case R.id.home:
+                fragment = new Meals();
+                break;
+            case R.id.fav:
+                fragment = new Favourites();
+                break;
+            case R.id.breakdown:
+                fragment = new Breakdown();
+                break;
         }
+        assert fragment != null;
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragLayout, fragment).commit();
+        return true;
     };
 
     @Override
