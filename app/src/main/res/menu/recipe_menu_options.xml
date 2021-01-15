@@ -10,4 +10,8 @@
     <item
         android:id="@+id/information"
         android:title="Nutritional Information" />
+
+    <item
+        android:id="@+id/ingredients"
+        android:title="View/Order ingredients" />
 </menu>

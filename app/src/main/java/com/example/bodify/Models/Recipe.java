@@ -1,5 +1,7 @@
 package com.example.bodify.Models;
 
+import java.util.ArrayList;
+
 public class Recipe {
 
     private int id;
@@ -10,6 +12,7 @@ public class Recipe {
     private String recipeID;
     private int calories,fats,carbohydrates,proteins,sugar,sodium;
     private String imageUrl;
+    private ArrayList<Ingredient> ingredients;
 
     public int getId() {
         return id;
@@ -115,11 +118,20 @@ public class Recipe {
         this.imageUrl = imageUrl;
     }
 
+    public ArrayList<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(ArrayList<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+
     public Recipe() {
 
     }
 
-    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, int servings, String recipeID, int calories, int fats, int carbohydrates, int proteins,int sugar,int sodium,String imageUrl) {
+    public Recipe(int id, String title, String sourceUrl, String readyInMinutes, int servings, String recipeID, int calories, int fats, int carbohydrates, int proteins,int sugar,int sodium,String imageUrl
+    ,ArrayList<Ingredient> ingredients) {
         this.id = id;
         this.title = title;
         this.sourceUrl = sourceUrl;
@@ -133,5 +145,26 @@ public class Recipe {
         this.sugar = sugar;
         this.sodium = sodium;
         this.imageUrl = imageUrl;
+        this.ingredients = ingredients;
+    }
+
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", sourceUrl='" + sourceUrl + '\'' +
+                ", readyInMinutes='" + readyInMinutes + '\'' +
+                ", servings=" + servings +
+                ", recipeID='" + recipeID + '\'' +
+                ", calories=" + calories +
+                ", fats=" + fats +
+                ", carbohydrates=" + carbohydrates +
+                ", proteins=" + proteins +
+                ", sugar=" + sugar +
+                ", sodium=" + sodium +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", ingredients=" + ingredients +
+                '}';
     }
 }

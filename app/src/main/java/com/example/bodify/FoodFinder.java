@@ -30,6 +30,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.example.bodify.Adapters.RecipeAdapter;
+import com.example.bodify.Models.Ingredient;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.Models.Favourite;
@@ -58,6 +59,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
     private EditText choice, nutrition;
     public static final String API_KEY = "de851175d709445bb3d6149a58107a93";
     private final ArrayList<Recipe> recipes = new ArrayList<>();
+    private final ArrayList<Ingredient> ingredients = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     private Button search, scan, find;
@@ -168,11 +170,20 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 String sourceUrl = jsonArray.getJSONObject(i).getString("sourceUrl");
                                 String image = jsonArray.getJSONObject(i).getString("image");
                                 jsonObject1 = jsonArray.getJSONObject(i).getJSONObject("nutrition");
+                                //by the looks of it the object nutrition has multiple arrays within it
                                 JSONArray jsonArray1 = jsonObject1.getJSONArray("nutrients");
+                                JSONArray ingredientsArray = jsonObject1.getJSONArray("ingredients");
+                                for(int x = 0; x < ingredientsArray.length(); x++) {
+                                    String ingredientName = ingredientsArray.getJSONObject(x).getString("name");
+                                    Double ingredientAmount = ingredientsArray.getJSONObject(x).getDouble("amount");
+                                    String unit = ingredientsArray.getJSONObject(x).getString("unit");
+                                    Ingredient ingredient = new Ingredient(ingredientName,ingredientAmount,unit);
+                                    ingredients.add(ingredient);
+                                }
                                 for (int e = 0; e < jsonArray1.length(); e++) {
                                     macros.add(jsonArray1.getJSONObject(e).getInt("amount"));
                                 }
-                                Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image);
+                                Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image,ingredients);
                                 recipes.add(recipe);
                             }
                             recyclerView.setHasFixedSize(true);

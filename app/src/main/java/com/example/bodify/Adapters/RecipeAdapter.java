@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -194,6 +195,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         AlertDialog alert = alertDialogMeals.create();
                         alert.setCanceledOnTouchOutside(false);
                         alert.show();
+                        break;
+                    case R.id.ingredients:
+                        //need to come up with a way to display the ingredients now
+                        //thinking of creating a dynamic table that expands based on the size of the array and having a 4th column called
+                        //order and have a checkbox within it if ticked and button is clicked, i.e. order ingredients I will process an order.
+                        Log.i("ingredients", "" + recipes.get(position).getIngredients());
                         break;
                     case R.id.addToFavs:
                         final AlertDialog.Builder favouritesBuilder = new AlertDialog.Builder(context);
