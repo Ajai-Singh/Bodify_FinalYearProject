@@ -56,6 +56,10 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     @Override
     public void onBindViewHolder(@NonNull final FavouriteAdapter.ViewHolder holder, final int position) {
         holder.setItemName(favourites.get(position).getItemName());
+        holder.setCaloriesConsumed(favourites.get(position).getCalories());
+        holder.setFats(favourites.get(position).getItemTotalFat());
+        holder.setProteins(favourites.get(position).getItemProtein());
+        holder.setCarbs(favourites.get(position).getItemTotalCarbohydrates());
         holder.buttonViewOption.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(context, holder.buttonViewOption);
             popup.inflate(R.menu.rcv_menu_options);
@@ -194,17 +198,36 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView itemName;
-        private final TextView buttonViewOption;
+        private final TextView itemName, buttonViewOption,caloriesConsumed, fats, proteins, carbs;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemName = itemView.findViewById(R.id.itemNameTextField);
             buttonViewOption = itemView.findViewById(R.id.textViewOptions);
+            caloriesConsumed = itemView.findViewById(R.id.favouriteCalories);
+            fats = itemView.findViewById(R.id.favouritesFats);
+            proteins = itemView.findViewById(R.id.favouritesProtein);
+            carbs = itemView.findViewById(R.id.favouritesCarbs);
         }
 
         public void setItemName(String name) {
             itemName.setText(name);
+        }
+
+        public void setCaloriesConsumed(int cc) {
+            caloriesConsumed.setText(String.valueOf(cc));
+        }
+
+        public void setFats(int f) {
+            fats.setText(String.valueOf(f).concat("F"));
+        }
+
+        public void setProteins(int p) {
+            proteins.setText(String.valueOf(p).concat("P"));
+        }
+
+        public void setCarbs(int c) {
+            carbs.setText(String.valueOf(c).concat("C"));
         }
     }
 }

@@ -7,6 +7,7 @@ public class User {
     private String mImageUrl;
     private String date;
     private String userID;
+    private String id;
 
     public String getBodyType() {
         return bodyType;
@@ -110,6 +111,14 @@ public class User {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public User() {

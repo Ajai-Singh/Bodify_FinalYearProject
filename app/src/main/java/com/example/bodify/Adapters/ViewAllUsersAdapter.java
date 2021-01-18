@@ -17,7 +17,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 public class ViewAllUsersAdapter extends RecyclerView.Adapter<ViewAllUsersAdapter.ViewHolder> implements View.OnClickListener {
-    private final ArrayList<User> users;
+    private ArrayList<User> users;
 
     public ViewAllUsersAdapter(ArrayList<User> users) {
         this.users = users;
@@ -46,6 +46,10 @@ public class ViewAllUsersAdapter extends RecyclerView.Adapter<ViewAllUsersAdapte
     public void onClick(View v) {
     }
 
+    public void filteredList(ArrayList<User> filteredList) {
+        users = filteredList;
+        notifyDataSetChanged();
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView image;

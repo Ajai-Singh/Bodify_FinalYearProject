@@ -16,7 +16,6 @@
     <style name="NoActionBarMGMT" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/black</item>
     </style>
-
     <style name="Theme.test" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

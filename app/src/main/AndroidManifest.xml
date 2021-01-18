@@ -40,7 +40,7 @@
         <activity android:name=".Health" />
         <activity
             android:name=".ViewAllUsers"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustNothing"  />
         <activity android:name=".ChatRoom" />
         <activity
             android:name=".Management"
@@ -49,6 +49,7 @@
             android:name=".FoodFinder"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".PersonalProfile"/>
+        <activity android:name=".CommunityWall" android:theme="@style/Theme.test"/>
+        <activity android:name=".SpecificUsersPage" />
     </application>
-
 </manifest>

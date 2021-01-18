@@ -24,6 +24,11 @@
             android:title="Chat Room" />
 
         <item
+            android:id="@+id/communityWall"
+            android:icon="@drawable/postit"
+            android:title="Community Wall" />
+
+        <item
             android:id="@+id/users"
             android:icon="@drawable/friend"
             android:title="View All users" />
