@@ -170,7 +170,6 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 String sourceUrl = jsonArray.getJSONObject(i).getString("sourceUrl");
                                 String image = jsonArray.getJSONObject(i).getString("image");
                                 jsonObject1 = jsonArray.getJSONObject(i).getJSONObject("nutrition");
-                                //by the looks of it the object nutrition has multiple arrays within it
                                 JSONArray jsonArray1 = jsonObject1.getJSONArray("nutrients");
                                 JSONArray ingredientsArray = jsonObject1.getJSONArray("ingredients");
                                 for(int x = 0; x < ingredientsArray.length(); x++) {
@@ -179,6 +178,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                     String unit = ingredientsArray.getJSONObject(x).getString("unit");
                                     Ingredient ingredient = new Ingredient(ingredientName,ingredientAmount,unit);
                                     ingredients.add(ingredient);
+
                                 }
                                 for (int e = 0; e < jsonArray1.length(); e++) {
                                     macros.add(jsonArray1.getJSONObject(e).getInt("amount"));

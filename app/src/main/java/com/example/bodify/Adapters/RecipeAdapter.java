@@ -3,6 +3,7 @@ package com.example.bodify.Adapters;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bodify.Models.Favourite;
@@ -27,7 +29,6 @@ import com.example.bodify.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
@@ -197,34 +198,55 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         alert.show();
                         break;
                     case R.id.ingredients:
-                        //need to come up with a way to display the ingredients now
-                        //thinking of creating a dynamic table that expands based on the size of the array and having a 4th column called
-                        //order and have a checkbox within it if ticked and button is clicked, i.e. order ingredients I will process an order.
                         Log.i("ingredients", "" + recipes.get(position).getIngredients());
+                        final AlertDialog.Builder ingredientsBuilder = new AlertDialog.Builder(context);
+                        LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View view2 = inflater2.inflate(R.layout.ingredients, null);
+                        RecyclerView recyclerView = view2.findViewById(R.id.ingredientsRCV);
+                        recyclerView.setHasFixedSize(true);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                        ArrayList<String> a = new ArrayList<>();
+                        for(int i = 0; i < recipes.size();i++) {
+                            a.add(recipes.get(i).getIngredients().get(i).getName());
+
+                    }
+                        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(recipes.get(position).getIngredients(),context,a);
+                        ingredientsBuilder.setNegativeButton("Close", (dialog15, which) -> dialog15.cancel()).setPositiveButton("Order", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Future order of ingredients through Zinc API.... TODO
+                                ArrayList<String> test = ingredientsAdapter.test();
+                                Log.i("test","" + test.toString());
+                            }
+                        });
+                        recyclerView.setAdapter(ingredientsAdapter);
+                        ingredientsBuilder.setView(view2);
+                        AlertDialog ingredientsDialog = ingredientsBuilder.create();
+                        ingredientsDialog.show();
                         break;
                     case R.id.addToFavs:
                         final AlertDialog.Builder favouritesBuilder = new AlertDialog.Builder(context);
                         favouritesBuilder.setMessage("Would you like to add this Recipe to your Favourites?")
                                 .setNegativeButton("No", (dialog13, which) -> dialog13.cancel()).setPositiveButton("Yes", (dialog14, which) -> {
-                                    Recipe recipe = null;
-                                    for (int i = 0; i < recipes.size(); i++) {
-                                        if (holder.getAdapterPosition() == i) {
-                                            recipe = recipes.get(i);
-                                            break;
-                                        }
-                                    }
-                                    assert recipe != null;
-                                    Favourite favourite = new Favourite(recipe.getTitle(),recipe.getCalories(),recipe.getFats(),
-                                            recipe.getSodium(),recipe.getCarbohydrates(),recipe.getSugar(),recipe.getProteins(),userID,recipe.getServings());
-                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                                    databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(context, "Item added to favourites", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(context, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                });
+                            Recipe recipe = null;
+                            for (int i = 0; i < recipes.size(); i++) {
+                                if (holder.getAdapterPosition() == i) {
+                                    recipe = recipes.get(i);
+                                    break;
+                                }
+                            }
+                            assert recipe != null;
+                            Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
+                                    recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), userID, recipe.getServings());
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                            databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(context, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        });
                         AlertDialog alertDialog = favouritesBuilder.create();
                         alertDialog.setTitle("Attention required!");
                         alertDialog.show();
