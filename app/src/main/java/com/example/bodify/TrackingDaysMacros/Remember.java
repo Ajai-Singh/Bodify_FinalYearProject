@@ -28,7 +28,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -93,24 +92,16 @@ public class Remember extends Fragment {
         assert userID != null;
         MacroCopy macroCopy = new MacroCopy(a, b, c, d, userID);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("TemporaryMacros");
-        databaseReference.child("Thursday").child(userID).setValue(macroCopy).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.i("Saved", "Successfully saved");
-                }
+        databaseReference.child("Tuesday").child(userID).setValue(macroCopy).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.i("Saved", "Successfully saved");
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        }).addOnFailureListener(e -> Toast.makeText(getContext(), "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     public void setUIComponents() {
         assert userID != null;
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Thursday").child(userID);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Tuesday").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -132,7 +123,7 @@ public class Remember extends Fragment {
     }
 
     public void setUpPieChart() {
-        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
+        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Tuesday");
         databaseReference1.addValueEventListener(new ValueEventListener() {
             double loggedCalories, loggedProteins, loggedFats, loggedCarbohydrates;
 
@@ -167,7 +158,7 @@ public class Remember extends Fragment {
     }
 
     public void setUpBarChart() {
-        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
+        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Tuesday");
         databaseReference1.addValueEventListener(new ValueEventListener() {
             double loggedCalories, loggedProteins, loggedFats, loggedCarbohydrates;
             final ArrayList<BarEntry> macros = new ArrayList<>();
@@ -223,7 +214,7 @@ public class Remember extends Fragment {
     }
 
     public void getMacroCopyValues() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Tuesday");
         databaseReference.addValueEventListener(new ValueEventListener() {
             double loggedCalories, loggedProteins, loggedFats, loggedCarbohydrates;
 
@@ -251,14 +242,14 @@ public class Remember extends Fragment {
 
     public void updateMacroCopy(final double calories, final double proteins, final double fats, final double carbohydrates) {
         assert userID != null;
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Thursday").child(userID);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Tuesday").child(userID);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 MacroCopy macroCopy = snapshot.getValue(MacroCopy.class);
                 if (macroCopy != null) {
-                    DatabaseReference updateDBReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Thursday").child(userID);
+                    DatabaseReference updateDBReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros").child("Tuesday").child(userID);
                     updateDBReference.child("calorieConsumption").setValue(macroCopy.getCalorieConsumption() - calories);
                     updateDBReference.child("carbohydrateConsumption").setValue(macroCopy.getCarbohydrateConsumption() - carbohydrates);
                     updateDBReference.child("fatConsumption").setValue(macroCopy.getFatConsumption() - fats);

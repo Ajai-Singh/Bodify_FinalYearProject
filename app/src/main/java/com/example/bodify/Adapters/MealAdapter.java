@@ -53,6 +53,8 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                                         break;
                                     }
                                 }
+                                //the problem with the delete is that
+                                //.child(meal.getDayOfWeek) is null that means when the meal is being saved maybe the day of week isnt being saved
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meal.getDayOfWeek()).child(meal.getId());
                                 databaseReference.removeValue();
                                 meals.clear();

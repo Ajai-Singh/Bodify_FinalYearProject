@@ -147,12 +147,9 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                         favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
                                         favourite.getItemProtein(), Integer.parseInt(adapterChoice), mealType,simpleDateformat.format(today));
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
-                                databaseReference.child(simpleDateformat.format(today)).push().setValue(meal).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(context, "Successfully saved", Toast.LENGTH_SHORT).show();
-                                        }
+                                databaseReference.child(simpleDateformat.format(today)).push().setValue(meal).addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(context, "Successfully saved", Toast.LENGTH_SHORT).show();
                                     }
                                 }).addOnFailureListener(e -> Toast.makeText(context, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                             }

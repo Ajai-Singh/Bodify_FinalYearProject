@@ -115,6 +115,7 @@ public class Meal {
         this.itemProtein = itemProtein;
         this.numberOfServings = numberOfServings;
         this.mealType = mealType;
+        this.dayOfWeek = dayOfWeek;
     }
 
     @Override
