@@ -7,14 +7,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.bodify.Adapters.ViewAllUsersAdapter;
 import com.example.bodify.Models.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
@@ -37,14 +34,13 @@ public class ViewAllUsers extends AppCompatActivity {
     private final ArrayList<User> users = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseUser firebaseUser = mAuth.getCurrentUser();
-    private EditText userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_users);
         Objects.requireNonNull(getSupportActionBar()).setTitle("App Users");
-        userName = findViewById(R.id.userNameSearch);
+        EditText userName = findViewById(R.id.userNameSearch);
         userName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

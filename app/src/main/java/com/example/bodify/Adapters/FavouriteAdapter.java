@@ -18,13 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;

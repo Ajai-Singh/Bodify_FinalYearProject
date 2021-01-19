@@ -27,8 +27,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,8 +36,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-//Note this is a throwaway class it is only being used to create functionality
-
 public class Remember extends Fragment {
     private AnyChartView anyChartView;
     private TextView caloriesTV, fatsTV, proteinsTV, carbohydratesTV;
@@ -47,6 +43,8 @@ public class Remember extends Fragment {
     private final String userID = mAuth.getUid();
     private BarChart barChart;
     private final ArrayList<BarEntry> barEntries = new ArrayList<>();
+    private Double[] macroValues;
+    private String[] macros;
 
     public Remember() {
 
@@ -62,6 +60,7 @@ public class Remember extends Fragment {
         proteinsTV = view.findViewById(R.id.dailyProteinsTV);
         carbohydratesTV = view.findViewById(R.id.dailyCarbsTV);
         barChart = view.findViewById(R.id.breakdownBarChart);
+        barEntries.clear();
         getValuesForMacroCopy();
         getMacroCopyValues();
         setUIComponents();
@@ -139,8 +138,8 @@ public class Remember extends Fragment {
                         loggedCarbohydrates += meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
                     }
                 }
-                double[] macroValues = {loggedProteins, loggedFats, loggedCarbohydrates};
-                String[] macros = new String[]{"Fat", "Protein", "Carbs"};
+                macroValues = new Double[]{loggedProteins, loggedFats, loggedCarbohydrates};
+                macros = new String[]{"Fat", "Protein", "Carbs"};
                 Pie pie = AnyChart.pie();
                 List<DataEntry> dataEntries = new ArrayList<>();
                 for (int i = 0; i < macros.length; i++) {

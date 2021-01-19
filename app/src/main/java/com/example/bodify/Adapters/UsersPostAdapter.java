@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.bodify.Models.Post;
 import com.example.bodify.Models.User;
 import com.example.bodify.R;
@@ -20,13 +19,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 public class UsersPostAdapter extends RecyclerView.Adapter<com.example.bodify.Adapters.UsersPostAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Post> posts;
     private final Context context;
-
 
     public UsersPostAdapter(ArrayList<Post> posts, Context context) {
         this.posts = posts;
@@ -81,9 +78,8 @@ public class UsersPostAdapter extends RecyclerView.Adapter<com.example.bodify.Ad
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     User user = userSnapshot.getValue(User.class);
                     assert user != null;
-                    User user1 = user;
-                    user1.setUserID(userSnapshot.getKey());
-                    if(user1.getUserID().equals(a)) {
+                    user.setUserID(userSnapshot.getKey());
+                    if(user.getUserID().equals(a)) {
                         holder.setName(user.getUserName());
                     }
                 }
