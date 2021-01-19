@@ -16,11 +16,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -38,20 +40,27 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
 import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private Spinner mealsSpinner;
@@ -172,18 +181,18 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 jsonObject1 = jsonArray.getJSONObject(i).getJSONObject("nutrition");
                                 JSONArray jsonArray1 = jsonObject1.getJSONArray("nutrients");
                                 JSONArray ingredientsArray = jsonObject1.getJSONArray("ingredients");
-                                for(int x = 0; x < ingredientsArray.length(); x++) {
+                                for (int x = 0; x < ingredientsArray.length(); x++) {
                                     String ingredientName = ingredientsArray.getJSONObject(x).getString("name");
                                     Double ingredientAmount = ingredientsArray.getJSONObject(x).getDouble("amount");
                                     String unit = ingredientsArray.getJSONObject(x).getString("unit");
-                                    Ingredient ingredient = new Ingredient(ingredientName,ingredientAmount,unit);
+                                    Ingredient ingredient = new Ingredient(ingredientName, ingredientAmount, unit);
                                     ingredients.add(ingredient);
 
                                 }
                                 for (int e = 0; e < jsonArray1.length(); e++) {
                                     macros.add(jsonArray1.getJSONObject(e).getInt("amount"));
                                 }
-                                Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image,ingredients);
+                                Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
                                 recipes.add(recipe);
                             }
                             recyclerView.setHasFixedSize(true);
@@ -213,7 +222,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 nutrition.setError("Field cannot be empty!");
                 nutrition.requestFocus();
             } else {
-                final String url = "https://calorieninjas.p.rapidapi.com/v1/nutrition?query="+nutrition.getText().toString();
+                final String url = "https://calorieninjas.p.rapidapi.com/v1/nutrition?query=" + nutrition.getText().toString();
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         response -> {
                             try {
@@ -368,14 +377,29 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
             String userID = firebaseUser.getUid();
             Favourite favourite = new Favourite(itemName, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, userID, servings);
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-            databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(new OnCompleteListener<Void>() {
+            Query query = databaseReference
+                    .child("Favourites")
+                    .orderByChild("itemName")
+                    .equalTo(itemName);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(FoodFinder.this, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.getChildrenCount() > 0) {
+                        Toast.makeText(FoodFinder.this, "Error, Item already exists in favourites!", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(FoodFinder.this, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(FoodFinder.this, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(FoodFinder.this, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(FoodFinder.this, "Error Occurred" + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
