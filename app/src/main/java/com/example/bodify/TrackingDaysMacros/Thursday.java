@@ -1,6 +1,10 @@
 package com.example.bodify.TrackingDaysMacros;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,12 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.DataEntry;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.charts.Pie;
+import com.example.bodify.FoodFinder;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.MacroCopy;
 import com.example.bodify.Models.Meal;
@@ -27,9 +30,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,15 +38,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Thursday extends Fragment {
-    private AnyChartView anyChartView;
     private TextView caloriesTV, fatsTV, proteinsTV, carbohydratesTV;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
     private BarChart barChart;
+    private BarChart barChart1;
     private final ArrayList<BarEntry> barEntries = new ArrayList<>();
+    private final ArrayList<BarEntry> barEntries1 = new ArrayList<>();
+    private ConstraintLayout constraintLayout;
 
     public Thursday() {
 
@@ -55,16 +57,19 @@ public class Thursday extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_monday, container, false);
-        anyChartView = view.findViewById(R.id.pieChart);
         caloriesTV = view.findViewById(R.id.dailyCaloriesLeftTextView);
         fatsTV = view.findViewById(R.id.dailyFatsTV);
         proteinsTV = view.findViewById(R.id.dailyProteinsTV);
         carbohydratesTV = view.findViewById(R.id.dailyCarbsTV);
         barChart = view.findViewById(R.id.breakdownBarChart);
+        barChart1 = view.findViewById(R.id.pieChart);
+        constraintLayout = view.findViewById(R.id.cl);
+        barEntries.clear();
+        barEntries1.clear();
         getValuesForMacroCopy();
         getMacroCopyValues();
         setUIComponents();
-        setUpPieChart();
+        setUpBarChart1();
         setUpBarChart();
         return view;
     }
@@ -91,19 +96,11 @@ public class Thursday extends Fragment {
         assert userID != null;
         MacroCopy macroCopy = new MacroCopy(a, b, c, d, userID);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("TemporaryMacros");
-        databaseReference.child("Thursday").child(userID).setValue(macroCopy).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.i("Saved", "Successfully saved");
-                }
+        databaseReference.child("Thursday").child(userID).setValue(macroCopy).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.i("Saved", "Successfully saved");
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        }).addOnFailureListener(e -> Toast.makeText(getContext(), "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     public void setUIComponents() {
@@ -115,6 +112,57 @@ public class Thursday extends Fragment {
                 MacroCopy macroCopy = snapshot.getValue(MacroCopy.class);
 
                 if (macroCopy != null) {
+                    if (macroCopy.getCarbohydrateConsumption() < 0) {
+                        carbohydratesTV.setTextColor(Color.parseColor("#FF0000"));
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
+                            NotificationManager notificationManager = ( NotificationManager ) getActivity().getSystemService( getActivity().NOTIFICATION_SERVICE );
+                            notificationManager.createNotificationChannel(notificationChannel);
+                        }
+                        String message = "You have gone over your daily Carbohydrates";
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),"My Notification").setSmallIcon(
+                                R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
+                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+                        notificationManagerCompat.notify(0,builder.build());
+
+
+                    } else if (macroCopy.getFatConsumption() < 0) {
+                        fatsTV.setTextColor(Color.parseColor("#FF0000"));
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
+                            NotificationManager notificationManager = ( NotificationManager ) getActivity().getSystemService( getActivity().NOTIFICATION_SERVICE );
+                            notificationManager.createNotificationChannel(notificationChannel);
+                        }
+                        String message = "You have gone over your daily Fat";
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),"My Notification").setSmallIcon(
+                                R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
+                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+                        notificationManagerCompat.notify(0,builder.build());
+                    } else if (macroCopy.getProteinConsumption() < 0) {
+                        proteinsTV.setTextColor(Color.parseColor("#FF0000"));
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
+                            NotificationManager notificationManager = ( NotificationManager ) getActivity().getSystemService( getActivity().NOTIFICATION_SERVICE );
+                            notificationManager.createNotificationChannel(notificationChannel);
+                        }
+                        String message = "You have gone over your daily Protein";
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),"My Notification").setSmallIcon(
+                                R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
+                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+                        notificationManagerCompat.notify(0,builder.build());
+                    } else if (macroCopy.getCalorieConsumption() < 0) {
+                        caloriesTV.setTextColor(Color.parseColor("#FF0000"));
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
+                            NotificationManager notificationManager = ( NotificationManager ) getActivity().getSystemService( getActivity().NOTIFICATION_SERVICE );
+                            notificationManager.createNotificationChannel(notificationChannel);
+                        }
+                        String message = "You have gone over your daily Calories";
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),"My Notification").setSmallIcon(
+                                R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
+                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+                        notificationManagerCompat.notify(0,builder.build());
+                    }
                     caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
                     fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
                     proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
@@ -129,10 +177,11 @@ public class Thursday extends Fragment {
         });
     }
 
-    public void setUpPieChart() {
+    public void setUpBarChart1() {
         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
         databaseReference1.addValueEventListener(new ValueEventListener() {
             double loggedCalories, loggedProteins, loggedFats, loggedCarbohydrates;
+            final ArrayList<BarEntry> macros = new ArrayList<>();
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -146,22 +195,59 @@ public class Thursday extends Fragment {
                         loggedCarbohydrates += meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
                     }
                 }
-                double[] macroValues = {loggedProteins, loggedFats, loggedCarbohydrates};
-                String[] macros = new String[]{"Fat", "Protein", "Carbs"};
-                Pie pie = AnyChart.pie();
-                List<DataEntry> dataEntries = new ArrayList<>();
-                for (int i = 0; i < macros.length; i++) {
-                    dataEntries.add(new ValueDataEntry(macros[i], macroValues[i]));
+                if (loggedProteins == 0.0 && loggedFats == 0.0 && loggedCarbohydrates == 0) {
+                    barChart1.setVisibility(View.GONE);
+                    barChart.setVisibility(View.GONE);
+                    showSnackBar();
+                } else {
+                    macros.add(new BarEntry(1f, (float) loggedFats));
+                    macros.add(new BarEntry(2f, (float) loggedCarbohydrates));
+                    macros.add(new BarEntry(3f, (float) loggedProteins));
+                    showBarChart1(macros);
                 }
-                pie.data(dataEntries);
-                anyChartView.setChart(pie);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void showSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no data! Please navigate Food finder", Snackbar.LENGTH_SHORT).setAction(
+                "Food finder", v -> {
+                    Intent intent = new Intent(getActivity(), FoodFinder.class);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(0, 0);
+                }
+        );
+        snackbar.show();
+    }
+
+    public void showBarChart1(ArrayList<BarEntry> macros) {
+        barEntries1.add(macros.get(0));
+        barEntries1.add(macros.get(1));
+        barEntries1.add(macros.get(2));
+        XAxis xAxis = barChart1.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(getXAxisValues1()));
+        BarDataSet barDataSet = new BarDataSet(barEntries1, "Data Set");
+        BarData barData = new BarData(barDataSet);
+        barChart1.clear();
+        barChart1.setData(barData);
+        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(16f);
+        barChart1.invalidate();
+    }
+
+    public ArrayList<String> getXAxisValues1() {
+        ArrayList<String> xLabels = new ArrayList<>();
+        xLabels.add("0");
+        xLabels.add("Fats");
+        xLabels.add("Carbohydrates");
+        xLabels.add("Proteins");
+        return new ArrayList<>(xLabels);
     }
 
     public void setUpBarChart() {
@@ -214,9 +300,9 @@ public class Thursday extends Fragment {
     public ArrayList<String> getXAxisValues() {
         ArrayList<String> xLabels = new ArrayList<>();
         xLabels.add("0");
-        xLabels.add("Cals @ Fat");
-        xLabels.add("Cals @ Carbohydrate");
-        xLabels.add("Cals @ Protein");
+        xLabels.add("Fat Calories");
+        xLabels.add("Carbohydrate Calories");
+        xLabels.add("Protein Calories");
         return new ArrayList<>(xLabels);
     }
 

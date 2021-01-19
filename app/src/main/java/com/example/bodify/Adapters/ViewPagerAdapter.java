@@ -6,13 +6,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.bodify.TrackingDaysMacros.Friday;
 import com.example.bodify.TrackingDaysMacros.Monday;
-import com.example.bodify.TrackingDaysMacros.Remember;
 import com.example.bodify.TrackingDaysMacros.Saturday;
 import com.example.bodify.TrackingDaysMacros.Sunday;
 import com.example.bodify.TrackingDaysMacros.Thursday;
 import com.example.bodify.TrackingDaysMacros.Tuesday;
 import com.example.bodify.TrackingDaysMacros.Wednesday;
-
 import org.jetbrains.annotations.NotNull;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -30,13 +28,19 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
+                return new Monday();
             case 1:
+                return new Tuesday();
             case 2:
+                return new Wednesday();
             case 3:
+                return new Thursday();
             case 4:
+                return new Friday();
             case 5:
+                return new Saturday();
             case 6:
-                return new Remember();
+                return new Sunday();
         }
         return null;
     }
