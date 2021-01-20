@@ -97,8 +97,7 @@ public class ViewAllUsers extends AppCompatActivity {
         });
     }
 
-    ItemTouchHelper.SimpleCallback itemTouch = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN |
-            ItemTouchHelper.START | ItemTouchHelper.END,ItemTouchHelper.LEFT) {
+    ItemTouchHelper.SimpleCallback itemTouch = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             Collections.swap(users, viewHolder.getAdapterPosition(), target.getAdapterPosition());
@@ -110,7 +109,7 @@ public class ViewAllUsers extends AppCompatActivity {
         public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                     .addBackgroundColor(ContextCompat.getColor(ViewAllUsers.this, R.color.grey))
-                    .addActionIcon(R.drawable.email)
+                    .addActionIcon(R.drawable.chat)
                     .create()
                     .decorate();
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

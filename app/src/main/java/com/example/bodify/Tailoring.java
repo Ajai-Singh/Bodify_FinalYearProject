@@ -100,25 +100,22 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat todaysDate = new SimpleDateFormat("dd/MM/yyyy");
                 Date date = new Date();
                 User user = new User(strUserName, strEmail, gender, activityLevel, fitnessGoal, bodyType, preferredMacroNutrient, dblWeight, formattedBodyMassIndex, intHeight, imageDownloadUrl,todaysDate.format(date));
-                databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
-                                NotificationManager notificationManager = getSystemService(NotificationManager.class);
-                                notificationManager.createNotificationChannel(notificationChannel);
-                            }
-                            String message = "Thank you for creating an account with us!";
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(Tailoring.this,"My Notification").setSmallIcon(
-                                    R.drawable.info).setContentTitle("Welcome").setContentText(message).setAutoCancel(true);
-                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(Tailoring.this);
-                            notificationManagerCompat.notify(0,builder.build());
-                            Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), Management.class));
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
+                            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+                            notificationManager.createNotificationChannel(notificationChannel);
                         }
+                        String message = "Thank you for creating an account with us!";
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(Tailoring.this,"My Notification").setSmallIcon(
+                                R.drawable.info).setContentTitle("Welcome").setContentText(message).setAutoCancel(true);
+                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(Tailoring.this);
+                        notificationManagerCompat.notify(0,builder.build());
+                        Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(), Management.class));
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

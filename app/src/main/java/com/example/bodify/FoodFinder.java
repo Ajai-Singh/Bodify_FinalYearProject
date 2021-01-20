@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,8 +35,6 @@ import com.example.bodify.Models.Recipe;
 import com.example.bodify.Models.Favourite;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import org.jetbrains.annotations.NotNull;
@@ -52,8 +49,6 @@ import java.util.Map;
 import java.util.Objects;
 import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private Spinner mealsSpinner;
@@ -370,29 +365,11 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
             String userID = firebaseUser.getUid();
             Favourite favourite = new Favourite(itemName, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, userID, servings);
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-            Query query = databaseReference
-                    .child("Favourites")
-                    .orderByChild("itemName")
-                    .equalTo(itemName);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.getChildrenCount() > 0) {
-                        Toast.makeText(FoodFinder.this, "Error, Item already exists in favourites!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(FoodFinder.this, "Item added to favourites", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(FoodFinder.this, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(FoodFinder.this, "Error Occurred" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(FoodFinder.this, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(FoodFinder.this, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });

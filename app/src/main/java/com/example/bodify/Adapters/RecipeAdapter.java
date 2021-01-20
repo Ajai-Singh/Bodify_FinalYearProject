@@ -18,9 +18,11 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Meal;
@@ -33,7 +35,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -237,34 +241,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                     break;
                                 }
                             }
+
                             assert recipe != null;
                             Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
                                     recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), userID, recipe.getServings());
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                            Query query = reference
-                                    .child("Favourites")
-                                    .orderByChild("itemName")
-                                    .equalTo(recipe.getTitle());
-                            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.getChildrenCount() > 0) {
-                                        Toast.makeText(context, "Error, Item already exists in favourites!", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Favourites");
-                                        databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(context, "Item added to favourites", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                Toast.makeText(context, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NotNull DatabaseError databaseError) {
-                                    Toast.makeText(context, "Error Occurred: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                            databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(context, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                         });
