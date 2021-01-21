@@ -18,43 +18,35 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Recipe> recipes;
     private final Context context;
-    private String mealType;
-    private String adapterChoice;
     private ArrayList<String> servingNumbers;
     private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+    private String whatDayToAddTo;
+    private String quantityAdapterChoice;
+    private String mealAdapterChoice;
 
     public RecipeAdapter(ArrayList<Recipe> recipes, Context context) {
         this.recipes = recipes;
@@ -114,19 +106,68 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         dialog.show();
                         break;
                     case R.id.addToTodaysDiary:
-                        final AlertDialog.Builder alertDialogMeals = new AlertDialog.Builder(context);
-                        alertDialogMeals.setTitle("Select Meal");
-                        final String[] items = {"Breakfast", "Lunch", "Dinner", "Other"};
-                        Spinner servings = new Spinner(context);
+                        AlertDialog.Builder diaryBuilder = new AlertDialog.Builder(context);
+                        final Spinner meals;
+                        final Spinner quantity;
+                        final Spinner whatDay;
+                        @SuppressLint("InflateParams")
+                        LayoutInflater diaryInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View diaryView = diaryInflater.inflate(R.layout.test, null);
+                        meals = diaryView.findViewById(R.id.when);
+                        quantity = diaryView.findViewById(R.id.quan);
+                        whatDay = diaryView.findViewById(R.id.dayOfWeek);
+                        final ArrayList<String> daysOfWeek = new ArrayList<>();
+                        daysOfWeek.add("Monday");
+                        daysOfWeek.add("Tuesday");
+                        daysOfWeek.add("Wednesday");
+                        daysOfWeek.add("Thursday");
+                        daysOfWeek.add("Friday");
+                        daysOfWeek.add("Saturday");
+                        daysOfWeek.add("Sunday");
+                        ArrayList<String> daysToShow = new ArrayList<>();
+                        String dayPosition = null;
+                        for (int i = 0; i < daysOfWeek.size(); i++) {
+                            if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
+                                String a = daysOfWeek.get(i);
+                                dayPosition = String.valueOf(daysOfWeek.indexOf(a));
+                                break;
+                            }
+                        }
+                        for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(dayPosition)); i++) {
+                            daysToShow.add(daysOfWeek.get(i));
+                        }
+                        int defaultP = 0;
+                        for (int i = 0; i < daysToShow.size(); i++) {
+                            if (simpleDateformat.format(today).equalsIgnoreCase(daysToShow.get(i))) {
+                                defaultP = i;
+                                break;
+                            }
+                        }
+                        ArrayAdapter dayAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, daysToShow);
+                        whatDay.setAdapter(dayAdapter);
+                        whatDay.setSelection(defaultP);
+                        dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        whatDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                whatDayToAddTo = parent.getItemAtPosition(position).toString();
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+                        final ArrayList<String> mealTypes = new ArrayList<>();
+                        mealTypes.add("Select Meal");
+                        mealTypes.add("Breakfast");
+                        mealTypes.add("Lunch");
+                        mealTypes.add("Dinner");
+                        mealTypes.add("Other");
                         servingNumbers = new ArrayList<>();
                         servingNumbers.add("Select Quantity");
-                        for (int i = 0; i < recipes.size(); i++) {
-                            if (i == holder.getAdapterPosition()) {
-                                Recipe recipe = recipes.get(i);
-                                for (int e = 1; e <= recipe.getServings(); e++) {
-                                    servingNumbers.add(String.valueOf(e));
-                                }
-                            }
+                        for (int i = 1; i <= recipes.get(position).getServings(); i++) {
+                            servingNumbers.add(String.valueOf(i));
                         }
                         ArrayAdapter servingAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, servingNumbers) {
                             @Override
@@ -146,12 +187,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 return view;
                             }
                         };
-                        servings.setAdapter(servingAdapter);
+                        quantity.setAdapter(servingAdapter);
                         servingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        servings.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        quantity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position1, long id) {
-                                adapterChoice = parent.getItemAtPosition(position1).toString();
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                quantityAdapterChoice = parent.getItemAtPosition(position).toString();
                             }
 
                             @Override
@@ -159,26 +200,49 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
                             }
                         });
-                        alertDialogMeals.setView(servings);
-                        alertDialogMeals.setSingleChoiceItems(items, -1, (dialog1, which) -> {
-                            switch (which) {
-                                case 0:
-                                case 1:
-                                case 2:
-                                case 3:
-                                    mealType = items[which];
-                                    break;
+                        ArrayAdapter mealsAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, mealTypes) {
+                            @Override
+                            public boolean isEnabled(int position) {
+                                return position != 0;
                             }
-                        }).setPositiveButton("Ok", (dialog12, which) -> {
-                            if (!Arrays.asList(items).contains(mealType)) {
+
+                            @Override
+                            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
+                                View view = super.getDropDownView(position, convertView, parent);
+                                TextView textview = (TextView) view;
+                                if (position == 0) {
+                                    textview.setTextColor(Color.GRAY);
+                                } else {
+                                    textview.setTextColor(Color.BLACK);
+                                }
+                                return view;
+                            }
+                        };
+                        meals.setAdapter(mealsAdapter);
+                        mealsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        meals.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                mealAdapterChoice = parent.getItemAtPosition(position).toString();
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+                        diaryBuilder.setPositiveButton("Ok", (diaryDialog, which) ->
+                        {
+                            if (meals.getSelectedItemPosition() == 0 || quantity.getSelectedItemPosition() == 0) {
                                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(context);
                                 dlgAlert.setMessage("Not All Fields are Filled!");
                                 dlgAlert.setTitle("Error...");
                                 dlgAlert.setPositiveButton("OK", null);
                                 dlgAlert.setCancelable(true);
                                 dlgAlert.create().show();
-                                dlgAlert.setPositiveButton("Ok", (dialog121, which1) -> {
-                                });
+                                dlgAlert.setPositiveButton("Ok",
+                                        (dialog1, which1) -> {
+                                        });
                             } else {
                                 Recipe recipe = null;
                                 for (int i = 0; i < recipes.size(); i++) {
@@ -191,18 +255,18 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 Meal meal = new Meal(recipe.getTitle(), userID, recipe.getCalories(),
                                         recipe.getFats(), recipe.getSodium(), recipe.getCarbohydrates(),
                                         recipe.getSugar(), recipe.getProteins(),
-                                        Integer.parseInt(adapterChoice), mealType, simpleDateformat.format(today));
+                                        Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo);
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
-                                databaseReference.child(simpleDateformat.format(today)).push().setValue(meal).addOnCompleteListener(task -> {
+                                databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(context, "Successfully saved", Toast.LENGTH_SHORT).show();
                                     }
                                 }).addOnFailureListener(e -> Toast.makeText(context, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                             }
-                        });
-                        AlertDialog alert = alertDialogMeals.create();
-                        alert.setCanceledOnTouchOutside(false);
-                        alert.show();
+                        }).setNegativeButton("Close", (diaryDialog, which) -> diaryDialog.cancel());
+                        diaryBuilder.setView(diaryView);
+                        AlertDialog diaryAlertDialog = diaryBuilder.create();
+                        diaryAlertDialog.show();
                         break;
                     case R.id.ingredients:
                         Log.i("ingredients", "" + recipes.get(position).getIngredients());

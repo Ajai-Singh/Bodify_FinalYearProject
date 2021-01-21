@@ -386,9 +386,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 View view = getLayoutInflater().inflate(R.layout.test, null);
                 meals = view.findViewById(R.id.when);
                 quantity = view.findViewById(R.id.quan);
-                //spinner to show current day first then previous days in it
                 whatDay = view.findViewById(R.id.dayOfWeek);
-                //Array list with all days find index of the current day and then loop up until that index and add it to new Arraylist
                 final ArrayList<String> daysOfWeek = new ArrayList<>();
                 daysOfWeek.add("Monday");
                 daysOfWeek.add("Tuesday");
@@ -399,31 +397,23 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 daysOfWeek.add("Sunday");
                 ArrayList<String> daysToShow = new ArrayList<>();
                 String position = null;
-
-                String currentDay = simpleDateformat.format(today);
                 for(int i = 0; i < daysOfWeek.size(); i ++) {
-                    if(currentDay.equalsIgnoreCase(daysOfWeek.get(i))) {
+                    if(simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
                         String a = daysOfWeek.get(i);
                         position = String.valueOf(daysOfWeek.indexOf(a));
                         break;
                     }
                 }
-                //the index is correct now - 3
-                Log.i("P","" + position);
-                int p = Integer.parseInt(position);
-                for(int i = 0; i <= p; i++) {
+                for(int i = 0; i <= Integer.parseInt(Objects.requireNonNull(position)); i++) {
                     daysToShow.add(daysOfWeek.get(i));
                 }
-                Log.i("daysToShow","" + daysToShow.toString());
                 int defaultP = 0;
                 for(int i = 0; i < daysToShow.size(); i++) {
-                    if(currentDay.equalsIgnoreCase(daysToShow.get(i))) {
+                    if(simpleDateformat.format(today).equalsIgnoreCase(daysToShow.get(i))) {
                         defaultP = i;
                         break;
                     }
                 }
-
-
                 ArrayAdapter dayAdapter = new ArrayAdapter(FoodFinder.this, android.R.layout.simple_spinner_dropdown_item, daysToShow);
                 whatDay.setAdapter(dayAdapter);
                 whatDay.setSelection(defaultP);
