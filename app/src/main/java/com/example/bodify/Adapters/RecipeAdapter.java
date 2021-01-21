@@ -27,8 +27,11 @@ import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -305,16 +308,39 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                     break;
                                 }
                             }
-
-                            assert recipe != null;
-                            Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
-                                    recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), userID, recipe.getServings());
-                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-                            databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(context, "Item added to favourites", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(context, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Favourites");
+                            Recipe finalRecipe = recipe;
+                            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    boolean exists = false;
+                                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                                        Favourite favourite = userSnapshot.getValue(Favourite.class);
+                                        if (favourite != null) {
+                                            if (favourite.getItemName().equalsIgnoreCase(finalRecipe.getTitle()) && favourite.getUserID().equalsIgnoreCase(userID)) {
+                                                exists = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if(exists) {
+                                        Toast.makeText(context, "Error item already exists in Favourites", Toast.LENGTH_SHORT).show();
+                                    } if(!exists){
+                                        assert finalRecipe != null;
+                                        Favourite favourite = new Favourite(finalRecipe.getTitle(), finalRecipe.getCalories(), finalRecipe.getFats(),
+                                                finalRecipe.getSodium(), finalRecipe.getCarbohydrates(), finalRecipe.getSugar(), finalRecipe.getProteins(), userID, finalRecipe.getServings());
+                                        databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(context, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(context, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(context, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                         });
