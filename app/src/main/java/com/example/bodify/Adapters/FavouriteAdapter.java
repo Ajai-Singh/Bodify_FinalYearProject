@@ -69,7 +69,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                         final Spinner whatDay;
                         @SuppressLint("InflateParams")
                         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View view = inflater.inflate(R.layout.test, null);
+                        View view = inflater.inflate(R.layout.addtodiarypopup, null);
                         meals = view.findViewById(R.id.when);
                         quantity = view.findViewById(R.id.quan);
                         whatDay = view.findViewById(R.id.dayOfWeek);

@@ -112,7 +112,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         final Spinner whatDay;
                         @SuppressLint("InflateParams")
                         LayoutInflater diaryInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        View diaryView = diaryInflater.inflate(R.layout.test, null);
+                        View diaryView = diaryInflater.inflate(R.layout.addtodiarypopup, null);
                         meals = diaryView.findViewById(R.id.when);
                         quantity = diaryView.findViewById(R.id.quan);
                         whatDay = diaryView.findViewById(R.id.dayOfWeek);

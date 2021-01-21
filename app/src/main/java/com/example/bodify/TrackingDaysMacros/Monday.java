@@ -37,7 +37,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Objects;
 
 public class Monday extends Fragment {
     private TextView caloriesTV, fatsTV, proteinsTV, carbohydratesTV;
@@ -48,6 +52,7 @@ public class Monday extends Fragment {
     private final ArrayList<BarEntry> barEntries = new ArrayList<>();
     private final ArrayList<BarEntry> barEntries1 = new ArrayList<>();
     private ConstraintLayout constraintLayout;
+
 
     public Monday() {
 
@@ -195,16 +200,42 @@ public class Monday extends Fragment {
                         loggedCarbohydrates += meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
                     }
                 }
-                if (loggedProteins == 0.0 && loggedFats == 0.0 && loggedCarbohydrates == 0) {
+                if (loggedProteins == 0.0 && loggedFats == 0.0 && loggedCarbohydrates == 0.0) {
                     barChart1.setVisibility(View.GONE);
                     barChart.setVisibility(View.GONE);
-                    showSnackBar();
-                } else {
-                    macros.add(new BarEntry(1f, (float) loggedFats));
-                    macros.add(new BarEntry(2f, (float) loggedCarbohydrates));
-                    macros.add(new BarEntry(3f, (float) loggedProteins));
-                    showBarChart1(macros);
-                }
+                    final ArrayList<String> daysOfWeek = new ArrayList<>();
+                    final ArrayList<String> daysToShow = new ArrayList<>();
+                    daysOfWeek.add("Monday");
+                    daysOfWeek.add("Tuesday");
+                    daysOfWeek.add("Wednesday");
+                    daysOfWeek.add("Thursday");
+                    daysOfWeek.add("Friday");
+                    daysOfWeek.add("Saturday");
+                    daysOfWeek.add("Sunday");
+                        String position = null;
+                        final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
+                        final Date today = new Date();
+                        for (int i = 0; i < daysOfWeek.size(); i++) {
+                            if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
+                                String a = daysOfWeek.get(i);
+                                position = String.valueOf(daysOfWeek.indexOf(a));
+                                break;
+                            }
+                        }
+                        for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(position)); i++) {
+                            daysToShow.add(daysOfWeek.get(i));
+                        }
+                        if (daysToShow.contains("Monday")) {
+                            showPositiveSnackBar();
+                        } else {
+                            showNegativeSnackBar();
+                        }
+                    } else {
+                        macros.add(new BarEntry(1f, (float) loggedFats));
+                        macros.add(new BarEntry(2f, (float) loggedCarbohydrates));
+                        macros.add(new BarEntry(3f, (float) loggedProteins));
+                        showBarChart1(macros);
+                    }
             }
 
             @Override
@@ -214,7 +245,7 @@ public class Monday extends Fragment {
         });
     }
 
-    public void showSnackBar() {
+    public void showPositiveSnackBar() {
         Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no data! Please navigate Food finder", Snackbar.LENGTH_SHORT).setAction(
                 "Food finder", v -> {
                     Intent intent = new Intent(getActivity(), FoodFinder.class);
@@ -222,6 +253,11 @@ public class Monday extends Fragment {
                     getActivity().overridePendingTransition(0, 0);
                 }
         );
+        snackbar.show();
+    }
+
+    public void showNegativeSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry cannot add meals to days in the future!", Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 

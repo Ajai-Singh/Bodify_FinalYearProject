@@ -383,7 +383,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 final Spinner whatDay;
                 AlertDialog.Builder builder = new AlertDialog.Builder(FoodFinder.this);
                 @SuppressLint("InflateParams")
-                View view = getLayoutInflater().inflate(R.layout.test, null);
+                View view = getLayoutInflater().inflate(R.layout.addtodiarypopup, null);
                 meals = view.findViewById(R.id.when);
                 quantity = view.findViewById(R.id.quan);
                 whatDay = view.findViewById(R.id.dayOfWeek);
