@@ -65,6 +65,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
     private final ArrayList<Integer> macros = new ArrayList<>();
     private String quantityAdapterChoice;
     private String mealAdapterChoice;
+    private String whatDayToAddTo;
     private ArrayList<String> servingNumbers;
     private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
@@ -335,7 +336,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                            final int itemTotalCarbohydrates, final int itemSugars, final int itemProtein,
                            final int servings) {
         TextView itemNameFromScan, itemCalories, itemCaloriesFromFat, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT, itemServingsT;
-        Button add, addToDiary;
+        Button addToFavourites, addToDiary;
         AlertDialog.Builder builder = new AlertDialog.Builder(FoodFinder.this);
         @SuppressLint("InflateParams")
         View view = getLayoutInflater().inflate(R.layout.scanner_popup, null);
@@ -348,7 +349,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
         itemSugarsT = view.findViewById(R.id.totalSugarTextView);
         itemProteinT = view.findViewById(R.id.totalProteinTextView);
         itemServingsT = view.findViewById(R.id.amount);
-        add = view.findViewById(R.id.save);
+        addToFavourites = view.findViewById(R.id.save);
         addToDiary = view.findViewById(R.id.diaryButton);
         itemNameFromScan.setText(itemName);
         itemCalories.setText(String.valueOf(calories));
@@ -359,7 +360,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
         itemSugarsT.setText(String.valueOf(itemSugars));
         itemProteinT.setText(String.valueOf(itemProtein));
         itemServingsT.setText(String.valueOf(servings));
-        add.setOnClickListener(v -> {
+        addToFavourites.setOnClickListener(v -> {
             FirebaseUser firebaseUser = mAuth.getCurrentUser();
             assert firebaseUser != null;
             String userID = firebaseUser.getUid();
@@ -379,11 +380,65 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
             public void onClick(View v) {
                 final Spinner meals;
                 final Spinner quantity;
+                final Spinner whatDay;
                 AlertDialog.Builder builder = new AlertDialog.Builder(FoodFinder.this);
                 @SuppressLint("InflateParams")
                 View view = getLayoutInflater().inflate(R.layout.test, null);
                 meals = view.findViewById(R.id.when);
                 quantity = view.findViewById(R.id.quan);
+                //spinner to show current day first then previous days in it
+                whatDay = view.findViewById(R.id.dayOfWeek);
+                //Array list with all days find index of the current day and then loop up until that index and add it to new Arraylist
+                final ArrayList<String> daysOfWeek = new ArrayList<>();
+                daysOfWeek.add("Monday");
+                daysOfWeek.add("Tuesday");
+                daysOfWeek.add("Wednesday");
+                daysOfWeek.add("Thursday");
+                daysOfWeek.add("Friday");
+                daysOfWeek.add("Saturday");
+                daysOfWeek.add("Sunday");
+                ArrayList<String> daysToShow = new ArrayList<>();
+                String position = null;
+
+                String currentDay = simpleDateformat.format(today);
+                for(int i = 0; i < daysOfWeek.size(); i ++) {
+                    if(currentDay.equalsIgnoreCase(daysOfWeek.get(i))) {
+                        String a = daysOfWeek.get(i);
+                        position = String.valueOf(daysOfWeek.indexOf(a));
+                        break;
+                    }
+                }
+                //the index is correct now - 3
+                Log.i("P","" + position);
+                int p = Integer.parseInt(position);
+                for(int i = 0; i <= p; i++) {
+                    daysToShow.add(daysOfWeek.get(i));
+                }
+                Log.i("daysToShow","" + daysToShow.toString());
+                int defaultP = 0;
+                for(int i = 0; i < daysToShow.size(); i++) {
+                    if(currentDay.equalsIgnoreCase(daysToShow.get(i))) {
+                        defaultP = i;
+                        break;
+                    }
+                }
+
+
+                ArrayAdapter dayAdapter = new ArrayAdapter(FoodFinder.this, android.R.layout.simple_spinner_dropdown_item, daysToShow);
+                whatDay.setAdapter(dayAdapter);
+                whatDay.setSelection(defaultP);
+                dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                whatDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        whatDayToAddTo = parent.getItemAtPosition(position).toString();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
                 final ArrayList<String> mealTypes = new ArrayList<>();
                 mealTypes.add("Select Meal");
                 mealTypes.add("Breakfast");
@@ -469,9 +524,9 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 (dialog1, which1) -> {
                                 });
                     } else {
-                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, simpleDateformat.format(today));
+                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice,whatDayToAddTo);
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
-                        databaseReference.child(simpleDateformat.format(today)).push().setValue(meal).addOnCompleteListener(task -> {
+                        databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(FoodFinder.this, "Successfully saved", Toast.LENGTH_SHORT).show();
                             }

@@ -1,5 +1,7 @@
 package com.example.bodify.Models;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Meal {
     String itemName,userID,id,mealType,dayOfWeek;
     int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
@@ -118,6 +120,7 @@ public class Meal {
         this.dayOfWeek = dayOfWeek;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Meal{" +
