@@ -17,13 +17,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import com.example.bodify.Models.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -63,9 +60,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         final FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         submit.setOnClickListener(v -> {
-            String strWeight = weight.getText().toString();
-            String strHeight = height.getText().toString();
-            if ((strWeight.matches("") || strHeight.matches("") || (fitnessGoalSpinner.getSelectedItemPosition() == 0) ||
+            if ((weight.getText().toString().matches("") || height.getText().toString().matches("") || (fitnessGoalSpinner.getSelectedItemPosition() == 0) ||
                     (activityLevelSpinner.getSelectedItemPosition() == 0) || (bodyTypeSpinner.getSelectedItemPosition() == 0) ||
                     (genderSpinner.getSelectedItemPosition() == 0) || (preferredFoodsSpinner.getSelectedItemPosition() == 0))){
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Tailoring.this);
@@ -78,13 +73,6 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                         (dialog, which) -> {
                         });
             } else {
-                String bodyType = bodyTypeSpinner.getSelectedItem().toString();
-                String activityLevel = activityLevelSpinner.getSelectedItem().toString();
-                String fitnessGoal = fitnessGoalSpinner.getSelectedItem().toString();
-                String gender = genderSpinner.getSelectedItem().toString();
-                String preferredMacroNutrient = preferredFoodsSpinner.getSelectedItem().toString();
-                double dblWeight = Double.parseDouble(strWeight);
-                int intHeight = Integer.parseInt(strHeight);
                 Intent intent = getIntent();
                 String strUserName = intent.getStringExtra(MESSAGE_KEY);
                 String imageDownloadUrl = intent.getStringExtra(MESSAGE_KEY1);
@@ -93,13 +81,13 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 String strEmail = firebaseUser.getEmail();
                 String userID = firebaseUser.getUid();
                 double bodyMassIndex;
-                double heightInMetres = intHeight / 100.00;
-                bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
+                double heightInMetres = Integer.parseInt(height.getText().toString()) / 100.00;
+                bodyMassIndex = Double.parseDouble(weight.getText().toString()) / Math.pow(heightInMetres, 2.0);
                 DecimalFormat decimalFormat = new DecimalFormat("##.00");
                 double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat todaysDate = new SimpleDateFormat("dd/MM/yyyy");
                 Date date = new Date();
-                User user = new User(strUserName, strEmail, gender, activityLevel, fitnessGoal, bodyType, preferredMacroNutrient, dblWeight, formattedBodyMassIndex, intHeight, imageDownloadUrl,todaysDate.format(date));
+                User user = new User(strUserName, strEmail, genderSpinner.getSelectedItem().toString(), activityLevelSpinner.getSelectedItem().toString(), fitnessGoalSpinner.getSelectedItem().toString(), bodyTypeSpinner.getSelectedItem().toString(), preferredFoodsSpinner.getSelectedItem().toString(), Double.parseDouble(weight.getText().toString()), formattedBodyMassIndex, Integer.parseInt(height.getText().toString()), imageDownloadUrl,todaysDate.format(date));
                 databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -173,7 +161,6 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         adapterGender.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(adapterGender);
         genderSpinner.setOnItemSelectedListener(Tailoring.this);
-
         ArrayAdapter<String> adapterFitnessGoal = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, fitnessGoals) {
             @Override
             public boolean isEnabled(int position) {
@@ -195,7 +182,6 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         adapterFitnessGoal.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fitnessGoalSpinner.setAdapter(adapterFitnessGoal);
         fitnessGoalSpinner.setOnItemSelectedListener(Tailoring.this);
-
         ArrayAdapter<String> adapterActivityLevels = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, activityLevels){
             @Override
             public boolean isEnabled(int position) {
@@ -216,7 +202,6 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         adapterActivityLevels.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activityLevelSpinner.setAdapter(adapterActivityLevels);
         activityLevelSpinner.setOnItemSelectedListener(Tailoring.this);
-
         ArrayAdapter<String> adapterBodyType = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, bodyTypes){
             @Override
             public boolean isEnabled(int position) {
@@ -234,11 +219,9 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 return view;
             }
         };
-
         adapterBodyType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         bodyTypeSpinner.setAdapter(adapterBodyType);
         bodyTypeSpinner.setOnItemSelectedListener(Tailoring.this);
-
         ArrayAdapter<String> adapterPreferredFoods = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, preferredFoods){
             @Override
             public boolean isEnabled(int position) {

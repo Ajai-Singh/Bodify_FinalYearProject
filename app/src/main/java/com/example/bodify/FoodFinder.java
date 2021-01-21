@@ -312,17 +312,9 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    String itemId = jsonObject.getString("item_id");
-                    String itemName = jsonObject.getString("item_name");
-                    int calories = jsonObject.getInt("nf_calories");
-                    int caloriesFromFat = jsonObject.getInt("nf_calories_from_fat");
-                    int totalFat = jsonObject.getInt("nf_total_fat");
-                    int sodium = jsonObject.getInt("nf_sodium");
-                    int totalCarbohydrates = jsonObject.getInt("nf_total_carbohydrate");
-                    int sugars = jsonObject.getInt("nf_sugars");
-                    int proteins = jsonObject.getInt("nf_protein");
-                    int servings = jsonObject.getInt("nf_servings_per_container");
-                    createPost(itemName, calories, caloriesFromFat, totalFat, sodium, totalCarbohydrates, sugars, proteins, servings);
+                    //String itemId = jsonObject.getString("item_id");//Might need in the future, will leave for now
+                    createPost(jsonObject.getString("item_name"),jsonObject.getInt("nf_calories"),jsonObject.getInt("nf_calories_from_fat"),jsonObject.getInt("nf_total_fat"),
+                            jsonObject.getInt("nf_sodium"),jsonObject.getInt("nf_total_carbohydrate"),jsonObject.getInt("nf_sugars"),jsonObject.getInt("nf_protein"),jsonObject.getInt("nf_servings_per_container"));
                 } catch (JSONException e) {
                     Toast.makeText(FoodFinder.this, "Error Occurred" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }

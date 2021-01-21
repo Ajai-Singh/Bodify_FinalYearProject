@@ -12,12 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
+
 import com.example.bodify.FoodFinder;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.MacroCopy;
@@ -117,61 +119,63 @@ public class Monday extends Fragment {
                 MacroCopy macroCopy = snapshot.getValue(MacroCopy.class);
 
                 if (macroCopy != null) {
-                    if (macroCopy.getCarbohydrateConsumption() < 0) {
-                        carbohydratesTV.setTextColor(Color.parseColor("#FF0000"));
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
-                            NotificationManager notificationManager = ( NotificationManager ) getActivity().getSystemService( getActivity().NOTIFICATION_SERVICE );
-                            notificationManager.createNotificationChannel(notificationChannel);
-                        }
-                        String message = "You have gone over your daily Carbohydrates";
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),"My Notification").setSmallIcon(
-                                R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
-                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
-                        notificationManagerCompat.notify(0,builder.build());
+                    if (getActivity() != null) {
+                        if (macroCopy.getCarbohydrateConsumption() < 0) {
+                            carbohydratesTV.setTextColor(Color.parseColor("#FF0000"));
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                NotificationChannel notificationChannel = new NotificationChannel("My Notification", "test", NotificationManager.IMPORTANCE_DEFAULT);
+                                NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
+                                notificationManager.createNotificationChannel(notificationChannel);
+                            }
+                            String message = "Hello thanks for registering";
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "My Notification").setSmallIcon(
+                                    R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
+                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+                            notificationManagerCompat.notify(0, builder.build());
 
 
-                    } else if (macroCopy.getFatConsumption() < 0) {
-                        fatsTV.setTextColor(Color.parseColor("#FF0000"));
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
-                            NotificationManager notificationManager = ( NotificationManager ) getActivity().getSystemService( getActivity().NOTIFICATION_SERVICE );
-                            notificationManager.createNotificationChannel(notificationChannel);
+                        } else if (macroCopy.getFatConsumption() < 0) {
+                            fatsTV.setTextColor(Color.parseColor("#FF0000"));
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                NotificationChannel notificationChannel = new NotificationChannel("My Notification", "test", NotificationManager.IMPORTANCE_DEFAULT);
+                                NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
+                                notificationManager.createNotificationChannel(notificationChannel);
+                            }
+                            String message = "You have gone over your daily Fat";
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "My Notification").setSmallIcon(
+                                    R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
+                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+                            notificationManagerCompat.notify(0, builder.build());
+                        } else if (macroCopy.getProteinConsumption() < 0) {
+                            proteinsTV.setTextColor(Color.parseColor("#FF0000"));
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                NotificationChannel notificationChannel = new NotificationChannel("My Notification", "test", NotificationManager.IMPORTANCE_DEFAULT);
+                                NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
+                                notificationManager.createNotificationChannel(notificationChannel);
+                            }
+                            String message = "You have gone over your daily Protein";
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "My Notification").setSmallIcon(
+                                    R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
+                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+                            notificationManagerCompat.notify(0, builder.build());
+                        } else if (macroCopy.getCalorieConsumption() < 0) {
+                            caloriesTV.setTextColor(Color.parseColor("#FF0000"));
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                NotificationChannel notificationChannel = new NotificationChannel("My Notification", "test", NotificationManager.IMPORTANCE_DEFAULT);
+                                NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
+                                notificationManager.createNotificationChannel(notificationChannel);
+                            }
+                            String message = "You have gone over your daily Calories";
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "My Notification").setSmallIcon(
+                                    R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
+                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
+                            notificationManagerCompat.notify(0, builder.build());
                         }
-                        String message = "You have gone over your daily Fat";
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),"My Notification").setSmallIcon(
-                                R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
-                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
-                        notificationManagerCompat.notify(0,builder.build());
-                    } else if (macroCopy.getProteinConsumption() < 0) {
-                        proteinsTV.setTextColor(Color.parseColor("#FF0000"));
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
-                            NotificationManager notificationManager = ( NotificationManager ) getActivity().getSystemService( getActivity().NOTIFICATION_SERVICE );
-                            notificationManager.createNotificationChannel(notificationChannel);
-                        }
-                        String message = "You have gone over your daily Protein";
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),"My Notification").setSmallIcon(
-                                R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
-                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
-                        notificationManagerCompat.notify(0,builder.build());
-                    } else if (macroCopy.getCalorieConsumption() < 0) {
-                        caloriesTV.setTextColor(Color.parseColor("#FF0000"));
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
-                            NotificationManager notificationManager = ( NotificationManager ) getActivity().getSystemService( getActivity().NOTIFICATION_SERVICE );
-                            notificationManager.createNotificationChannel(notificationChannel);
-                        }
-                        String message = "You have gone over your daily Calories";
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),"My Notification").setSmallIcon(
-                                R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
-                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
-                        notificationManagerCompat.notify(0,builder.build());
+                        caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
+                        fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
+                        proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
+                        carbohydratesTV.setText(String.valueOf(macroCopy.getCarbohydrateConsumption()));
                     }
-                    caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
-                    fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
-                    proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
-                    carbohydratesTV.setText(String.valueOf(macroCopy.getCarbohydrateConsumption()));
                 }
             }
 
@@ -212,30 +216,30 @@ public class Monday extends Fragment {
                     daysOfWeek.add("Friday");
                     daysOfWeek.add("Saturday");
                     daysOfWeek.add("Sunday");
-                        String position = null;
-                        final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
-                        final Date today = new Date();
-                        for (int i = 0; i < daysOfWeek.size(); i++) {
-                            if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
-                                String a = daysOfWeek.get(i);
-                                position = String.valueOf(daysOfWeek.indexOf(a));
-                                break;
-                            }
+                    String position = null;
+                    final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
+                    final Date today = new Date();
+                    for (int i = 0; i < daysOfWeek.size(); i++) {
+                        if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
+                            String a = daysOfWeek.get(i);
+                            position = String.valueOf(daysOfWeek.indexOf(a));
+                            break;
                         }
-                        for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(position)); i++) {
-                            daysToShow.add(daysOfWeek.get(i));
-                        }
-                        if (daysToShow.contains("Monday")) {
-                            showPositiveSnackBar();
-                        } else {
-                            showNegativeSnackBar();
-                        }
-                    } else {
-                        macros.add(new BarEntry(1f, (float) loggedFats));
-                        macros.add(new BarEntry(2f, (float) loggedCarbohydrates));
-                        macros.add(new BarEntry(3f, (float) loggedProteins));
-                        showBarChart1(macros);
                     }
+                    for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(position)); i++) {
+                        daysToShow.add(daysOfWeek.get(i));
+                    }
+                    if (daysToShow.contains("Monday")) {
+                        showPositiveSnackBar();
+                    } else {
+                        showNegativeSnackBar();
+                    }
+                } else {
+                    macros.add(new BarEntry(1f, (float) loggedFats));
+                    macros.add(new BarEntry(2f, (float) loggedCarbohydrates));
+                    macros.add(new BarEntry(3f, (float) loggedProteins));
+                    showBarChart1(macros);
+                }
             }
 
             @Override
@@ -280,9 +284,9 @@ public class Monday extends Fragment {
     public ArrayList<String> getXAxisValues1() {
         ArrayList<String> xLabels = new ArrayList<>();
         xLabels.add("0");
-        xLabels.add("Fats");
-        xLabels.add("Carbohydrates");
-        xLabels.add("Proteins");
+        xLabels.add("Fats (g)");
+        xLabels.add("Carbohydrates (g)");
+        xLabels.add("Proteins (g)");
         return new ArrayList<>(xLabels);
     }
 
