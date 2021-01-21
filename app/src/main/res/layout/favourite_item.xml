@@ -17,7 +17,7 @@
             android:id="@+id/itemName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:text="Item name:"
@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/itemNameTextField"
-            android:layout_width="250dp"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
@@ -43,19 +43,18 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:text="&#8942;"
             android:textAppearance="?android:textAppearanceLarge"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.8"
-            app:layout_constraintStart_toEndOf="@+id/itemNameTextField"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textView27"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
             android:text="Item calories: "
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"

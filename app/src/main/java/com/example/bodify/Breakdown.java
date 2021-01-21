@@ -45,12 +45,10 @@ public class Breakdown extends Fragment {
         tabLayout.addTab(tabLayout.newTab().setText("Fri"));
         tabLayout.addTab(tabLayout.newTab().setText("Sat"));
         tabLayout.addTab(tabLayout.newTab().setText("Sun"));
-        FragmentManager fragmentManager = getChildFragmentManager();
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getContext(), fragmentManager, tabLayout.getTabCount());
-        viewPager.setAdapter(viewPagerAdapter);
+
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        final ViewPagerAdapter adapter = new ViewPagerAdapter(getContext(), getParentFragmentManager(), tabLayout.getTabCount());
+        final ViewPagerAdapter adapter = new ViewPagerAdapter(getContext(), getChildFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         String b = null;
