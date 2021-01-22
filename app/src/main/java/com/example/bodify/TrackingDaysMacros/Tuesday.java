@@ -114,65 +114,20 @@ public class Tuesday extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 MacroCopy macroCopy = snapshot.getValue(MacroCopy.class);
-
                 if (macroCopy != null) {
-                    if (getActivity() != null) {
-                        if (macroCopy.getCarbohydrateConsumption() < 0) {
-                            carbohydratesTV.setTextColor(Color.parseColor("#FF0000"));
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                NotificationChannel notificationChannel = new NotificationChannel("My Notification", "test", NotificationManager.IMPORTANCE_DEFAULT);
-                                NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
-                                notificationManager.createNotificationChannel(notificationChannel);
-                            }
-                            String message = "You have gone over your daily Carbohydrates";
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "My Notification").setSmallIcon(
-                                    R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
-                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
-                            notificationManagerCompat.notify(0, builder.build());
-
-
-                        } else if (macroCopy.getFatConsumption() < 0) {
-                            fatsTV.setTextColor(Color.parseColor("#FF0000"));
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                NotificationChannel notificationChannel = new NotificationChannel("My Notification", "test", NotificationManager.IMPORTANCE_DEFAULT);
-                                NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
-                                notificationManager.createNotificationChannel(notificationChannel);
-                            }
-                            String message = "You have gone over your daily Fat";
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "My Notification").setSmallIcon(
-                                    R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
-                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
-                            notificationManagerCompat.notify(0, builder.build());
-                        } else if (macroCopy.getProteinConsumption() < 0) {
-                            proteinsTV.setTextColor(Color.parseColor("#FF0000"));
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                NotificationChannel notificationChannel = new NotificationChannel("My Notification", "test", NotificationManager.IMPORTANCE_DEFAULT);
-                                NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
-                                notificationManager.createNotificationChannel(notificationChannel);
-                            }
-                            String message = "You have gone over your daily Protein";
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "My Notification").setSmallIcon(
-                                    R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
-                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
-                            notificationManagerCompat.notify(0, builder.build());
-                        } else if (macroCopy.getCalorieConsumption() < 0) {
-                            caloriesTV.setTextColor(Color.parseColor("#FF0000"));
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                NotificationChannel notificationChannel = new NotificationChannel("My Notification", "test", NotificationManager.IMPORTANCE_DEFAULT);
-                                NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
-                                notificationManager.createNotificationChannel(notificationChannel);
-                            }
-                            String message = "You have gone over your daily Calories";
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "My Notification").setSmallIcon(
-                                    R.drawable.info).setContentTitle("Attention").setContentText(message).setAutoCancel(true);
-                            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getContext());
-                            notificationManagerCompat.notify(0, builder.build());
-                        }
-                        caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
-                        fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
-                        proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
-                        carbohydratesTV.setText(String.valueOf(macroCopy.getCarbohydrateConsumption()));
+                    if (macroCopy.getCarbohydrateConsumption() < 0) {
+                        carbohydratesTV.setTextColor(Color.parseColor("#FF0000"));
+                    } else if (macroCopy.getFatConsumption() < 0) {
+                        fatsTV.setTextColor(Color.parseColor("#FF0000"));
+                    } else if (macroCopy.getProteinConsumption() < 0) {
+                        proteinsTV.setTextColor(Color.parseColor("#FF0000"));
+                    } else if (macroCopy.getCalorieConsumption() < 0) {
+                        caloriesTV.setTextColor(Color.parseColor("#FF0000"));
                     }
+                    caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
+                    fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
+                    proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
+                    carbohydratesTV.setText(String.valueOf(macroCopy.getCarbohydrateConsumption()));
                 }
             }
 
