@@ -53,5 +53,6 @@
             android:name=".CommunityWall"
             android:theme="@style/Theme.test" />
         <activity android:name=".SpecificUsersPage" />
+        <activity android:name=".Analysis" />
     </application>
 </manifest>

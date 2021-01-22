@@ -56,6 +56,9 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                 case R.id.gymFinder:
                     startActivity(new Intent(Management.this, GymsNearMe.class));
                     break;
+                case R.id.dataAnalysis:
+                    startActivity(new Intent(Management.this,Analysis.class));
+                    break;
                 case R.id.healthPage:
                     startActivity(new Intent(Management.this, Health.class));
                     break;

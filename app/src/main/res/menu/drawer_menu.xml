@@ -15,6 +15,11 @@
             android:title="Gym Finder" />
 
         <item
+            android:id="@+id/dataAnalysis"
+            android:icon="@drawable/trend"
+            android:title="Data Analysis" />
+
+        <item
             android:id="@+id/healthPage"
             android:icon="@drawable/health"
             android:title="Health" />
