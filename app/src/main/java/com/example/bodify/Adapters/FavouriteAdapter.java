@@ -36,6 +36,9 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     private String whatDayToAddTo;
     private String quantityAdapterChoice;
     private String mealAdapterChoice;
+    @SuppressLint("SimpleDateFormat")
+    private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+    private final Date date = new Date();
 
     public FavouriteAdapter(ArrayList<Favourite> favourites, Context context) {
         this.favourites = favourites;
@@ -212,7 +215,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories()
                                         , favourite.getItemTotalFat(), favourite.getItemSodium(),
                                         favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
-                                        favourite.getItemProtein(), Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo);
+                                        favourite.getItemProtein(), Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,formatter.format(date));
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {

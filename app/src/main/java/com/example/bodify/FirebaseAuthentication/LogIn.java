@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.bodify.Management;
+import com.example.bodify.MyService;
 import com.example.bodify.R;
 import com.google.firebase.auth.FirebaseAuth;
 import java.util.Objects;
@@ -44,6 +45,7 @@ public class LogIn extends AppCompatActivity {
                 mAuth.signInWithEmailAndPassword(strEmailAddress, strPassword).addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
                         Toast.makeText(LogIn.this, "User verified", Toast.LENGTH_SHORT).show();
+                        startService(new Intent(LogIn.this, MyService.class));
                         startActivity(new Intent(getApplicationContext(), Management.class));
                     }else {
                         Toast.makeText(LogIn.this, "Error occurred! " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();

@@ -9,7 +9,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 
-public class Analysis extends AppCompatActivity {
+public class BreakdownAnalysis extends AppCompatActivity {
 
 
     LineChart lineChart;
@@ -17,7 +17,7 @@ public class Analysis extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_analysis);
+        setContentView(R.layout.activity_breakdown_analysis);
         lineChart = findViewById(R.id.reportingChart);
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         //Im going to want 4 y values eg. calorie, fat, protein, carbohydrate

@@ -1,9 +1,7 @@
 package com.example.bodify.Models;
 
-import org.jetbrains.annotations.NotNull;
-
 public class Meal {
-    String itemName,userID,id,mealType,dayOfWeek;
+    String itemName,userID,id,mealType,dayOfWeek,date;
     int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
 
     public String getItemName() {
@@ -102,11 +100,19 @@ public class Meal {
         this.dayOfWeek = dayOfWeek;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public Meal() {
 
     }
 
-    public Meal(String itemName, String userID, int calories, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings, String mealType,String dayOfWeek) {
+    public Meal(String itemName, String userID, int calories, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings, String mealType,String dayOfWeek,String date) {
         this.itemName = itemName;
         this.userID = userID;
         this.calories = calories;
@@ -118,23 +124,6 @@ public class Meal {
         this.numberOfServings = numberOfServings;
         this.mealType = mealType;
         this.dayOfWeek = dayOfWeek;
-    }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "Meal{" +
-                "itemName='" + itemName + '\'' +
-                ", userID='" + userID + '\'' +
-                ", id='" + id + '\'' +
-                ", mealType='" + mealType + '\'' +
-                ", calories=" + calories +
-                ", itemTotalFat=" + itemTotalFat +
-                ", itemSodium=" + itemSodium +
-                ", itemTotalCarbohydrates=" + itemTotalCarbohydrates +
-                ", itemSugars=" + itemSugars +
-                ", itemProtein=" + itemProtein +
-                ", numberOfServings=" + numberOfServings +
-                '}';
+        this.date = date;
     }
 }

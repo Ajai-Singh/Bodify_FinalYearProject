@@ -75,6 +75,9 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
     private RequestQueue queue;
+    @SuppressLint("SimpleDateFormat")
+    private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+    private final Date date = new Date();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -534,7 +537,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 (dialog1, which1) -> {
                                 });
                     } else {
-                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice,whatDayToAddTo);
+                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice,whatDayToAddTo,formatter.format(date));
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                         databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
