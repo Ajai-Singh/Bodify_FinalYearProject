@@ -1,10 +1,8 @@
 package com.example.bodify.TrackingDaysMacros;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,14 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
-
 import com.example.bodify.FoodFinder;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.MacroCopy;
@@ -39,7 +33,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -120,12 +113,23 @@ public class Monday extends Fragment {
                 if (macroCopy != null) {
                     if (macroCopy.getCarbohydrateConsumption() < 0) {
                         carbohydratesTV.setTextColor(Color.parseColor("#FF0000"));
-                    } else if (macroCopy.getFatConsumption() < 0) {
+                    } else {
+                        carbohydratesTV.setTextColor(Color.BLACK);
+                    }
+                    if (macroCopy.getFatConsumption() < 0) {
                         fatsTV.setTextColor(Color.parseColor("#FF0000"));
-                    } else if (macroCopy.getProteinConsumption() < 0) {
+                    } else {
+                        fatsTV.setTextColor(Color.BLACK);
+                    }
+                    if (macroCopy.getProteinConsumption() < 0) {
                         proteinsTV.setTextColor(Color.parseColor("#FF0000"));
-                    } else if (macroCopy.getCalorieConsumption() < 0) {
+                    } else {
+                        proteinsTV.setTextColor(Color.BLACK);
+                    }
+                    if (macroCopy.getCalorieConsumption() < 0) {
                         caloriesTV.setTextColor(Color.parseColor("#FF0000"));
+                    } else {
+                        caloriesTV.setTextColor(Color.BLACK);
                     }
                     caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
                     fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
@@ -172,7 +176,7 @@ public class Monday extends Fragment {
                     daysOfWeek.add("Saturday");
                     daysOfWeek.add("Sunday");
                     String position = null;
-                    final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
+                    @SuppressLint("SimpleDateFormat") final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
                     final Date today = new Date();
                     for (int i = 0; i < daysOfWeek.size(); i++) {
                         if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {

@@ -111,12 +111,23 @@ public class Wednesday extends Fragment {
                 if (macroCopy != null) {
                     if (macroCopy.getCarbohydrateConsumption() < 0) {
                         carbohydratesTV.setTextColor(Color.parseColor("#FF0000"));
-                    } else if (macroCopy.getFatConsumption() < 0) {
+                    } else {
+                        carbohydratesTV.setTextColor(Color.BLACK);
+                    }
+                    if (macroCopy.getFatConsumption() < 0) {
                         fatsTV.setTextColor(Color.parseColor("#FF0000"));
-                    } else if (macroCopy.getProteinConsumption() < 0) {
+                    } else {
+                        fatsTV.setTextColor(Color.BLACK);
+                    }
+                    if (macroCopy.getProteinConsumption() < 0) {
                         proteinsTV.setTextColor(Color.parseColor("#FF0000"));
-                    } else if (macroCopy.getCalorieConsumption() < 0) {
+                    } else {
+                        proteinsTV.setTextColor(Color.BLACK);
+                    }
+                    if (macroCopy.getCalorieConsumption() < 0) {
                         caloriesTV.setTextColor(Color.parseColor("#FF0000"));
+                    } else {
+                        caloriesTV.setTextColor(Color.BLACK);
                     }
                     caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
                     fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
