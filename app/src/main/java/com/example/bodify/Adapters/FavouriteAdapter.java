@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +94,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 break;
                             }
                         }
+                        Log.i("dayP","" + dayPosition);
                         for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(dayPosition)); i++) {
                             daysToShow.add(daysOfWeek.get(i));
                         }
@@ -191,6 +193,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
 
                             }
                         });
+                        String finalDayPosition = dayPosition;
                         builder.setPositiveButton("Ok", (dialog, which) ->
                         {
                             if (meals.getSelectedItemPosition() == 0 || quantity.getSelectedItemPosition() == 0) {
@@ -212,10 +215,24 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                     }
                                 }
                                 assert favourite != null;
+                                String positionToAddTo = null;
+                                for(int i = 0; i < daysOfWeek.size(); i ++) {
+                                    if(daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
+                                        String a = daysOfWeek.get(i);
+                                        positionToAddTo = String.valueOf(daysOfWeek.indexOf(a));
+                                        break;
+                                    }
+                                }
+                                assert positionToAddTo != null;
+                                int finalDate = Integer.parseInt(finalDayPosition) - Integer.parseInt(positionToAddTo);
+                                int subStringCD = Integer.parseInt(formatter.format(date).substring(0,2));
+                                int f = subStringCD - finalDate;
+                                StringBuffer stringBuffer = new StringBuffer(formatter.format(date));
+                                stringBuffer.replace(0,2,String.valueOf(f));
                                 Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories()
                                         , favourite.getItemTotalFat(), favourite.getItemSodium(),
                                         favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
-                                        favourite.getItemProtein(), Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,formatter.format(date));
+                                        favourite.getItemProtein(), Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,String.valueOf(stringBuffer));
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {

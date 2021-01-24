@@ -55,13 +55,15 @@ public class MyService extends Service {
         Date date = new Date();
         String currentDate = formatter.format(date);
         //minus current date from when it was created and if the difference is 7
+        //error with for loop
         for (int i = 0; i < daysOfWeek.size(); i++) {
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(daysOfWeek.get(i));
             databaseReference.addValueEventListener(new ValueEventListener() {
-                int calories,fats,proteins,carbohydrates;
+                int calories, fats, proteins, carbohydrates;
+
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                         Meal meal = userSnapshot.getValue(Meal.class);
                         assert meal != null;
                         if (meal.getUserID().equals(userID)) {
@@ -78,24 +80,29 @@ public class MyService extends Service {
                                 proteins += meal.getItemProtein() * meal.getNumberOfServings();
                                 carbohydrates += meal.getItemTotalCarbohydrates() * meal.getNumberOfServings();
                             } else {
-                                Log.i("D","7 days have not passed since creation");
+                                Log.i("D", "7 days have not passed since creation");
                             }
                         }
                     }
-                    Analysis analysis = new Analysis(calories,fats,carbohydrates,proteins);
-                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Analysis");
-                    databaseReference.push().setValue(analysis).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Log.i("A","Successfully saved");
-                        }
-                    }).addOnFailureListener(e -> Log.i("B","Error occurred: " + e.getMessage()));
+                    Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins);
+                    createAnalysis(analysis);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Log.i("B","Error occurred: " + error.getMessage());
+                    Log.i("B", "Error occurred: " + error.getMessage());
                 }
             });
         }
     }
+
+    public void createAnalysis(Analysis analysis) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Analysis");
+        databaseReference.push().setValue(analysis).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.i("A","Successfully saved");
+            }
+        }).addOnFailureListener(e -> Log.i("B","Error occurred: " + e.getMessage()));
+    }
+
 }

@@ -525,6 +525,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
 
                     }
                 });
+                String finalPosition = position;
                 builder.setPositiveButton("Ok", (dialog, which) -> {
                     if (meals.getSelectedItemPosition() == 0 || quantity.getSelectedItemPosition() == 0) {
                         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(FoodFinder.this);
@@ -537,7 +538,21 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 (dialog1, which1) -> {
                                 });
                     } else {
-                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice,whatDayToAddTo,formatter.format(date));
+                        String positionToAddTo = null;
+                        for(int i = 0; i < daysOfWeek.size(); i ++) {
+                            if(daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
+                                String a = daysOfWeek.get(i);
+                                positionToAddTo = String.valueOf(daysOfWeek.indexOf(a));
+                                break;
+                            }
+                        }
+                        assert positionToAddTo != null;
+                        int finalDate = Integer.parseInt(finalPosition) - Integer.parseInt(positionToAddTo);
+                        int subStringCD = Integer.parseInt(formatter.format(date).substring(0,2));
+                        int f = subStringCD - finalDate;
+                        StringBuffer stringBuffer = new StringBuffer(formatter.format(date));
+                        stringBuffer.replace(0,2,String.valueOf(f));
+                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice,whatDayToAddTo,String.valueOf(stringBuffer));
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                         databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {

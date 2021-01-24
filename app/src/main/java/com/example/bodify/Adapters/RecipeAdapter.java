@@ -238,6 +238,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
                             }
                         });
+                        String finalDayPosition = dayPosition;
                         diaryBuilder.setPositiveButton("Ok", (diaryDialog, which) ->
                         {
                             if (meals.getSelectedItemPosition() == 0 || quantity.getSelectedItemPosition() == 0) {
@@ -259,10 +260,24 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                     }
                                 }
                                 assert recipe != null;
+                                String positionToAddTo = null;
+                                for(int i = 0; i < daysOfWeek.size(); i ++) {
+                                    if(daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
+                                        String a = daysOfWeek.get(i);
+                                        positionToAddTo = String.valueOf(daysOfWeek.indexOf(a));
+                                        break;
+                                    }
+                                }
+                                assert positionToAddTo != null;
+                                int finalDate = Integer.parseInt(finalDayPosition) - Integer.parseInt(positionToAddTo);
+                                int subStringCD = Integer.parseInt(formatter.format(date).substring(0,2));
+                                int f = subStringCD - finalDate;
+                                StringBuilder stringBuffer = new StringBuilder(formatter.format(date));
+                                stringBuffer.replace(0,2,String.valueOf(f));
                                 Meal meal = new Meal(recipe.getTitle(), userID, recipe.getCalories(),
                                         recipe.getFats(), recipe.getSodium(), recipe.getCarbohydrates(),
                                         recipe.getSugar(), recipe.getProteins(),
-                                        Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,formatter.format(date));
+                                        Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,String.valueOf(stringBuffer));
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
