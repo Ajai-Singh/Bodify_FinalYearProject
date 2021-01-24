@@ -3,10 +3,12 @@ package com.example.bodify;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Meal;
@@ -18,10 +20,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class MyService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
@@ -29,7 +39,7 @@ public class MyService extends Service {
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
-    private int calories,fats,proteins,carbohydrates;
+    private int calories, fats, proteins, carbohydrates;
     private final ArrayList<String> daysInDB;
 
     @Override
@@ -50,20 +60,8 @@ public class MyService extends Service {
     }
 
     public MyService() {
-//        final ArrayList<String> daysOfWeek = new ArrayList<>();
-//        daysOfWeek.add("Monday");
-//        daysOfWeek.add("Tuesday");
-//        daysOfWeek.add("Wednesday");
-//        daysOfWeek.add("Thursday");
-//        daysOfWeek.add("Friday");
-//        daysOfWeek.add("Saturday");
-//        daysOfWeek.add("Sunday");
         Date date = new Date();
-        String currentDate = formatter.format(date);
-        //minus current date from when it was created and if the difference is 7
-        //error with for loop
         daysInDB = new ArrayList<>();
-        //lets go through the days of week database and see what days the food has been logged
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -80,35 +78,14 @@ public class MyService extends Service {
 
             }
         });
-        Log.i("days", "" + daysInDB);
-        //I need to read the DB again but loop i
-
-        //now what i can do is I can for loop the daysInDB and then append I to the next reading of the database
-        //I need to think of logic to make sure a full week has gone by with the analysis
-        //I think I have figured it out
-        //lets say we have an arraylist of meal objects lets access the dates of all of them
-        //lets then get the smallest value and the largest value
-        //if the difference is 7 then a full week has gone by, but I need to think of the OR logic what if a user just isnt the app for the full week how will I know if a full week has gone by??
-        //if(largest - smallest == 7 OR .......) {
-        // One week has gone by
-        //create analysis object
-        // }
-
     }
-
-//    public void createAnalysis(Analysis analysis) {
-
-//    }
-
 
     public void test(ArrayList<String> daysInDB) {
         final ArrayList<String> dates = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek");
         for (int i = 0; i < daysInDB.size(); i++) {
-            Log.i("i", "" + daysInDB.get(i));
             databaseReference.child(daysInDB.get(i)).addValueEventListener(new ValueEventListener() {
-
-
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
@@ -122,8 +99,11 @@ public class MyService extends Service {
                             proteins += meal.getItemProtein() * meal.getNumberOfServings();
                         }
                     }
-                    //do division operator here
-                    dates(dates,calories / 7,fats / 7,carbohydrates / 7,proteins / 7);
+                    try {
+                        dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -134,28 +114,70 @@ public class MyService extends Service {
         }
     }
 
-    public void dates(ArrayList<String> dates,int calories,int fats,int carbohydrates,int proteins) {
-        //need to find averages
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void dates(ArrayList<String> dates, int calories, int fats, int carbohydrates, int proteins) throws ParseException {
+        final ArrayList<String> daysOfWeek = new ArrayList<>();
+        daysOfWeek.add("Monday");
+        daysOfWeek.add("Tuesday");
+        daysOfWeek.add("Wednesday");
+        daysOfWeek.add("Thursday");
+        daysOfWeek.add("Friday");
+        daysOfWeek.add("Saturday");
+        daysOfWeek.add("Sunday");
         ArrayList<Integer> intDates = new ArrayList<>();
-        for(int i = 0; i < dates.size(); i++) {
-            intDates.add(Integer.parseInt(dates.get(i).substring(0,2)));
+        for (int i = 0; i < dates.size(); i++) {
+            intDates.add(Integer.parseInt(dates.get(i).substring(0, 2)));
         }
-        Log.i("newDates","" + intDates);
-        //if the if statement gets executed that means one week has gone by now I just need to find the OR clause to because the user might not use the app much
-        int b = Collections.max(intDates);
-        int s = Collections.min(intDates);
-        Log.i("D","" + (b - s));
-        if(Collections.max(intDates) - Collections.min(intDates) == 6) {
-            Analysis analysis = new Analysis(calories,fats,carbohydrates,proteins,userID);
+        LocalTime refTime = LocalTime.of(23, 59, 59);
+        LocalTime localTime = LocalTime.now();
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        dateFormat.format(cal.getTime());
+        Date currentWeekDay = new Date();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
+        Log.i("time", "" + dateFormat.format(cal.getTime()));
+        //getWeekStarting now
+        ArrayList<Integer> test = new ArrayList<>();
+        for (int i = 0; i < dates.size(); i++) {
+            test.add(Integer.parseInt(dates.get(i).substring(0, 2)));
+
+        }
+        int minIndex = test.indexOf(Collections.min(test));
+        Log.i("test", "" + test);
+        Log.i("test1", "" + minIndex);
+        dates.get(test.indexOf(Collections.min(test)));
+        //we now have the earliest record date but now we need to find the day of this date
+        Log.i("test2", "" + dates.get(test.indexOf(Collections.min(test))));
+        String input_date = dates.get(test.indexOf(Collections.min(test)));
+        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
+        Date dt1 = format1.parse(input_date);
+        DateFormat format2 = new SimpleDateFormat("EEEE");
+        String finalDay = format2.format(dt1);
+        String b = null;
+        String weekStartingOf;
+        if (!finalDay.equalsIgnoreCase("Monday")) {
+            for(int i = 0; i < daysOfWeek.size(); i++) {
+                if(daysOfWeek.get(i).equalsIgnoreCase(finalDay)) {
+                    String a = daysOfWeek.get(i);
+                    b = String.valueOf(daysOfWeek.indexOf(a));
+                    //to get the final date minus b from the range of the date of the smallest value
+
+                }
+            }
+        }
+        Log.i("day", "" + finalDay);
+        if (Collections.max(intDates) - Collections.min(intDates) == 7 || simpleDateformat.format(currentWeekDay).equalsIgnoreCase("Sunday") && localTime.isAfter(refTime)) {
+            Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins, userID, "");
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Analysis");
-            databaseReference.push().setValue(analysis).addOnCompleteListener(task -> {
+            databaseReference.child("").setValue(analysis).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Log.i("A", "Successfully saved");
                 }
             }).addOnFailureListener(e -> Log.i("B", "Error occurred: " + e.getMessage()));
         } else {
             //one week has not passed yet
-            Log.i("error","7 days have not passed yet");
+            Log.i("error", "7 days have not passed yet");
         }
     }
 }
