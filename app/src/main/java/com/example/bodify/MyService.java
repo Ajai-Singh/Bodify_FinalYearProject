@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Meal;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,11 +16,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -60,7 +57,6 @@ public class MyService extends Service {
     }
 
     public MyService() {
-        Date date = new Date();
         daysInDB = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -70,6 +66,7 @@ public class MyService extends Service {
                     daysInDB.add(userSnapshot.getKey());
                     Log.i("", "" + daysInDB);
                 }
+                //do validation here
                 test(daysInDB);
             }
 
@@ -140,39 +137,87 @@ public class MyService extends Service {
         //getWeekStarting now
         ArrayList<Integer> test = new ArrayList<>();
         for (int i = 0; i < dates.size(); i++) {
-            test.add(Integer.parseInt(dates.get(i).substring(0, 2)));
-
+            test.add(Integer.parseInt(dates.get(i).substring(0, 2))); //we now have an arraylist of Integer values
         }
-        int minIndex = test.indexOf(Collections.min(test));
-        Log.i("test", "" + test);
-        Log.i("test1", "" + minIndex);
-        dates.get(test.indexOf(Collections.min(test)));
-        //we now have the earliest record date but now we need to find the day of this date
-        Log.i("test2", "" + dates.get(test.indexOf(Collections.min(test))));
-        String input_date = dates.get(test.indexOf(Collections.min(test)));
-        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
-        Date dt1 = format1.parse(input_date);
-        DateFormat format2 = new SimpleDateFormat("EEEE");
-        String finalDay = format2.format(dt1);
-        String b = null;
-        String weekStartingOf;
-        if (!finalDay.equalsIgnoreCase("Monday")) {
-            for(int i = 0; i < daysOfWeek.size(); i++) {
-                if(daysOfWeek.get(i).equalsIgnoreCase(finalDay)) {
-                    String a = daysOfWeek.get(i);
-                    b = String.valueOf(daysOfWeek.indexOf(a));
-                    //to get the final date minus b from the range of the date of the smallest value
+        //we have the smallest date now
+        Log.i("dates", "" + dates);
+        SimpleDateFormat formatter1=new SimpleDateFormat("dd/MM/yyyy");
+        Date date = null;
+        Date date1;
+        if(!dates.isEmpty()) {
+            date = formatter1.parse(dates.get(0));
+
+            for (int i = 0; i < dates.size(); i++) {
+                date1 = formatter1.parse(dates.get(i));
+                assert date1 != null;
+                if (date1.before(date)) {
+                    date = date1;
 
                 }
             }
         }
+        //Now I have the first date this should be week starting of
+        Log.i("tes","localDate: " + formatter1.format(date));
+//        int minIndex = test.indexOf(Collections.min(test));
+//        Log.i("test", "" + test);
+//        Log.i("test1", "" + minIndex);
+//        dates.get(test.indexOf(Collections.min(test)));
+        //we now have the earliest record date but now we need to find the day of this date
+
+
+        //I need to find the index of formatter.format(date) in test
+        int positionOfEarliestDate = 0;
+        for(int i = 0; i < test.size(); i++) {
+            if(test.get(i) == Integer.parseInt(formatter1.format(date).substring(0,2))) {
+                int smallestRecord = test.get(i);
+                positionOfEarliestDate = test.indexOf(smallestRecord);
+            }
+        }
+
+        Log.i("test2", "" + positionOfEarliestDate);
+//        String input = dates.get(test.indexOf(positionOfEarliestDate));
+        String input_date = dates.get(positionOfEarliestDate);
+        //String input_date = dates.get(test.indexOf(Collections.min(test)));
+        Log.i("input_date","input_date" + input_date);
+        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
+        Date dt1 = format1.parse(input_date);
+        DateFormat format2 = new SimpleDateFormat("EEEE");
+        String finalDay = format2.format(dt1);
+        String b = "0";
+        String weekStartingOf;
+        //now that I have deleted the monday record from the database
+        //okay i have found the problem, I need a new way to find the smallest date
+        if (!finalDay.equalsIgnoreCase("Monday")) {
+            for (int i = 0; i < daysOfWeek.size(); i++) {
+                if (daysOfWeek.get(i).equalsIgnoreCase(finalDay)) {
+                    String a = daysOfWeek.get(i);
+                    b = String.valueOf(daysOfWeek.indexOf(a));
+                    //to get the final date minus b from the range of the date of the smallest value
+                    Log.i("B", "" + b);
+                    break;
+                }
+            }
+        }
+        // 25/01/2021
+
+        weekStartingOf = dates.get(positionOfEarliestDate);
+        Log.i("weekStartingOf", "" + weekStartingOf);
         Log.i("day", "" + finalDay);
-        if (Collections.max(intDates) - Collections.min(intDates) == 7 || simpleDateformat.format(currentWeekDay).equalsIgnoreCase("Sunday") && localTime.isAfter(refTime)) {
-            Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins, userID, "");
+        String indexWeekStartingOf = weekStartingOf.substring(0, 2);
+        StringBuilder stringBuffer = new StringBuilder(weekStartingOf);
+        //problem with week starting of need to look into.
+        stringBuffer.replace(0, 2, String.valueOf(Integer.parseInt(indexWeekStartingOf) - Integer.parseInt(b)));
+        Log.i("final date", "" + stringBuffer);
+        if (Collections.max(intDates) - Collections.min(intDates) >= 20 || simpleDateformat.format(currentWeekDay).equalsIgnoreCase("Sunday") && localTime.isAfter(refTime)) {
+            Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins, userID, String.valueOf(stringBuffer));
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Analysis");
-            databaseReference.child("").setValue(analysis).addOnCompleteListener(task -> {
+            assert userID != null;
+            databaseReference.child(userID).setValue(analysis).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Log.i("A", "Successfully saved");
+                    //Now I need to refresh the meals db
+                    DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek");
+                    //databaseReference1.removeValue();
                 }
             }).addOnFailureListener(e -> Log.i("B", "Error occurred: " + e.getMessage()));
         } else {
