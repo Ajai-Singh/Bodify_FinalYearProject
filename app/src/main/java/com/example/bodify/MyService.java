@@ -15,6 +15,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 public class MyService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
@@ -187,12 +189,14 @@ public class MyService extends Service {
             if (daysBetween >= 7) {
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                 assert userID != null;
-                databaseReference.child("Analysis").push().setValue(analysis).addOnCompleteListener(task -> {
+                Log.i("A", "count");
+                databaseReference.child("Analysis").child(String.valueOf(UUID.randomUUID())).setValue(analysis).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.i("A", "Successfully saved");
                         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek");
                         for (int i = 0; i < daysInDB.size(); i++) {
-                            databaseReference1.child(daysInDB.get(i)).addValueEventListener(new ValueEventListener() {
+                            int finalI = i;
+                            databaseReference1.child(daysInDB.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
@@ -201,7 +205,7 @@ public class MyService extends Service {
                                         meal.setId(userSnapshot.getKey());
                                         if (meal.getUserID().equals(userID)) {
                                             Log.i("meal", "" + meal.getId());
-                                            databaseReference.child(meal.getId()).removeValue();
+                                            databaseReference1.child(daysInDB.get(finalI)).child(meal.getId()).removeValue();
                                         }
                                     }
                                 }
@@ -212,11 +216,12 @@ public class MyService extends Service {
                                 }
                             });
                         }
+                    } else {
+                        Log.i("error", "7 days have not passed yet");
                     }
-                }).addOnFailureListener(e -> Log.i("B", "Error occurred: " + e.getMessage()));
-            } else {
-                Log.i("error", "7 days have not passed yet");
+                });
             }
         }
     }
 }
+
