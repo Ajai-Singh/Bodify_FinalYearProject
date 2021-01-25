@@ -64,4 +64,16 @@ public class Analysis {
         this.userID = userID;
         this.weekStarting = weekStarting;
     }
+
+    @Override
+    public String toString() {
+        return "Analysis{" +
+                "calories=" + calories +
+                ", fats=" + fats +
+                ", carbohydrates=" + carbohydrates +
+                ", proteins=" + proteins +
+                ", userID='" + userID + '\'' +
+                ", weekStarting='" + weekStarting + '\'' +
+                '}';
+    }
 }

@@ -21,10 +21,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class MyService extends Service {
@@ -91,7 +89,7 @@ public class MyService extends Service {
                         }
                     }
                     try {
-                        dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7,daysInDB);
+                        dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7, daysInDB);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -106,7 +104,7 @@ public class MyService extends Service {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void dates(ArrayList<String> dates, int calories, int fats, int carbohydrates, int proteins,ArrayList<String> daysInDB) throws ParseException {
+    public void dates(ArrayList<String> dates, int calories, int fats, int carbohydrates, int proteins, ArrayList<String> daysInDB) throws ParseException {
         final ArrayList<String> daysOfWeek = new ArrayList<>();
         daysOfWeek.add("Monday");
         daysOfWeek.add("Tuesday");
@@ -115,20 +113,14 @@ public class MyService extends Service {
         daysOfWeek.add("Friday");
         daysOfWeek.add("Saturday");
         daysOfWeek.add("Sunday");
-        LocalTime minDeleteTime = LocalTime.of(14, 38, 0);
-        LocalTime maxDeleteTime = LocalTime.of(14,38,1);
-        LocalTime localTime = LocalTime.now();
-        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        dateFormat.format(cal.getTime());
-        Date currentWeekDay = new Date();
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
+        //Keeping for second or clause
+//        LocalTime minDeleteTime = LocalTime.of(14, 38, 0);
+//        LocalTime maxDeleteTime = LocalTime.of(14,38,1);
+//        LocalTime localTime = LocalTime.now();
         ArrayList<Integer> test = new ArrayList<>();
         for (int i = 0; i < dates.size(); i++) {
             test.add(Integer.parseInt(dates.get(i).substring(0, 2)));
         }
-        Log.i("dates", "" + dates);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date smallestDate = null;
         Date largestDate = null;
@@ -145,7 +137,7 @@ public class MyService extends Service {
                     smallestDate = finalSmallestDate;
                 }
                 assert finalLargestDate != null;
-                if(finalLargestDate.after(largestDate)) {
+                if (finalLargestDate.after(largestDate)) {
                     largestDate = finalLargestDate;
                 }
             }
@@ -157,24 +149,15 @@ public class MyService extends Service {
                 if (test.get(i) == Integer.parseInt(simpleDateFormat.format(smallestDate).substring(0, 2))) {
                     int smallestRecord = test.get(i);
                     positionOfEarliestDate = test.indexOf(smallestRecord);
-                } else if(test.get(i) == Integer.parseInt(simpleDateFormat.format(largestDate).substring(0, 2))) {
+                } else if (test.get(i) == Integer.parseInt(simpleDateFormat.format(largestDate).substring(0, 2))) {
                     int largestRecord = test.get(i);
                     positionOfLastDate = test.indexOf(largestRecord);
                 }
             }
-            //I need to pass in the difference between the substringed dates of biggest minus smallest
-            Log.i("test2", "" + positionOfEarliestDate);
-            Log.i("test3", "" + positionOfLastDate);
-            int earliestDate = Integer.parseInt(dates.get(positionOfEarliestDate).substring(0,2));
-            int latestDate = Integer.parseInt(dates.get(positionOfLastDate).substring(0,2));
-            Log.i("latestDate", "" + latestDate);
-            Log.i("earliestDate", "" + earliestDate);
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate ld = LocalDate.parse(dates.get(positionOfEarliestDate),dtf);
-            LocalDate ld1 = LocalDate.parse(dates.get(positionOfLastDate),dtf);
-            Long daysBetween = Duration.between(ld.atStartOfDay(), ld1.atStartOfDay()).toDays();
-            Log.i("difference","" + daysBetween);
-
+            LocalDate ld = LocalDate.parse(dates.get(positionOfEarliestDate), dtf);
+            LocalDate ld1 = LocalDate.parse(dates.get(positionOfLastDate), dtf);
+            long daysBetween = Duration.between(ld.atStartOfDay(), ld1.atStartOfDay()).toDays();
             String input_date = dates.get(positionOfEarliestDate);
             Log.i("input_date", "input_date" + input_date);
             Date dt1 = simpleDateFormat.parse(input_date);
@@ -194,61 +177,38 @@ public class MyService extends Service {
                 }
             }
             weekStartingOf = dates.get(positionOfEarliestDate);
-            Log.i("weekStartingOf", "" + weekStartingOf);
-            Log.i("day", "" + finalDay);
             String indexWeekStartingOf = weekStartingOf.substring(0, 2);
             StringBuilder stringBuffer = new StringBuilder(weekStartingOf);
             stringBuffer.replace(0, 2, String.valueOf(Integer.parseInt(indexWeekStartingOf) - Integer.parseInt(b)));
-            Log.i("final date", "" + stringBuffer);
+            Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins, userID, String.valueOf(stringBuffer));
             //I need to test the OR clause on a different android phone
-            //|| simpleDateformat.format(currentWeekDay).equalsIgnoreCase("Monday") && localTime.isAfter(minDeleteTime) && localTime.isBefore(maxDeleteTime)
+            //|| simpleDateFormat.format(currentWeekDay).equalsIgnoreCase("Monday") && localTime.isAfter(minDeleteTime) && localTime.isBefore(maxDeleteTime)
             //I need to come up with an OR clause because it wont work if the difference is never 7 days
-            if (daysBetween >= 7 ) {
-                Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins, userID, String.valueOf(stringBuffer));
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Analysis");
+            if (daysBetween >= 7) {
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                 assert userID != null;
-                databaseReference.child(userID).setValue(analysis).addOnCompleteListener(task -> {
+                databaseReference.child("Analysis").push().setValue(analysis).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.i("A", "Successfully saved");
-                        //one thing I realised I am deleting the whole
-                        //I need to have a more complex delete and only delete a certain users information
                         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek");
-                        for(int i = 0; i < daysInDB.size(); i++) {
-                            //refresh meal adapter
-                            int finalI = i;
+                        for (int i = 0; i < daysInDB.size(); i++) {
                             databaseReference1.child(daysInDB.get(i)).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for(DataSnapshot userSnapshot : snapshot.getChildren()) {
+                                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                                         Meal meal = userSnapshot.getValue(Meal.class);
                                         assert meal != null;
-                                        if(meal.getUserID().equals(userID)) {
-                                            Log.i("mealID","" + meal.getId());
-                                            DatabaseReference deleteReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(daysInDB.get(finalI));
-                                            deleteReference.addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    for(DataSnapshot userSnapshot : snapshot.getChildren()) {
-                                                        Meal meal = userSnapshot.getValue(Meal.class);
-                                                        meal.setId(userSnapshot.getKey());
-                                                        if (meal.getUserID().equals(userID)) {
-                                                            deleteReference.child(meal.getId()).removeValue();
-                                                        }
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                                }
-                                            });
+                                        meal.setId(userSnapshot.getKey());
+                                        if (meal.getUserID().equals(userID)) {
+                                            Log.i("meal", "" + meal.getId());
+                                            databaseReference.child(meal.getId()).removeValue();
                                         }
                                     }
-                                 }
+                                }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-
+                                    Log.i("error", ":" + error.getMessage());
                                 }
                             });
                         }
