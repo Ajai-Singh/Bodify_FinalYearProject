@@ -15,7 +15,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -33,6 +32,7 @@ public class MyService extends Service {
     private final String userID = mAuth.getUid();
     private int calories, fats, proteins, carbohydrates;
     private final ArrayList<String> daysInDB;
+    private ArrayList<String> dates;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -55,6 +55,7 @@ public class MyService extends Service {
         daysInDB = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek");
         databaseReference.addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
@@ -71,11 +72,12 @@ public class MyService extends Service {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void test(ArrayList<String> daysInDB) {
-        final ArrayList<String> dates = new ArrayList<>();
+        dates = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek");
         for (int i = 0; i < daysInDB.size(); i++) {
-            databaseReference.child(daysInDB.get(i)).addValueEventListener(new ValueEventListener() {
+            databaseReference.child(daysInDB.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -115,6 +117,12 @@ public class MyService extends Service {
         daysOfWeek.add("Friday");
         daysOfWeek.add("Saturday");
         daysOfWeek.add("Sunday");
+       Log.i("days","" + dates);
+        Log.i("cals","" + calories);
+        Log.i("fat","" + fats);
+        Log.i("car","" + carbohydrates);
+        Log.i("pro","" + proteins);
+
         //Keeping for second or clause
 //        LocalTime minDeleteTime = LocalTime.of(14, 38, 0);
 //        LocalTime maxDeleteTime = LocalTime.of(14,38,1);
