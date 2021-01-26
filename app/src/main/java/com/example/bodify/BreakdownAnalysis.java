@@ -31,7 +31,7 @@ public class BreakdownAnalysis extends AppCompatActivity {
     private ImageButton previous,next;
     private TextView week;
     private final ArrayList<String> weeks = new ArrayList<>();
-
+    private Pie pie;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +41,8 @@ public class BreakdownAnalysis extends AppCompatActivity {
         previous = findViewById(R.id.minus);
         next = findViewById(R.id.plus);
         week = findViewById(R.id.weekStartingOf);
+        pie = AnyChart.pie();
+        anyChartView.setChart(pie);
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -134,13 +136,13 @@ public class BreakdownAnalysis extends AppCompatActivity {
         Log.i("fats","" + fats);
         int[] macrosValues = {calories, carbs, proteins,fats};
         String[] macros = {"Calories", "Carbohydrates", "Proteins","Fats"};
-        Pie pie = AnyChart.pie();
+       // Pie pie = AnyChart.pie();
         List<DataEntry> dataEntries = new ArrayList<>();
         for (int i = 0; i < macros.length; i++) {
             dataEntries.add(new ValueDataEntry(macros[i], macrosValues[i]));
         }
         pie.data(dataEntries);
-        anyChartView.setChart(pie);
+        //anyChartView.setChart(pie);
     }
 }
 
