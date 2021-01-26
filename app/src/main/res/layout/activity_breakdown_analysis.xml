@@ -8,15 +8,47 @@
     tools:context=".BreakdownAnalysis"
     tools:deviceIds="wear">
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/reportingChart"
-        android:layout_width="match_parent"
-        android:layout_height="230dp"
-        android:layout_marginBottom="501dp"
-        android:background="@color/white"
-        android:elevation="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <com.anychart.AnyChartView
+        android:id="@+id/anyChartView"
+        android:layout_width="413dp"
+        android:layout_height="306dp"
+        android:layout_marginTop="28dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weekStartingOf" />
+
+    <TextView
+        android:id="@+id/weekStartingOf"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="30dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/plus"
+        app:layout_constraintHorizontal_bias="0.519"
+        app:layout_constraintStart_toEndOf="@+id/minus"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="72dp"
+        android:src="@drawable/right"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/left"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

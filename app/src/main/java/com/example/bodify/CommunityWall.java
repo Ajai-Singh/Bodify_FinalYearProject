@@ -43,7 +43,7 @@ public class CommunityWall extends AppCompatActivity {
         setContentView(R.layout.activity_community_wall);
         Toolbar toolbar = findViewById(R.id.toolbarCommunityWall);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Home");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Community Wall");
         getAllPosts();
         ImageView createPost = findViewById(R.id.post);
         final String userID = mAuth.getUid();

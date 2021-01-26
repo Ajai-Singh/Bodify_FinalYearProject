@@ -1,6 +1,7 @@
 package com.example.bodify;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import com.example.bodify.FirebaseAuthentication.LogIn;
+import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -34,6 +36,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Management extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
     private StorageReference storageReference;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final String userID = mAuth.getUid();
 
     @SuppressLint({"WrongConstant", "NonConstantResourceId"})
     @Override
@@ -57,7 +61,36 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     startActivity(new Intent(Management.this, GymsNearMe.class));
                     break;
                 case R.id.dataAnalysis:
-                    startActivity(new Intent(Management.this, BreakdownAnalysis.class));
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
+                    databaseReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            boolean allowed = false;
+                            for(DataSnapshot userSnapshot : snapshot.getChildren()) {
+                                Analysis analysis = userSnapshot.getValue(Analysis.class);
+                                assert analysis != null;
+                                if(analysis.getUserID().equals(userID)) {
+                                    allowed = true;
+                                    break;
+                                }
+                            }
+                            if(!allowed) {
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(Management.this);
+                                builder.setMessage("Sorry you do not have any weekly data to access!, Please utilise the diary functionality for one week and come back!")
+                                        .setNegativeButton("Close", (dialog, which) -> dialog.cancel());
+                                AlertDialog alertDialog = builder.create();
+                                alertDialog.setTitle("Attention required!");
+                                alertDialog.show();
+                            } if(allowed) {
+                                startActivity(new Intent(Management.this, BreakdownAnalysis.class));
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                     break;
                 case R.id.healthPage:
                     startActivity(new Intent(Management.this, Health.class));
