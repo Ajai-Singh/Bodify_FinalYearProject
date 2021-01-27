@@ -6,8 +6,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+
+import com.example.bodify.Adapters.MealAdapter;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Meal;
 import com.google.firebase.auth.FirebaseAuth;
@@ -205,6 +209,8 @@ public class MyService extends Service {
                         for (int i = 0; i < daysInDB.size(); i++) {
                             int finalI = i;
                             databaseReference1.child(daysInDB.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                ArrayList<Meal> meals = new ArrayList<>();
+                                MealAdapter mealAdapter = new MealAdapter(meals,MyService.this);
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
@@ -213,7 +219,12 @@ public class MyService extends Service {
                                         meal.setId(userSnapshot.getKey());
                                         if (meal.getUserID().equals(userID)) {
                                             Log.i("meal", "" + meal.getId());
+                                            meals.add(meal);
                                             databaseReference1.child(daysInDB.get(finalI)).child(meal.getId()).removeValue();
+                                            //I need to refresh the meals adapter
+                                            //was hoping this would work
+//                                            meals.clear();
+//                                            mealAdapter.notifyDataSetChanged();
                                         }
                                     }
                                 }
