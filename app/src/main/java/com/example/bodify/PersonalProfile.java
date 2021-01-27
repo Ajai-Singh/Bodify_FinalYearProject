@@ -7,11 +7,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Adapters.UsersPostAdapter;
 import com.example.bodify.Models.Post;
 import com.example.bodify.Models.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +34,7 @@ public class PersonalProfile extends AppCompatActivity {
     private CircleImageView circleImageView;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,7 @@ public class PersonalProfile extends AppCompatActivity {
         tweetCount = findViewById(R.id.noOfTweetsPP);
         circleImageView = findViewById(R.id.ppp);
         myName = findViewById(R.id.usersPagePP);
+        constraintLayout = findViewById(R.id.supCL);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         populateViews();
@@ -103,5 +107,13 @@ public class PersonalProfile extends AppCompatActivity {
         rcv.setLayoutManager(new LinearLayoutManager(PersonalProfile.this));
         RecyclerView.Adapter adapter = new UsersPostAdapter(tweets,PersonalProfile.this);
         rcv.setAdapter(adapter);
+        if(tweets.isEmpty()) {
+            showSnackBar();
+        }
+    }
+
+    public void showSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry this user has no posts!", Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 }

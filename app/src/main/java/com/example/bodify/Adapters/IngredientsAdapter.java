@@ -16,7 +16,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private final ArrayList<Ingredient> ingredients;
     private final ArrayList<String> ingredientNames;
 
-    public IngredientsAdapter(ArrayList<Ingredient> ingredients, Context context,ArrayList<String> ingredientNames) {
+    public IngredientsAdapter(ArrayList<Ingredient> ingredients,ArrayList<String> ingredientNames) {
         this.ingredients = ingredients;
         this.ingredientNames = ingredientNames;
     }

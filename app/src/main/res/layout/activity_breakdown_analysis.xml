@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:background="@drawable/bg"
     tools:context=".BreakdownAnalysis"
     tools:deviceIds="wear">
 
@@ -52,13 +53,12 @@
         android:id="@+id/updateWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="281dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="149dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="148dp"
         android:text="Update weight"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newWeight" />
 
@@ -68,8 +68,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="123dp"
         android:layout_marginEnd="119dp"
-        android:layout_marginBottom="352dp"
-        android:text="Weekly weight progression"
+        android:layout_marginBottom="340dp"
+        android:text="Weekly statistical progression"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"

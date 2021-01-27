@@ -8,11 +8,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Adapters.PostAdapter;
 import com.example.bodify.Models.Post;
 import com.example.bodify.Models.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,8 +33,8 @@ public class SpecificUsersPage extends AppCompatActivity {
     private CircleImageView circleImageView;
     private PostAdapter adapter;
     private String position;
-    private final ArrayList<User> users = new ArrayList<>();
     private StorageReference storageReference;
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class SpecificUsersPage extends AppCompatActivity {
         tweets = findViewById(R.id.noOfTweetsPP);
         rcv = findViewById(R.id.pprcv);
         currentUser = findViewById(R.id.usersPagePP);
+        constraintLayout = findViewById(R.id.supCL);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         setViews();
@@ -122,6 +125,9 @@ public class SpecificUsersPage extends AppCompatActivity {
                 rcv.setLayoutManager(new LinearLayoutManager(SpecificUsersPage.this));
                 adapter = new PostAdapter(posts);
                 rcv.setAdapter(adapter);
+                if(posts.isEmpty()) {
+                    showSnackBar();
+                }
             }
 
             @Override
@@ -129,6 +135,11 @@ public class SpecificUsersPage extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void showSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry this user has no posts!", Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 }
 

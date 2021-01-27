@@ -2,7 +2,6 @@ package com.example.bodify;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -17,7 +16,6 @@ import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
-import com.example.bodify.Models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,7 +34,6 @@ public class BreakdownAnalysis extends AppCompatActivity {
     private final ArrayList<String> weeks = new ArrayList<>();
     private Pie pie;
     private Button updateButton;
-    private final ArrayList<User> users = new ArrayList<>();
     private TextView fatsTV,carbsTV,proteinsTV,caloriesTV,weightTV;
 
     @Override
@@ -136,12 +133,7 @@ public class BreakdownAnalysis extends AppCompatActivity {
         });
     }
 
-
     public void populateGraph(int calories, int carbs, int proteins, int fats) {
-        Log.i("calories", "" + calories);
-        Log.i("carbs", "" + carbs);
-        Log.i("proteins", "" + proteins);
-        Log.i("fats", "" + fats);
         int[] macrosValues = {calories, carbs, proteins, fats};
         String[] macros = {"Calories", "Carbohydrates", "Proteins", "Fats"};
         List<DataEntry> dataEntries = new ArrayList<>();
@@ -184,6 +176,10 @@ public class BreakdownAnalysis extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
+        });
+        //TODO
+        updateButton.setOnClickListener(v -> {
+
         });
     }
 }
