@@ -1,6 +1,5 @@
 package com.example.bodify.TrackingDaysMacros;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,9 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import com.example.bodify.FoodFinder;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.MacroCopy;
 import com.example.bodify.Models.Meal;
@@ -25,17 +22,13 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
 
 public class Wednesday extends Fragment {
     private TextView caloriesTV, fatsTV, proteinsTV, carbohydratesTV;
@@ -45,7 +38,6 @@ public class Wednesday extends Fragment {
     private BarChart barChart1;
     private final ArrayList<BarEntry> barEntries = new ArrayList<>();
     private final ArrayList<BarEntry> barEntries1 = new ArrayList<>();
-    private ConstraintLayout constraintLayout;
 
     public Wednesday() {
 
@@ -61,7 +53,6 @@ public class Wednesday extends Fragment {
         carbohydratesTV = view.findViewById(R.id.dailyCarbsTV);
         barChart = view.findViewById(R.id.breakdownBarChart);
         barChart1 = view.findViewById(R.id.pieChart);
-        constraintLayout = view.findViewById(R.id.cl);
         barEntries.clear();
         barEntries1.clear();
         getValuesForMacroCopy();
@@ -164,33 +155,6 @@ public class Wednesday extends Fragment {
                 if (loggedProteins == 0.0 && loggedFats == 0.0 && loggedCarbohydrates == 0.0) {
                     barChart1.setVisibility(View.GONE);
                     barChart.setVisibility(View.GONE);
-                    final ArrayList<String> daysOfWeek = new ArrayList<>();
-                    final ArrayList<String> daysToShow = new ArrayList<>();
-                    daysOfWeek.add("Monday");
-                    daysOfWeek.add("Tuesday");
-                    daysOfWeek.add("Wednesday");
-                    daysOfWeek.add("Thursday");
-                    daysOfWeek.add("Friday");
-                    daysOfWeek.add("Saturday");
-                    daysOfWeek.add("Sunday");
-                    String position = null;
-                    final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
-                    final Date today = new Date();
-                    for (int i = 0; i < daysOfWeek.size(); i++) {
-                        if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
-                            String a = daysOfWeek.get(i);
-                            position = String.valueOf(daysOfWeek.indexOf(a));
-                            break;
-                        }
-                    }
-                    for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(position)); i++) {
-                        daysToShow.add(daysOfWeek.get(i));
-                    }
-                    if (daysToShow.contains("Wednesday")) {
-                        showPositiveSnackBar();
-                    } else {
-                        showNegativeSnackBar();
-                    }
                 } else {
                     macros.add(new BarEntry(1f, (float) loggedFats));
                     macros.add(new BarEntry(2f, (float) loggedCarbohydrates));
@@ -204,22 +168,6 @@ public class Wednesday extends Fragment {
                 Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    public void showPositiveSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no data! Please navigate Food finder", Snackbar.LENGTH_SHORT).setAction(
-                "Food finder", v -> {
-                    Intent intent = new Intent(getActivity(), FoodFinder.class);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(0, 0);
-                }
-        );
-        snackbar.show();
-    }
-
-    public void showNegativeSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry cannot add meals to days in the future!", Snackbar.LENGTH_SHORT);
-        snackbar.show();
     }
 
     public void showBarChart1(ArrayList<BarEntry> macros) {
