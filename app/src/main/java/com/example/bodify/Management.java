@@ -174,6 +174,9 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
             case R.id.breakdown:
                 fragment = new Breakdown();
                 break;
+            case R.id.foodRecommended:
+                fragment = new FoodSuggester();
+                break;
         }
         assert fragment != null;
         getSupportFragmentManager().beginTransaction().replace(R.id.fragLayout, fragment).commit();

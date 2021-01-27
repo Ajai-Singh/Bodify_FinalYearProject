@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bodify.Models.Favourite;
+import com.example.bodify.Models.Ingredient;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.R;
@@ -291,25 +292,22 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         diaryAlertDialog.show();
                         break;
                     case R.id.ingredients:
-                        Log.i("ingredients", "" + recipes.get(position).getIngredients());
+                        ArrayList<Ingredient> ingredients = recipes.get(position).getIngredients();
                         final AlertDialog.Builder ingredientsBuilder = new AlertDialog.Builder(context);
                         LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View view2 = inflater2.inflate(R.layout.ingredients, null);
                         RecyclerView recyclerView = view2.findViewById(R.id.ingredientsRCV);
                         recyclerView.setHasFixedSize(true);
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        ArrayList<String> a = new ArrayList<>();
-                        for (int i = 0; i < recipes.size(); i++) {
-                            a.add(recipes.get(i).getIngredients().get(i).getName());
+                        ArrayList<String> sendIngredients = new ArrayList<>();
+                        for(int i = 0; i < ingredients.size(); i++) {
+                            sendIngredients.add(ingredients.get(i).getName());
                         }
-                        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(recipes.get(position).getIngredients(), a);
-                        ingredientsBuilder.setNegativeButton("Close", (dialog15, which) -> dialog15.cancel()).setPositiveButton("Order", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //Future order of ingredients through Zinc API.... TODO
-                                ArrayList<String> test = ingredientsAdapter.test();
-                                Log.i("test", "" + test.toString());
-                            }
+                        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(recipes.get(position).getIngredients(), sendIngredients);
+                        ingredientsBuilder.setNegativeButton("Close", (dialog15, which) -> dialog15.cancel()).setPositiveButton("Order", (dialog12, which) -> {
+                            //Future order of ingredients through Zinc API.... TODO
+                            ArrayList<String> test = ingredientsAdapter.test();
+                            Log.i("test", "" + test.toString());
                         });
                         recyclerView.setAdapter(ingredientsAdapter);
                         ingredientsBuilder.setView(view2);

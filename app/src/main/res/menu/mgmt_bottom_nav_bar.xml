@@ -10,6 +10,10 @@
     android:icon="@drawable/like"/>
 
     <item
+        android:id="@+id/foodRecommended"
+        android:icon="@drawable/search"
+        android:title="Suggester"/>
+    <item
         android:id="@+id/breakdown"
         android:title="Breakdown"
         android:icon="@drawable/ic_baseline_accessibility_24"/>

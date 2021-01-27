@@ -34,6 +34,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         holder.setName(ingredients.get(position).getName());
         holder.setAmount(ingredients.get(position).getAmount());
         holder.setUnit(ingredients.get(position).getUnit());
+        ingredientNames.clear();
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 ingredientNames.add(ingredients.get(position).getName());
