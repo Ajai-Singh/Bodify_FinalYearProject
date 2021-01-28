@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi;
 import com.example.bodify.Adapters.MealAdapter;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Meal;
+import com.example.bodify.TrackingDaysMeals.ThursdayMeals;
 import com.example.bodify.TrackingDaysMeals.WednesdayMeals;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
