@@ -1,7 +1,6 @@
 package com.example.bodify;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.bodify.Models.SuggestionMacros;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,7 +31,7 @@ public class MacroSettings extends AppCompatActivity {
     private final int minimumCalories = 50;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
-
+    private ConstraintLayout constraintLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,10 +44,14 @@ public class MacroSettings extends AppCompatActivity {
         Button update = findViewById(R.id.updateSuggestion);
         Button remove = findViewById(R.id.removeConstraints);
         Button back = findViewById(R.id.back);
+        back.setOnClickListener(v -> {
+            //TODO get back button working
+        });
         fats = findViewById(R.id.fatCount);
         protein = findViewById(R.id.proteinCount);
         carbs = findViewById(R.id.carbCount);
         calories = findViewById(R.id.calorieCount);
+        constraintLayout = findViewById(R.id.macroSettingsCL);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("RecipeSuggestionMacro").child(userID);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -169,6 +174,7 @@ public class MacroSettings extends AppCompatActivity {
                 databaseReference1.child(userID).setValue(suggestionMacros).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.i("Saved", "Successfully saved");
+                        updateSnackBar();
                     }
                 }).addOnFailureListener(e -> Toast.makeText(MacroSettings.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
@@ -177,6 +183,7 @@ public class MacroSettings extends AppCompatActivity {
         remove.setOnClickListener(v -> {
             DatabaseReference databaseReference12 = FirebaseDatabase.getInstance().getReference("RecipeSuggestionMacro").child(userID);
             databaseReference12.removeValue();
+            deleteSnackBar();
             fatsSB.setProgress(0);
             proteinsSB.setProgress(0);
             carbsSB.setProgress(0);
@@ -189,5 +196,15 @@ public class MacroSettings extends AppCompatActivity {
         fatsSB.setProgress(fat);
         proteinsSB.setProgress(proteins);
         carbsSB.setProgress(carbs);
+    }
+
+    public void updateSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Macro suggestion settings updated in the Database", Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    public void deleteSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Macro suggestion settings deleted in the Database", Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 }

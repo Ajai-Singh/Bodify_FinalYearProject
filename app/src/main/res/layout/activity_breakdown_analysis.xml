@@ -2,16 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/analysisCL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:background="@drawable/bg"
+    android:orientation="horizontal"
     tools:context=".BreakdownAnalysis"
     tools:deviceIds="wear">
 
     <com.anychart.AnyChartView
         android:id="@+id/anyChartView"
-        android:layout_width="413dp"
+        android:layout_width="match_parent"
         android:layout_height="306dp"
         android:layout_marginTop="14dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -191,5 +192,18 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView47"
         app:layout_constraintTop_toBottomOf="@+id/avgCalories" />
+
+    <ImageButton
+        android:id="@+id/analysisInfo"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="17dp"
+        android:src="@drawable/info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/plus"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

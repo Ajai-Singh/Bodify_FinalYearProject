@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
@@ -16,6 +17,7 @@ import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +37,7 @@ public class BreakdownAnalysis extends AppCompatActivity {
     private Pie pie;
     private Button updateButton;
     private TextView fatsTV,carbsTV,proteinsTV,caloriesTV,weightTV;
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +50,15 @@ public class BreakdownAnalysis extends AppCompatActivity {
         caloriesTV = findViewById(R.id.avgCalories);
         weightTV = findViewById(R.id.newWeight);
         updateButton = findViewById(R.id.updateWeight);
+        ImageButton imageButton = findViewById(R.id.analysisInfo);
+        constraintLayout = findViewById(R.id.analysisCL);
         AnyChartView anyChartView = findViewById(R.id.anyChartView);
         previous = findViewById(R.id.minus);
         next = findViewById(R.id.plus);
         week = findViewById(R.id.weekStartingOf);
         pie = AnyChart.pie();
         anyChartView.setChart(pie);
-        Toast.makeText(BreakdownAnalysis.this,"Note: if any values are in red you went over suggested amounts!",Toast.LENGTH_LONG).show();
+        imageButton.setOnClickListener(v -> showInfoSnackBar());
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -181,6 +186,11 @@ public class BreakdownAnalysis extends AppCompatActivity {
         updateButton.setOnClickListener(v -> {
 
         });
+    }
+
+    public void showInfoSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "If any values are shown in red, You have gone over your recommended amount!", Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 }
 

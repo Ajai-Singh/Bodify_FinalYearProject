@@ -19,6 +19,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.example.bodify.Adapters.CardStackAdapter;
+import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Ingredient;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.Models.SuggestionMacros;
@@ -39,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class FoodSuggester extends Fragment {
     private CardStackLayoutManager cardStackLayoutManager;
@@ -58,7 +60,12 @@ public class FoodSuggester extends Fragment {
         constraintLayout = view.findViewById(R.id.foodSuggesterCL);
         AndroidNetworking.initialize(getContext());
         ImageButton imageButton = view.findViewById(R.id.settings);
-        imageButton.setOnClickListener(v -> startActivity(new Intent(getContext(),MacroSettings.class)));
+        ImageButton info = view.findViewById(R.id.recipeInfo);
+        info.setOnClickListener(v -> infoSnackBar());
+        imageButton.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(),MacroSettings.class));
+            getActivity(). getFragmentManager(). popBackStack();
+        });
         cardStackLayoutManager = new CardStackLayoutManager(getContext(), new CardStackListener() {
             @Override
             public void onCardDragging(Direction direction, float ratio) {
@@ -66,11 +73,41 @@ public class FoodSuggester extends Fragment {
 
             @Override
             public void onCardSwiped(Direction direction) {
-                Log.i("card swipped", "" + (cardStackLayoutManager.getTopPosition() -1) + " direction: " + direction);
                 if (direction == Direction.Right) {
-                    Toast.makeText(getContext(), "Card was swipped right", Toast.LENGTH_LONG).show();
-                    Log.i("direction right", "yes");
-                    Log.i("recipe","" + recipes.get(cardStackLayoutManager.getTopPosition() - 1));
+                    Recipe recipe = recipes.get(cardStackLayoutManager.getTopPosition() - 1);
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Favourites");
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            boolean exists = false;
+                            for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                                Favourite favourite = userSnapshot.getValue(Favourite.class);
+                                if (favourite != null) {
+                                    if (favourite.getItemName().equalsIgnoreCase(recipe.getTitle()) && favourite.getUserID().equalsIgnoreCase(userID)) {
+                                        exists = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if(exists) {
+                                duplicateRecordSnackBar();
+                            } if(!exists){
+                                Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
+                                        recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), userID, recipe.getServings());
+                                databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        addedRecord();
+                                    } else {
+                                        Toast.makeText(getContext(), "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 if (direction == Direction.Left) {
                     Log.i("direction left", "yes");
@@ -247,8 +284,24 @@ public class FoodSuggester extends Fragment {
                     Intent intent = new Intent(getActivity(), MacroSettings.class);
                     startActivity(intent);
                     getActivity().overridePendingTransition(0, 0);
+                    getActivity().finish();
                 }
         );
+        snackbar.show();
+    }
+
+    public void infoSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Note: If you swipe the recipe right it will add the recipe to your favourites", Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    public void duplicateRecordSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites", Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    public void addedRecord() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to favourites", Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 }
