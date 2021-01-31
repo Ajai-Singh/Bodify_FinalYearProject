@@ -14,7 +14,7 @@
         android:id="@+id/anyChartView"
         android:layout_width="match_parent"
         android:layout_height="306dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,53 +25,51 @@
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="9dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/plus"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/minus"
-        app:layout_constraintTop_toBottomOf="@+id/userSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/searchUser" />
 
     <ImageButton
         android:id="@+id/plus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="52dp"
         android:layout_marginEnd="76dp"
         android:src="@drawable/right"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/anyChartView"
-        app:layout_constraintTop_toBottomOf="@+id/searchUser" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/minus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="76dp"
-        android:layout_marginTop="19dp"
+        android:layout_marginTop="52dp"
         android:src="@drawable/left"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userSpinner" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/updateWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="149dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="148dp"
         android:text="Update weight"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView47" />
+        app:layout_constraintTop_toBottomOf="@+id/currentWeightHeader" />
 
     <TextView
-        android:id="@+id/textView39"
+        android:id="@+id/wsp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="123dp"
@@ -86,7 +84,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView41"
+        android:id="@+id/avgCarbsHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -94,10 +92,10 @@
         android:text="Weekly average carbohydrates were: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView39" />
+        app:layout_constraintTop_toBottomOf="@+id/wsp" />
 
     <TextView
-        android:id="@+id/textView43"
+        android:id="@+id/avgFatsHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -105,10 +103,10 @@
         android:text="Weekly average fats were: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView41" />
+        app:layout_constraintTop_toBottomOf="@+id/avgCarbsHeader" />
 
     <TextView
-        android:id="@+id/textView45"
+        android:id="@+id/avgProteinHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -116,10 +114,10 @@
         android:text="Weekly average proteins were: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView43" />
+        app:layout_constraintTop_toBottomOf="@+id/avgFatsHeader" />
 
     <TextView
-        android:id="@+id/textView46"
+        android:id="@+id/avgCaloriesHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -127,10 +125,10 @@
         android:text="Weekly average calories were: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView45" />
+        app:layout_constraintTop_toBottomOf="@+id/avgProteinHeader" />
 
     <TextView
-        android:id="@+id/textView47"
+        android:id="@+id/currentWeightHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -138,7 +136,7 @@
         android:text="Calculated current weight: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView46" />
+        app:layout_constraintTop_toBottomOf="@+id/avgCaloriesHeader" />
 
     <TextView
         android:id="@+id/avgCarbs"
@@ -149,8 +147,8 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView41"
-        app:layout_constraintTop_toBottomOf="@+id/textView39" />
+        app:layout_constraintStart_toEndOf="@+id/avgCarbsHeader"
+        app:layout_constraintTop_toBottomOf="@+id/wsp" />
 
     <TextView
         android:id="@+id/avgFats"
@@ -161,7 +159,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView43"
+        app:layout_constraintStart_toEndOf="@+id/avgFatsHeader"
         app:layout_constraintTop_toBottomOf="@+id/avgCarbs" />
 
     <TextView
@@ -173,7 +171,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView45"
+        app:layout_constraintStart_toEndOf="@+id/avgProteinHeader"
         app:layout_constraintTop_toBottomOf="@+id/avgFats" />
 
     <TextView
@@ -185,7 +183,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView46"
+        app:layout_constraintStart_toEndOf="@+id/avgCaloriesHeader"
         app:layout_constraintTop_toBottomOf="@+id/avgProteins" />
 
     <TextView
@@ -197,20 +195,19 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView47"
+        app:layout_constraintStart_toEndOf="@+id/currentWeightHeader"
         app:layout_constraintTop_toBottomOf="@+id/avgCalories" />
 
     <ImageButton
         android:id="@+id/analysisInfo"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="29dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="17dp"
         android:src="@drawable/info"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/plus"
+        app:layout_constraintStart_toEndOf="@+id/searchUser"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
@@ -229,12 +226,9 @@
         android:id="@+id/searchUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="55dp"
         android:text="Search"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintEnd_toStartOf="@+id/analysisInfo"
         app:layout_constraintStart_toEndOf="@+id/userSpinner"
         app:layout_constraintTop_toTopOf="parent" />
 
