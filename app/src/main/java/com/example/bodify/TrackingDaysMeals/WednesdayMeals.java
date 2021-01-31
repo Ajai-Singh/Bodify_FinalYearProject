@@ -61,8 +61,6 @@ public class WednesdayMeals extends Fragment {
         return view;
     }
 
-    //seems to be a problem with it only showing one item in the rcv even though db has multiple records
-    //set breakpoint to debug
     public void populateBreakfastRCV() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Wednesday");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -74,7 +72,6 @@ public class WednesdayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Breakfast") && meal.getUserID().equals(userID)) {
                         breakfastMeals.add(meal);
-                        
                     }
                 }
                 breakfastRecyclerView.setHasFixedSize(true);
@@ -101,7 +98,6 @@ public class WednesdayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Lunch") && meal.getUserID().equals(userID)) {
                         lunchMeals.add(meal);
-                        
                     }
                 }
                 lunchRecyclerView.setHasFixedSize(true);
@@ -155,7 +151,6 @@ public class WednesdayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Other") && meal.getUserID().equals(userID)) {
                         otherMeals.add(meal);
-                        
                     }
                 }
                 otherRecyclerView.setHasFixedSize(true);

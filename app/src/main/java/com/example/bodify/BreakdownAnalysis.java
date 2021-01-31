@@ -2,9 +2,13 @@ package com.example.bodify;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -17,6 +21,7 @@ import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
+import com.example.bodify.Models.User;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,25 +30,28 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-public class BreakdownAnalysis extends AppCompatActivity {
+public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
     private ImageButton previous, next;
-    private TextView week;
-    private final ArrayList<String> weeks = new ArrayList<>();
     private Pie pie;
     private Button updateButton;
-    private TextView fatsTV,carbsTV,proteinsTV,caloriesTV,weightTV;
+    private TextView fatsTV, carbsTV, proteinsTV, caloriesTV, weightTV,week;
     private ConstraintLayout constraintLayout;
+    private Spinner userSP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_breakdown_analysis);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Breakdown Analysis");
+        userSP = findViewById(R.id.userSpinner);
+        Button search = findViewById(R.id.searchUser);
         fatsTV = findViewById(R.id.avgFats);
         carbsTV = findViewById(R.id.avgCarbs);
         proteinsTV = findViewById(R.id.avgProteins);
@@ -59,6 +67,7 @@ public class BreakdownAnalysis extends AppCompatActivity {
         pie = AnyChart.pie();
         anyChartView.setChart(pie);
         imageButton.setOnClickListener(v -> showInfoSnackBar());
+        ArrayList<String> userIDs = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -66,11 +75,36 @@ public class BreakdownAnalysis extends AppCompatActivity {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     Analysis analysis = userSnapshot.getValue(Analysis.class);
                     assert analysis != null;
-                    if (analysis.getUserID().equals(userID)) {
-                        weeks.add(analysis.getWeekStarting());
+                    userIDs.add(analysis.getUserID());
+                }
+                getSpinnerData(userIDs);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        search.setOnClickListener(v -> getNewSpinnerValue(userSP.getSelectedItem().toString()));
+    }
+
+    public void getSpinnerData(ArrayList<String> userIDs) {
+        Set<String> set = new HashSet<>(userIDs);
+        userIDs.clear();
+        userIDs.addAll(set);
+        ArrayList<String> userNames = new ArrayList<>();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+                    user.setUserID(userSnapshot.getKey());
+                    if (userIDs.contains(user.getUserID())) {
+                        userNames.add(user.getUserName());
                     }
                 }
-                populateUI(weeks);
+                populateSpinner(userNames);
             }
 
             @Override
@@ -80,10 +114,70 @@ public class BreakdownAnalysis extends AppCompatActivity {
         });
     }
 
+    public void populateSpinner(ArrayList<String> userNames) {
+        Log.i("userNames", "" + userNames);
+        ArrayAdapter<String> adapterNames = new ArrayAdapter<>(BreakdownAnalysis.this, android.R.layout.simple_spinner_dropdown_item, userNames);
+        adapterNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        userSP.setAdapter(adapterNames);
+        userSP.setOnItemSelectedListener(BreakdownAnalysis.this);
+
+        Log.i("spinner", "" + userSP.getSelectedItem().toString());
+
+    }
+
+    public void getNewSpinnerValue(String name) {
+        Log.i("name","" + name);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            String userTag;
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+                    user.setUserID(userSnapshot.getKey());
+                    if (user.getUserName().equals(name)) {
+                        userTag = user.getUserID();
+                        break;
+                    }
+                }
+                getAnalysisWeeks(userTag);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getAnalysisWeeks(String userTag) {
+        ArrayList<String> dates = new ArrayList<>();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    Analysis analysis = userSnapshot.getValue(Analysis.class);
+                    if (analysis.getUserID().equals(userTag)) {
+                        dates.add(analysis.getWeekStarting());
+                    }
+                }
+                populateUI(dates);
+            }
+
+        @Override
+        public void onCancelled (@NonNull DatabaseError error){
+
+        }
+    });
+}
+
+
     public void populateUI(ArrayList<String> weeks) {
         week.setText(weeks.get(0));
         previous.setOnClickListener(new View.OnClickListener() {
             int currentIndex = weeks.indexOf(week.getText());
+
             @Override
             public void onClick(View v) {
                 if (currentIndex == 0) {
@@ -97,6 +191,7 @@ public class BreakdownAnalysis extends AppCompatActivity {
         });
         next.setOnClickListener(new View.OnClickListener() {
             int currentIndex = weeks.indexOf(week.getText());
+
             @Override
             public void onClick(View v) {
                 if (currentIndex == weeks.size() - 1) {
@@ -115,6 +210,7 @@ public class BreakdownAnalysis extends AppCompatActivity {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
         databaseReference.addValueEventListener(new ValueEventListener() {
             int calories, carbs, proteins, fats;
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
@@ -177,6 +273,7 @@ public class BreakdownAnalysis extends AppCompatActivity {
                 carbsTV.setText(String.valueOf(carbs));
                 proteinsTV.setText(String.valueOf(proteins));
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -191,6 +288,16 @@ public class BreakdownAnalysis extends AppCompatActivity {
     public void showInfoSnackBar() {
         Snackbar snackbar = Snackbar.make(constraintLayout, "If any values are shown in red, You have gone over your recommended amount!", Snackbar.LENGTH_LONG);
         snackbar.show();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
 

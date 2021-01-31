@@ -41,14 +41,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
-    private List<Recipe> recipes;
+    private final List<Recipe> recipes;
     private final Context context;
     private String whatDayToAddTo;
     private String quantityAdapterChoice;
     private String mealAdapterChoice;
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-    private final Date date = new Date(); private ArrayList<String> servingNumbers;
+    private final Date date = new Date();
+    private ArrayList<String> servingNumbers;
     private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
@@ -75,6 +76,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             v.getContext().startActivity(intent);
         });
        holder.options.setOnClickListener(new View.OnClickListener() {
+           @SuppressLint("NonConstantResourceId")
            @Override
            public void onClick(View v) {
                PopupMenu popupMenu = new PopupMenu(context, holder.options);
@@ -393,26 +395,11 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         }
         @SuppressLint("SetTextI18n")
         public void setData(Recipe data) {
-            Picasso.get()
-                    .load(data.getImageUrl())
-                    .fit()
-                    .centerCrop()
-                    .into(recipeImage);
+            Picasso.get().load(data.getImageUrl()).fit().centerCrop().into(recipeImage);
             recipeName.setText(data.getTitle());
             timeToCook.setText(data.getReadyInMinutes() + " Minutes");
             servings.setText(data.getServings() + " Servings");
             recipeSource.setText(data.getSourceUrl());
         }
-    }
-    public List<Recipe> getRecipes() {
-        return recipes;
-    }
-
-    public void setRecipes(List<Recipe> recipes) {
-        this.recipes = recipes;
-    }
-
-    public void addRecipes(List<Recipe> recipes) {
-        this.recipes.addAll(recipes);
     }
 }

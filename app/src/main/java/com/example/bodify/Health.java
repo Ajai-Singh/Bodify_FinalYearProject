@@ -163,7 +163,7 @@ public class Health extends AppCompatActivity {
         BarData barData = new BarData(barDataSet);
         barChart.clear();
         barChart.setData(barData);
-        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
         barDataSet.setValueTextSize(16f);
         barChart.invalidate();

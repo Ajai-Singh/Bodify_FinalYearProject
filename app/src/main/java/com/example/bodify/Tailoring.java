@@ -69,9 +69,6 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 dlgAlert.setPositiveButton("OK", null);
                 dlgAlert.setCancelable(true);
                 dlgAlert.create().show();
-                dlgAlert.setPositiveButton("Ok",
-                        (dialog, which) -> {
-                        });
             } else {
                 Intent intent = getIntent();
                 String strUserName = intent.getStringExtra(MESSAGE_KEY);

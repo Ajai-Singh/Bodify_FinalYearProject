@@ -257,6 +257,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                     }
                                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Favourites");
                                     databaseReference.child(favourite.getId()).removeValue();
+                                    Toast.makeText(context,"Item removed from Favourites!",Toast.LENGTH_LONG).show();
                                     favourites.clear();
                                     notifyDataSetChanged();
                                 });

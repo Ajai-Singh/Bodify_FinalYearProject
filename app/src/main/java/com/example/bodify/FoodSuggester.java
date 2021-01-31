@@ -110,7 +110,7 @@ public class FoodSuggester extends Fragment {
                     });
                 }
                 if (direction == Direction.Left) {
-                    Log.i("direction left", "yes");
+                    ignoredRecord();
                 }
                 if(cardStackLayoutManager.getTopPosition() == cardStackAdapter.getItemCount()) {
                     showSnackBar();
@@ -302,6 +302,11 @@ public class FoodSuggester extends Fragment {
 
     public void addedRecord() {
         Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to favourites", Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    public void ignoredRecord() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Ignored", Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 }
