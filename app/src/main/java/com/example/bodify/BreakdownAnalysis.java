@@ -3,6 +3,7 @@ package com.example.bodify;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -47,6 +48,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
     private ConstraintLayout constraintLayout;
     private Spinner userSP;
     private AnyChartView anyChartView;
+    private final ArrayList<String> dates = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +135,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         userIDs.addAll(set);
         ArrayList<String> userNames = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
@@ -207,6 +209,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                     user.setUserID(userSnapshot.getKey());
                     if (user.getUserName().equals(name)) {
                         userTag = user.getUserID();
+                        break;
                     }
                 }
                 getAnalysisWeeks(userTag);
@@ -220,7 +223,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
     }
 
     public void getAnalysisWeeks(String userTag) {
-        ArrayList<String> dates = new ArrayList<>();
+        dates.clear();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -232,7 +235,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                         dates.add(analysis.getWeekStarting());
                     }
                 }
-                populateUI(dates);
+                populateUI(dates,userTag);
             }
 
             @Override
@@ -242,8 +245,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         });
     }
 
-
-    public void populateUI(ArrayList<String> weeks) {
+    public void populateUI(ArrayList<String> weeks,String userTag) {
         week.setText(weeks.get(0));
         previous.setOnClickListener(new View.OnClickListener() {
             int currentIndex = weeks.indexOf(week.getText());
@@ -256,7 +258,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                     currentIndex = currentIndex - 1;
                 }
                 week.setText(weeks.get(currentIndex));
-                readDB(week.getText().toString());
+                readDB(week.getText().toString(),userTag);
             }
         });
         next.setOnClickListener(new View.OnClickListener() {
@@ -270,13 +272,13 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                     currentIndex = currentIndex + 1;
                 }
                 week.setText(weeks.get(currentIndex));
-                readDB(week.getText().toString());
+                readDB(week.getText().toString(),userTag);
             }
         });
-        readDB(week.getText().toString());
+        readDB(week.getText().toString(),userTag);
     }
 
-    public void readDB(String date) {
+    public void readDB(String date,String userTag) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
         databaseReference.addValueEventListener(new ValueEventListener() {
             int calories, carbs, proteins, fats;
@@ -286,7 +288,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     Analysis analysis = userSnapshot.getValue(Analysis.class);
                     assert analysis != null;
-                    if (analysis.getWeekStarting().equals(date)) {
+                    if (analysis.getWeekStarting().equals(date) && analysis.getUserID().equals(userTag)) {
                         calories = analysis.getCalories();
                         carbs = analysis.getCarbohydrates();
                         proteins = analysis.getProteins();
