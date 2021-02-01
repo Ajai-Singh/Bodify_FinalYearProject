@@ -32,7 +32,7 @@ public class ChatRoom extends AppCompatActivity {
     private FloatingActionButton fab;
     private FirebaseListAdapter<Message> adapter;
     @SuppressLint("SimpleDateFormat")
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -84,8 +84,6 @@ public class CommunityWall extends AppCompatActivity {
                 text.setError("Post cannot be empty!");
                 text.requestFocus();
             } else {
-                AlertDialog.Builder alert = new AlertDialog.Builder(CommunityWall.this);
-                alert.setTitle("Attention").setNegativeButton("Close", (dialog, which) -> dialog.cancel()).setMessage("Would you like to post this message?").setPositiveButton("Ok", (dialog, which1) -> {
                     @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     Date date = new Date();
                     String currentDateTime = dateFormat.format(date);
@@ -103,8 +101,6 @@ public class CommunityWall extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-                });
-                alert.create().show();
             }
         });
         builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());

@@ -52,6 +52,9 @@ public class Health extends AppCompatActivity {
         fitnessLevel = findViewById(R.id.fitnessLevelTextField);
         calorieIntake = findViewById(R.id.calorieIntakeTextField);
         barChart = findViewById(R.id.barChart);
+        barChart.setTouchEnabled(false);
+        barChart.setPinchZoom(false);
+        barChart.setDoubleTapToZoomEnabled(false);
         mAuth = FirebaseAuth.getInstance();
         updateFields();
     }

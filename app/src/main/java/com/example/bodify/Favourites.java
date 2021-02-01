@@ -7,11 +7,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Adapters.FavouriteAdapter;
 import com.example.bodify.Models.Favourite;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,12 +29,14 @@ public class Favourites extends Fragment {
     private final ArrayList<Favourite> favourites = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+    private ConstraintLayout constraintLayout;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_favourites, container, false);
         recyclerView = view.findViewById(R.id.favRCV);
+        constraintLayout = view.findViewById(R.id.favouritesCL);
         return view;
     }
 

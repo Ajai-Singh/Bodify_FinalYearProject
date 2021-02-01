@@ -1,9 +1,10 @@
 package com.example.bodify;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,11 +12,9 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
@@ -31,7 +30,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import org.jetbrains.annotations.NotNull;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,7 +43,6 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
     private final String userID = mAuth.getUid();
     private ImageButton previous, next;
     private Pie pie;
-    private Button updateButton;
     private TextView fatsTV, carbsTV, proteinsTV, caloriesTV, weightTV, week, header, carbs, fats, proteins, calories, weight;
     private ConstraintLayout constraintLayout;
     private Spinner userSP;
@@ -67,11 +66,9 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         proteinsTV = findViewById(R.id.avgProteins);
         caloriesTV = findViewById(R.id.avgCalories);
         weightTV = findViewById(R.id.newWeight);
-        updateButton = findViewById(R.id.updateWeight);
         ImageButton imageButton = findViewById(R.id.analysisInfo);
         constraintLayout = findViewById(R.id.analysisCL);
         anyChartView = findViewById(R.id.anyChartView);
-        anyChartView.setBackgroundColor(Color.TRANSPARENT); //set whatever color you prefer
         previous = findViewById(R.id.minus);
         next = findViewById(R.id.plus);
         week = findViewById(R.id.weekStartingOf);
@@ -98,7 +95,6 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         });
         next.setVisibility(View.INVISIBLE);
         previous.setVisibility(View.INVISIBLE);
-        updateButton.setVisibility(View.INVISIBLE);
         fatsTV.setVisibility(View.INVISIBLE);
         carbsTV.setVisibility(View.INVISIBLE);
         proteinsTV.setVisibility(View.INVISIBLE);
@@ -114,7 +110,21 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         calories.setVisibility(View.INVISIBLE);
         week.setVisibility(View.INVISIBLE);
         informationSnackBar();
-        search.setOnClickListener(v -> getNewSpinnerValue(userSP.getSelectedItem().toString()));
+        search.setOnClickListener(v -> {
+            if(userSP.getSelectedItemPosition() == 0) {
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(BreakdownAnalysis.this);
+                dlgAlert.setMessage("Error no user selected");
+                dlgAlert.setTitle("Error...");
+                dlgAlert.setCancelable(true);
+                dlgAlert.setPositiveButton("Ok",
+                        (dialog, which) -> {
+                            dialog.cancel();
+                        });
+                dlgAlert.create().show();
+            } else {
+                getNewSpinnerValue(userSP.getSelectedItem().toString());
+            }
+        });
     }
 
     public void getSpinnerData(ArrayList<String> userIDs) {
@@ -145,29 +155,28 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
     }
 
     public void populateSpinner(ArrayList<String> userNames) {
-        ArrayAdapter<String> adapterNames = new ArrayAdapter<>(BreakdownAnalysis.this, android.R.layout.simple_spinner_dropdown_item, userNames);
+        userNames.add(0,"Select user");
+        ArrayAdapter<String> adapterNames = new ArrayAdapter<String>(BreakdownAnalysis.this, android.R.layout.simple_spinner_dropdown_item, userNames) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView textview = (TextView) view;
+                if (position == 0) {
+                    textview.setTextColor(Color.GRAY);
+                } else {
+                    textview.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
         adapterNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         userSP.setAdapter(adapterNames);
         userSP.setOnItemSelectedListener(BreakdownAnalysis.this);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                for (int i = 0; i < userNames.size(); i++) {
-                    assert user != null;
-                    if (userNames.get(i).equals(user.getUserName())) {
-                        userSP.setSelection(i);
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     public void getNewSpinnerValue(String name) {
@@ -187,25 +196,6 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         weight.setVisibility(View.VISIBLE);
         calories.setVisibility(View.VISIBLE);
         week.setVisibility(View.VISIBLE);
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("User").child(userID);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User user = snapshot.getValue(User.class);
-                    assert user != null;
-                    user.setUserID(snapshot.getKey());
-                    if (user.getUserName().equals(name)) {
-                        updateButton.setVisibility(View.VISIBLE);
-                    } else {
-                        updateButton.setVisibility(View.INVISIBLE);
-                    }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
         databaseReference.addValueEventListener(new ValueEventListener() {
             String userTag;
@@ -224,7 +214,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -247,7 +237,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -348,6 +338,24 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                 } else {
                     caloriesTV.setTextColor(Color.BLACK);
                 }
+                DecimalFormat df = new DecimalFormat("0.00");
+                double calorieNegative = macro.getCalorieConsumption() - calories;
+                calorieNegative *= 7;
+                double newWeight = calorieNegative / 7700;
+                DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+                userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        User user = snapshot.getValue(User.class);
+                        assert user != null;
+                        weightTV.setText(df.format(user.getWeight() - newWeight));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
                 caloriesTV.setText(String.valueOf(calories));
                 fatsTV.setText(String.valueOf(fats));
                 carbsTV.setText(String.valueOf(carbs));
@@ -358,10 +366,6 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
-        //TODO
-        updateButton.setOnClickListener(v -> {
-
         });
     }
 

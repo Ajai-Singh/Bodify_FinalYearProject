@@ -156,7 +156,7 @@ public class FoodSuggester extends Fragment {
                 if(suggestionMacros != null) {
                     APIParsingWithConstraints(suggestionMacros.getCalories(),suggestionMacros.getFats(),suggestionMacros.getProteins(),suggestionMacros.getCarbohydrates());
                 } else {
-                    APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number=2");
+                    APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true");
                 }
             }
 
@@ -225,7 +225,7 @@ public class FoodSuggester extends Fragment {
 
     public void APIParsingWithConstraints(int calories,int fats,int proteins,int carbs) {
         Log.i("constraints","" + fats);
-        AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number=2&maxCarbs="+carbs+"&maxFat="+fats+"&maxProtein="+proteins+"&maxCalories="+calories)
+        AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&maxCarbs="+carbs+"&maxFat="+fats+"&maxProtein="+proteins+"&maxCalories="+calories)
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "1")
                 .addHeaders("token", "1234")

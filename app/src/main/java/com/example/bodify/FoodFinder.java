@@ -552,7 +552,12 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                         int f = subStringCD - finalDate;
                         StringBuffer stringBuffer = new StringBuffer(formatter.format(date));
                         stringBuffer.replace(0,2,String.valueOf(f));
-                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice,whatDayToAddTo,String.valueOf(stringBuffer));
+                        String newDate = null;
+                        if(stringBuffer.length() == 9) {
+                            String date = String.valueOf(stringBuffer);
+                            newDate = "0" + date;
+                        }
+                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice,whatDayToAddTo,newDate);
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                         databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {

@@ -229,10 +229,15 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 int f = subStringCD - finalDate;
                                 StringBuffer stringBuffer = new StringBuffer(formatter.format(date));
                                 stringBuffer.replace(0,2,String.valueOf(f));
+                                String newDate = null;
+                                if(stringBuffer.length() == 9) {
+                                    String date = String.valueOf(stringBuffer);
+                                    newDate = "0" + date;
+                                }
                                 Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories()
                                         , favourite.getItemTotalFat(), favourite.getItemSodium(),
                                         favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
-                                        favourite.getItemProtein(), Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,String.valueOf(stringBuffer));
+                                        favourite.getItemProtein(), Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,newDate);
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {

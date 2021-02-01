@@ -6,16 +6,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-
-import com.example.bodify.Adapters.MealAdapter;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Meal;
-import com.example.bodify.TrackingDaysMeals.ThursdayMeals;
-import com.example.bodify.TrackingDaysMeals.WednesdayMeals;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -123,11 +117,11 @@ public class MyService extends Service {
         daysOfWeek.add("Friday");
         daysOfWeek.add("Saturday");
         daysOfWeek.add("Sunday");
-       Log.i("days","" + dates);
-        Log.i("cals","" + calories);
-        Log.i("fat","" + fats);
-        Log.i("car","" + carbohydrates);
-        Log.i("pro","" + proteins);
+        Log.i("days", "" + dates);
+        Log.i("cals", "" + calories);
+        Log.i("fat", "" + fats);
+        Log.i("car", "" + carbohydrates);
+        Log.i("pro", "" + proteins);
 
         //Keeping for second or clause
 //        LocalTime minDeleteTime = LocalTime.of(14, 38, 0);
@@ -200,6 +194,8 @@ public class MyService extends Service {
             //I need to test the OR clause on a different android phone
             //|| simpleDateFormat.format(currentWeekDay).equalsIgnoreCase("Monday") && localTime.isAfter(minDeleteTime) && localTime.isBefore(maxDeleteTime)
             //I need to come up with an OR clause because it wont work if the difference is never 7 days
+            //test on another android phone with the OR clause
+            //if not just change to 8 days but problem with that what if the app is launched constantly
             if (daysBetween >= 7) {
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                 assert userID != null;

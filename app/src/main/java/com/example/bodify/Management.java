@@ -81,14 +81,14 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                                 AlertDialog alertDialog = builder.create();
                                 alertDialog.setTitle("Attention required!");
                                 alertDialog.show();
-                            } if(allowed) {
+                            } else {
                                 startActivity(new Intent(Management.this, BreakdownAnalysis.class));
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            Toast.makeText(Management.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                     break;

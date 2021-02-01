@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="10dp"
@@ -20,7 +19,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:text="Item name:"
+            android:text="Title: "
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintEnd_toStartOf="@+id/itemNameTextField"
             app:layout_constraintHorizontal_bias="0.0"
@@ -29,7 +28,7 @@
 
         <TextView
             android:id="@+id/itemNameTextField"
-            android:layout_width="270dp"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"

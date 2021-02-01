@@ -275,10 +275,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 int f = subStringCD - finalDate;
                                 StringBuilder stringBuffer = new StringBuilder(formatter.format(date));
                                 stringBuffer.replace(0,2,String.valueOf(f));
+                                String newDate = null;
+                                if(stringBuffer.length() == 9) {
+                                    String date = String.valueOf(stringBuffer);
+                                    newDate = "0" + date;
+                                }
                                 Meal meal = new Meal(recipe.getTitle(), userID, recipe.getCalories(),
                                         recipe.getFats(), recipe.getSodium(), recipe.getCarbohydrates(),
                                         recipe.getSugar(), recipe.getProteins(),
-                                        Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,String.valueOf(stringBuffer));
+                                        Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,newDate);
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
