@@ -74,4 +74,5 @@
     <string name="title_activity_tab1">Tab1</string>
     <string name="title_activity_analysis">Analysis</string>
     <string name="title_activity_food_suggester">FoodSuggester</string>
+    <string name="title_activity_milestones">Milestones</string>
 </resources>

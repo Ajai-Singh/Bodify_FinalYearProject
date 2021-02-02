@@ -61,36 +61,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     startActivity(new Intent(Management.this, GymsNearMe.class));
                     break;
                 case R.id.dataAnalysis:
-                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
-                    databaseReference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            boolean allowed = false;
-                            for(DataSnapshot userSnapshot : snapshot.getChildren()) {
-                                Analysis analysis = userSnapshot.getValue(Analysis.class);
-                                assert analysis != null;
-                                if(analysis.getUserID().equals(userID)) {
-                                    allowed = true;
-                                    break;
-                                }
-                            }
-                            if(!allowed) {
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(Management.this);
-                                builder.setMessage("Sorry you do not have any weekly data to access!, Please utilise the diary functionality for one week and come back!")
-                                        .setNegativeButton("Close", (dialog, which) -> dialog.cancel());
-                                AlertDialog alertDialog = builder.create();
-                                alertDialog.setTitle("Attention required!");
-                                alertDialog.show();
-                            } else {
-                                startActivity(new Intent(Management.this, BreakdownAnalysis.class));
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(Management.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    startActivity(new Intent(Management.this, BreakdownAnalysis.class));
                     break;
                 case R.id.healthPage:
                     startActivity(new Intent(Management.this, Health.class));

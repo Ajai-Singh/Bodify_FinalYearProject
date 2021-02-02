@@ -13,5 +13,5 @@
 
     <item
         android:id="@+id/ingredients"
-        android:title="View/Order ingredients" />
+        android:title="View ingredients" />
 </menu>

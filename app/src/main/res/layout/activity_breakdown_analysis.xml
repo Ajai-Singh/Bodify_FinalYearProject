@@ -14,11 +14,13 @@
         android:id="@+id/anyChartView"
         android:layout_width="match_parent"
         android:layout_height="306dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weekStartingOf" />
+        app:layout_constraintTop_toBottomOf="@+id/weekStartingOf" >
+
+    </com.anychart.AnyChartView>
 
     <TextView
         android:id="@+id/weekStartingOf"
@@ -60,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="123dp"
         android:layout_marginEnd="119dp"
-        android:layout_marginBottom="241dp"
+        android:layout_marginBottom="276dp"
         android:text="Weekly statistical progression"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="17sp"
@@ -74,7 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="14dp"
         android:text="Weekly average carbohydrates were: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,7 +130,7 @@
         android:id="@+id/avgCarbs"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="14dp"
         android:layout_marginEnd="81dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"

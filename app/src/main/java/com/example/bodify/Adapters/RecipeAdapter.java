@@ -297,23 +297,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         diaryAlertDialog.show();
                         break;
                     case R.id.ingredients:
-                        ArrayList<Ingredient> ingredients = recipes.get(position).getIngredients();
                         final AlertDialog.Builder ingredientsBuilder = new AlertDialog.Builder(context);
                         LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View view2 = inflater2.inflate(R.layout.ingredients, null);
                         RecyclerView recyclerView = view2.findViewById(R.id.ingredientsRCV);
                         recyclerView.setHasFixedSize(true);
                         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                        ArrayList<String> sendIngredients = new ArrayList<>();
-                        for(int i = 0; i < ingredients.size(); i++) {
-                            sendIngredients.add(ingredients.get(i).getName());
-                        }
-                        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(recipes.get(position).getIngredients(), sendIngredients);
-                        ingredientsBuilder.setNegativeButton("Close", (dialog15, which) -> dialog15.cancel()).setPositiveButton("Order", (dialog12, which) -> {
-                            //Future order of ingredients through Zinc API.... TODO
-                            ArrayList<String> test = ingredientsAdapter.test();
-                            Log.i("test", "" + test.toString());
-                        });
+                        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(recipes.get(position).getIngredients());
+                        ingredientsBuilder.setNegativeButton("Close", (dialog15, which) -> dialog15.cancel());
                         recyclerView.setAdapter(ingredientsAdapter);
                         ingredientsBuilder.setView(view2);
                         AlertDialog ingredientsDialog = ingredientsBuilder.create();
