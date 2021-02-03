@@ -244,8 +244,6 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         });
     }
 
-    //Found the problem with this, There are two users in the database with the same names, Solution could be to make sure users must have unique names when signing up
-    //thats why it picks up a specific user that has no data in weeks as its the first one name matched.
     public void populateUI(ArrayList<String> weeks,String userTag) {
         week.setText(weeks.get(0));
         previous.setOnClickListener(new View.OnClickListener() {
@@ -297,7 +295,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                         break;
                     }
                 }
-                populateGraph(calories, carbs, proteins, fats);
+                populateGraph(calories, carbs, proteins, fats,userTag);
             }
 
             @Override
@@ -307,7 +305,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         });
     }
 
-    public void populateGraph(int calories, int carbs, int proteins, int fats) {
+    public void populateGraph(int calories, int carbs, int proteins, int fats,String userTag) {
         int[] macrosValues = {calories, carbs, proteins, fats};
         String[] macros = {"Calories", "Carbohydrates", "Proteins", "Fats"};
         List<DataEntry> dataEntries = new ArrayList<>();
@@ -315,7 +313,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
             dataEntries.add(new ValueDataEntry(macros[i], macrosValues[i]));
         }
         pie.data(dataEntries);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(userID);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(userTag);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
