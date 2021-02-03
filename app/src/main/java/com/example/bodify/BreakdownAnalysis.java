@@ -244,6 +244,8 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         });
     }
 
+    //Found the problem with this, There are two users in the database with the same names, Solution could be to make sure users must have unique names when signing up
+    //thats why it picks up a specific user that has no data in weeks as its the first one name matched.
     public void populateUI(ArrayList<String> weeks,String userTag) {
         week.setText(weeks.get(0));
         previous.setOnClickListener(new View.OnClickListener() {

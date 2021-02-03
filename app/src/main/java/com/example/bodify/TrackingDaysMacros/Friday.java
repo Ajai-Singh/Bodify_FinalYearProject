@@ -70,8 +70,9 @@ public class Friday extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Macro macro = snapshot.getValue(Macro.class);
-                assert macro != null;
-                createMacroCopyInDatabase(macro.getCalorieConsumption(), macro.getCarbohydrates(), macro.getFats(), macro.getProteins());
+                if (macro != null) {
+                    createMacroCopyInDatabase(macro.getCalorieConsumption(), macro.getCarbohydrates(), macro.getFats(), macro.getProteins());
+                }
             }
 
             @Override
