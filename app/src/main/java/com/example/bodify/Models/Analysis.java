@@ -3,6 +3,7 @@ package com.example.bodify.Models;
 public class Analysis {
     private int calories,fats,carbohydrates,proteins;
     private String userID,weekStarting;
+    private double weight;
 
     public Analysis() {
 
@@ -56,13 +57,22 @@ public class Analysis {
         this.weekStarting = weekStarting;
     }
 
-    public Analysis(int calories, int fats, int carbohydrates, int proteins, String userID,String weekStarting) {
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public Analysis(int calories, int fats, int carbohydrates, int proteins, String userID, String weekStarting,double weight) {
         this.calories = calories;
         this.fats = fats;
         this.carbohydrates = carbohydrates;
         this.proteins = proteins;
         this.userID = userID;
         this.weekStarting = weekStarting;
+        this.weight = weight;
     }
 
     @Override

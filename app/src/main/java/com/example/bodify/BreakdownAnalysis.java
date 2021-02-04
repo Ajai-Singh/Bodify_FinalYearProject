@@ -1,8 +1,10 @@
 package com.example.bodify;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,6 +25,11 @@ import com.anychart.charts.Pie;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -48,12 +55,14 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
     private Spinner userSP;
     private AnyChartView anyChartView;
     private final ArrayList<String> dates = new ArrayList<>();
+    private ImageButton weights;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_breakdown_analysis);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Breakdown Analysis");
+        weights = findViewById(R.id.weightProgression);
         userSP = findViewById(R.id.userSpinner);
         carbs = findViewById(R.id.avgCarbsHeader);
         fats = findViewById(R.id.avgFatsHeader);
@@ -110,6 +119,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         weight.setVisibility(View.INVISIBLE);
         calories.setVisibility(View.INVISIBLE);
         week.setVisibility(View.INVISIBLE);
+        weights.setVisibility(View.INVISIBLE);
         informationSnackBar();
         search.setOnClickListener(v -> {
             if(userSP.getSelectedItemPosition() == 0) {
@@ -197,6 +207,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         weight.setVisibility(View.VISIBLE);
         calories.setVisibility(View.VISIBLE);
         week.setVisibility(View.VISIBLE);
+        weights.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
         databaseReference.addValueEventListener(new ValueEventListener() {
             String userTag;
@@ -258,6 +269,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                 }
                 week.setText(weeks.get(currentIndex));
                 readDB(week.getText().toString(),userTag);
+                getBarChartInformation(userTag);
             }
         });
         next.setOnClickListener(new View.OnClickListener() {
@@ -272,9 +284,69 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                 }
                 week.setText(weeks.get(currentIndex));
                 readDB(week.getText().toString(),userTag);
+                getBarChartInformation(userTag);
             }
         });
         readDB(week.getText().toString(),userTag);
+        getBarChartInformation(userTag);
+    }
+
+    public void getBarChartInformation(String userTag) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            ArrayList<Analysis> analyses = new ArrayList<>();
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    Analysis analysis = userSnapshot.getValue(Analysis.class);
+                    if(analysis.getUserID().equals(userTag)) {
+                        analyses.add(analysis);
+                    }
+                }
+                showChart(analyses);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void showChart(ArrayList<Analysis> analyses) {
+        weights.setOnClickListener(v -> {
+            ArrayList<BarEntry> barEntries = new ArrayList<>();
+            ArrayList<String> xLabels = new ArrayList<>();
+            AlertDialog.Builder builder = new AlertDialog.Builder(BreakdownAnalysis.this);
+            @SuppressLint("InflateParams")
+            View view = getLayoutInflater().inflate(R.layout.weight_progression, null);
+            BarChart barChart = view.findViewById(R.id.weightProgressionGraph);
+            for(int i = 0; i < analyses.size(); i++) {
+                barEntries.add(new BarEntry(i+1, (float) analyses.get(i).getWeight()));
+                xLabels.add(analyses.get(i).getWeekStarting());
+            }
+            BarDataSet barDataSet = new BarDataSet(barEntries, "Data Set");
+            BarData barData = new BarData(barDataSet);
+            barChart.clear();
+            barChart.setData(barData);
+            barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+            barDataSet.setValueTextColor(Color.BLACK);
+            barDataSet.setValueTextSize(16f);
+            barChart.invalidate();
+            builder.setView(view);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
+
+    }
+
+    public ArrayList<String> getXAxisValues() {
+        ArrayList<String> xLabels = new ArrayList<>();
+        xLabels.add("0");
+        xLabels.add("Fats");
+        xLabels.add("Carbohydrates");
+        xLabels.add("Proteins");
+        return new ArrayList<>(xLabels);
     }
 
     public void readDB(String date,String userTag) {

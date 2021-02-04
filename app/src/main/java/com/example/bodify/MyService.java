@@ -9,7 +9,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import com.example.bodify.Models.Analysis;
+import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Meal;
+import com.example.bodify.Models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -26,12 +29,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.crypto.Mac;
+
 public class MyService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
     private int calories, fats, proteins, carbohydrates;
-    private final ArrayList<String> daysInDB;
+    private ArrayList<String> daysInDB;
     private ArrayList<String> dates;
 
     @Override
@@ -52,6 +57,40 @@ public class MyService extends Service {
     }
 
     public MyService() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                assert user != null;
+                getUserMacroCalories(user.getWeight());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getUserMacroCalories(double weight) {
+        assert userID != null;
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(userID);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Macro macro = snapshot.getValue(Macro.class);
+                getDaysInDB(macro.getCalorieConsumption(),weight);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getDaysInDB(double calories,double weight) {
         daysInDB = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -62,7 +101,7 @@ public class MyService extends Service {
                     daysInDB.add(userSnapshot.getKey());
                     Log.i("", "" + daysInDB);
                 }
-                test(daysInDB);
+                test(daysInDB,calories,weight);
             }
 
             @Override
@@ -73,7 +112,7 @@ public class MyService extends Service {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void test(ArrayList<String> daysInDB) {
+    public void test(ArrayList<String> daysInDB,double dbCalories,double weight) {
         dates = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek");
         for (int i = 0; i < daysInDB.size(); i++) {
@@ -93,7 +132,7 @@ public class MyService extends Service {
                         }
                     }
                     try {
-                        dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7, daysInDB);
+                        dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7, daysInDB,dbCalories,weight);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -108,7 +147,7 @@ public class MyService extends Service {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void dates(ArrayList<String> dates, int calories, int fats, int carbohydrates, int proteins, ArrayList<String> daysInDB) throws ParseException {
+    public void dates(ArrayList<String> dates, int calories, int fats, int carbohydrates, int proteins, ArrayList<String> daysInDB,double dbCalories,double weight) throws ParseException {
         final ArrayList<String> daysOfWeek = new ArrayList<>();
         daysOfWeek.add("Monday");
         daysOfWeek.add("Tuesday");
@@ -190,7 +229,12 @@ public class MyService extends Service {
             String indexWeekStartingOf = weekStartingOf.substring(0, 2);
             StringBuilder stringBuffer = new StringBuilder(weekStartingOf);
             stringBuffer.replace(0, 2, String.valueOf(Integer.parseInt(indexWeekStartingOf) - Integer.parseInt(b)));
-            Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins, userID, String.valueOf(stringBuffer));
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
+            double calorieNegative = dbCalories - calories;
+            calorieNegative *= 7;
+            double newWeight = calorieNegative / 7700;
+            double finalWeight = Double.parseDouble(decimalFormat.format(weight - newWeight));
+            Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins, userID, String.valueOf(stringBuffer),finalWeight);
             //I need to test the OR clause on a different android phone
             //|| simpleDateFormat.format(currentWeekDay).equalsIgnoreCase("Monday") && localTime.isAfter(minDeleteTime) && localTime.isBefore(maxDeleteTime)
             //I need to come up with an OR clause because it wont work if the difference is never 7 days

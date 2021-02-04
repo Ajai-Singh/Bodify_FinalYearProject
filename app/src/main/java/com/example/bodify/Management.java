@@ -1,7 +1,6 @@
 package com.example.bodify;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,7 +18,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import com.example.bodify.FirebaseAuthentication.LogIn;
-import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -36,8 +34,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Management extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
     private StorageReference storageReference;
-    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final String userID = mAuth.getUid();
 
     @SuppressLint({"WrongConstant", "NonConstantResourceId"})
     @Override

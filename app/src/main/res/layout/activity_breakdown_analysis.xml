@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="123dp"
         android:layout_marginEnd="119dp"
-        android:layout_marginBottom="276dp"
+        android:layout_marginBottom="240dp"
         android:text="Weekly statistical progression"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="17sp"
@@ -220,4 +220,16 @@
         app:layout_constraintStart_toEndOf="@+id/userSpinner"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/weightProgression"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="263dp"
+        android:src="@drawable/trend"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/wsp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
