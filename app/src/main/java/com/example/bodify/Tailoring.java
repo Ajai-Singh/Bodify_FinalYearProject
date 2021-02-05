@@ -62,13 +62,19 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         submit.setOnClickListener(v -> {
             if ((weight.getText().toString().matches("") || height.getText().toString().matches("") || (fitnessGoalSpinner.getSelectedItemPosition() == 0) ||
                     (activityLevelSpinner.getSelectedItemPosition() == 0) || (bodyTypeSpinner.getSelectedItemPosition() == 0) ||
-                    (genderSpinner.getSelectedItemPosition() == 0) || (preferredFoodsSpinner.getSelectedItemPosition() == 0))){
+                    (genderSpinner.getSelectedItemPosition() == 0) || (preferredFoodsSpinner.getSelectedItemPosition() == 0))) {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Tailoring.this);
                 dlgAlert.setMessage("Not All Fields are Filled!");
                 dlgAlert.setTitle("Error...");
                 dlgAlert.setPositiveButton("OK", null);
                 dlgAlert.setCancelable(true);
                 dlgAlert.create().show();
+            } else if (Integer.parseInt(height.getText().toString()) > 232) {
+                height.setError("Error max height is 232CM");
+                height.requestFocus();
+            } else if(Double.parseDouble(weight.getText().toString()) > 442) {
+                weight.setError("Error max weight is 442KG");
+                weight.requestFocus();
             } else {
                 Intent intent = getIntent();
                 String strUserName = intent.getStringExtra(MESSAGE_KEY);
@@ -84,19 +90,19 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat todaysDate = new SimpleDateFormat("dd/MM/yyyy");
                 Date date = new Date();
-                User user = new User(strUserName, strEmail, genderSpinner.getSelectedItem().toString(), activityLevelSpinner.getSelectedItem().toString(), fitnessGoalSpinner.getSelectedItem().toString(), bodyTypeSpinner.getSelectedItem().toString(), preferredFoodsSpinner.getSelectedItem().toString(), Double.parseDouble(weight.getText().toString()), formattedBodyMassIndex, Integer.parseInt(height.getText().toString()), imageDownloadUrl,todaysDate.format(date));
+                User user = new User(strUserName, strEmail, genderSpinner.getSelectedItem().toString(), activityLevelSpinner.getSelectedItem().toString(), fitnessGoalSpinner.getSelectedItem().toString(), bodyTypeSpinner.getSelectedItem().toString(), preferredFoodsSpinner.getSelectedItem().toString(), Double.parseDouble(weight.getText().toString()), formattedBodyMassIndex, Integer.parseInt(height.getText().toString()), imageDownloadUrl, todaysDate.format(date));
                 databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            NotificationChannel notificationChannel = new NotificationChannel("My Notification","test", NotificationManager.IMPORTANCE_DEFAULT);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            NotificationChannel notificationChannel = new NotificationChannel("My Notification", "test", NotificationManager.IMPORTANCE_DEFAULT);
                             NotificationManager notificationManager = getSystemService(NotificationManager.class);
                             notificationManager.createNotificationChannel(notificationChannel);
                         }
                         String message = "Thank you for creating an account with us!";
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(Tailoring.this,"My Notification").setSmallIcon(
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(Tailoring.this, "My Notification").setSmallIcon(
                                 R.drawable.info).setContentTitle("Welcome").setContentText(message).setAutoCancel(true);
                         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(Tailoring.this);
-                        notificationManagerCompat.notify(0,builder.build());
+                        notificationManagerCompat.notify(0, builder.build());
                         Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), Management.class));
                     } else {
@@ -179,11 +185,12 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         adapterFitnessGoal.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fitnessGoalSpinner.setAdapter(adapterFitnessGoal);
         fitnessGoalSpinner.setOnItemSelectedListener(Tailoring.this);
-        ArrayAdapter<String> adapterActivityLevels = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, activityLevels){
+        ArrayAdapter<String> adapterActivityLevels = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, activityLevels) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
             }
+
             @Override
             public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -199,11 +206,12 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         adapterActivityLevels.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activityLevelSpinner.setAdapter(adapterActivityLevels);
         activityLevelSpinner.setOnItemSelectedListener(Tailoring.this);
-        ArrayAdapter<String> adapterBodyType = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, bodyTypes){
+        ArrayAdapter<String> adapterBodyType = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, bodyTypes) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
             }
+
             @Override
             public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -219,11 +227,12 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         adapterBodyType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         bodyTypeSpinner.setAdapter(adapterBodyType);
         bodyTypeSpinner.setOnItemSelectedListener(Tailoring.this);
-        ArrayAdapter<String> adapterPreferredFoods = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, preferredFoods){
+        ArrayAdapter<String> adapterPreferredFoods = new ArrayAdapter<String>(Tailoring.this, android.R.layout.simple_spinner_dropdown_item, preferredFoods) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
             }
+
             @Override
             public View getDropDownView(int position, View convertView, @NotNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);

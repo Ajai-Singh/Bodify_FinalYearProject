@@ -80,12 +80,14 @@ public class MyService extends Service {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Macro macro = snapshot.getValue(Macro.class);
-                getDaysInDB(macro.getCalorieConsumption(),weight);
+                if (macro != null) {
+                    getDaysInDB(macro.getCalorieConsumption(), weight);
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.i("error", ":" + error.getMessage());
             }
         });
     }
