@@ -75,4 +75,5 @@
     <string name="title_activity_analysis">Analysis</string>
     <string name="title_activity_food_suggester">FoodSuggester</string>
     <string name="title_activity_milestones">Milestones</string>
+    <string name="title_activity_weight_progression">WeightProgression</string>
 </resources>

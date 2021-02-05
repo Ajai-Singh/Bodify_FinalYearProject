@@ -224,12 +224,10 @@
         android:id="@+id/weightProgression"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="263dp"
+        android:layout_marginBottom="272dp"
         android:src="@drawable/trend"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/wsp" />
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

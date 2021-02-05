@@ -55,6 +55,12 @@ public class Thursday extends Fragment {
         barChart1 = view.findViewById(R.id.pieChart);
         barEntries.clear();
         barEntries1.clear();
+        barChart.setTouchEnabled(false);
+        barChart.setPinchZoom(false);
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart1.setTouchEnabled(false);
+        barChart1.setPinchZoom(false);
+        barChart1.setDoubleTapToZoomEnabled(false);
         getValuesForMacroCopy();
         getMacroCopyValues();
         setUIComponents();

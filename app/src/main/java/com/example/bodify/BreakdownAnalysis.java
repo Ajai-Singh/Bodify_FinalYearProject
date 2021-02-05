@@ -2,6 +2,7 @@ package com.example.bodify;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -26,9 +27,11 @@ import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -315,38 +318,10 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
 
     public void showChart(ArrayList<Analysis> analyses) {
         weights.setOnClickListener(v -> {
-            ArrayList<BarEntry> barEntries = new ArrayList<>();
-            ArrayList<String> xLabels = new ArrayList<>();
-            AlertDialog.Builder builder = new AlertDialog.Builder(BreakdownAnalysis.this);
-            @SuppressLint("InflateParams")
-            View view = getLayoutInflater().inflate(R.layout.weight_progression, null);
-            BarChart barChart = view.findViewById(R.id.weightProgressionGraph);
-            for(int i = 0; i < analyses.size(); i++) {
-                barEntries.add(new BarEntry(i+1, (float) analyses.get(i).getWeight()));
-                xLabels.add(analyses.get(i).getWeekStarting());
-            }
-            BarDataSet barDataSet = new BarDataSet(barEntries, "Data Set");
-            BarData barData = new BarData(barDataSet);
-            barChart.clear();
-            barChart.setData(barData);
-            barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-            barDataSet.setValueTextColor(Color.BLACK);
-            barDataSet.setValueTextSize(16f);
-            barChart.invalidate();
-            builder.setView(view);
-            AlertDialog dialog = builder.create();
-            dialog.show();
+            Intent intent = new Intent(BreakdownAnalysis.this, WeightProgression.class);
+            intent.putExtra("analyses", analyses);
+            startActivity(intent);
         });
-
-    }
-
-    public ArrayList<String> getXAxisValues() {
-        ArrayList<String> xLabels = new ArrayList<>();
-        xLabels.add("0");
-        xLabels.add("Fats");
-        xLabels.add("Carbohydrates");
-        xLabels.add("Proteins");
-        return new ArrayList<>(xLabels);
     }
 
     public void readDB(String date,String userTag) {

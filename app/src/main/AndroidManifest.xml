@@ -54,7 +54,11 @@
             android:theme="@style/Theme.test" />
         <activity android:name=".SpecificUsersPage" />
         <activity android:name=".BreakdownAnalysis" />
+
         <service android:name=".MyService" />
+
         <activity android:name=".MacroSettings" />
+        <activity android:name=".WeightProgression" />
     </application>
+
 </manifest>

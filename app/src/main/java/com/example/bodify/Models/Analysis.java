@@ -1,6 +1,8 @@
 package com.example.bodify.Models;
 
-public class Analysis {
+import java.io.Serializable;
+
+public class Analysis implements Serializable {
     private int calories,fats,carbohydrates,proteins;
     private String userID,weekStarting;
     private double weight;
