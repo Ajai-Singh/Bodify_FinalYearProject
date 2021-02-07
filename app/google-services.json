@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "752342715275",
-    "firebase_url": "https://bodify-31349.firebaseio.com",
-    "project_id": "bodify-31349",
-    "storage_bucket": "bodify-31349.appspot.com"
+    "project_number": "470287372330",
+    "firebase_url": "https://bodify-292819-default-rtdb.firebaseio.com",
+    "project_id": "bodify-292819",
+    "storage_bucket": "bodify-292819.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:752342715275:android:74e16e7ade1c75489e7d8e",
+        "mobilesdk_app_id": "1:470287372330:android:7999132feea61a0af1b353",
         "android_client_info": {
-          "package_name": "com.example.bodify"
+          "package_name": "com.ajai.bodify"
         }
       },
       "oauth_client": [
         {
-          "client_id": "752342715275-t000ta5glnkfds8ikr51e46s8u868j6g.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.bodify",
-            "certificate_hash": "3e4c96956eb3deac6e30777e6001e3acc39fed72"
-          }
-        },
-        {
-          "client_id": "752342715275-gif5db2fphv01go79g5o7vt37jmce4sj.apps.googleusercontent.com",
+          "client_id": "470287372330-b5lhf1hqfmk6kdstcrpqp51mgq78r1th.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBI2ip4NF6NCwmEEfMClxoRimVh097u-OU"
+          "current_key": "AIzaSyC6J6vM6gBHdcvUyrLq3N-IMvLFm5QJp2E"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "752342715275-gif5db2fphv01go79g5o7vt37jmce4sj.apps.googleusercontent.com",
+              "client_id": "470287372330-b5lhf1hqfmk6kdstcrpqp51mgq78r1th.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

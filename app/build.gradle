@@ -6,7 +6,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.example.bodify"
+        applicationId "com.ajai.bodify"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
