@@ -59,6 +59,6 @@
 
         <activity android:name=".MacroSettings" />
         <activity android:name=".WeightProgression" />
+        <activity android:name=".Pedometer" />
     </application>
-
 </manifest>

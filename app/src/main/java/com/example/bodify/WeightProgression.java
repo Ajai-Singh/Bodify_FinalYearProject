@@ -1,10 +1,12 @@
 package com.example.bodify;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
@@ -14,6 +16,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,18 +33,21 @@ public class WeightProgression extends AppCompatActivity {
     private BarChart barChart;
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private final String userID = firebaseAuth.getUid();
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weight_progression);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Weight Progression");
+        constraintLayout = findViewById(R.id.wwcl);
         barChart = findViewById(R.id.weightProgressionGraph);
         barChart.setTouchEnabled(false);
         barChart.setPinchZoom(false);
         barChart.setDoubleTapToZoomEnabled(false);
         analyses = (ArrayList<Analysis>) getIntent().getSerializableExtra("analyses");
         getStartingInformation();
+        showSnackBar();
     }
 
     public void getStartingInformation() {
@@ -81,5 +87,16 @@ public class WeightProgression extends AppCompatActivity {
         barDataSet.setValueTextColor(Color.BLACK);
         barDataSet.setValueTextSize(16f);
         barChart.invalidate();
+    }
+
+    public void showSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Update your weight accordingly", Snackbar.LENGTH_LONG).setAction(
+                "Settings", v -> {
+                    Intent intent = new Intent(WeightProgression.this, Settings.class);
+                    startActivity(intent);
+                    finish();
+                }
+        );
+        snackbar.show();
     }
 }

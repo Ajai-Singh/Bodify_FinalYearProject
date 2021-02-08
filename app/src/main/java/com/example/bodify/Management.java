@@ -65,6 +65,9 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                 case R.id.chat:
                     startActivity(new Intent(Management.this, ChatRoom.class));
                     break;
+                case R.id.pedometer:
+                    startActivity(new Intent(Management.this,Pedometer.class));
+                    break;
                 case R.id.communityWall:
                     startActivity(new Intent(Management.this, CommunityWall.class));
                     break;
