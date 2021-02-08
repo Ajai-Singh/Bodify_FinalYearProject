@@ -24,10 +24,6 @@
             android:icon="@drawable/health"
             android:title="Health" />
         <item
-            android:id="@+id/pedometer"
-            android:icon="@drawable/running"
-            android:title="Pedometer"/>
-        <item
             android:id="@+id/chat"
             android:icon="@drawable/chat"
             android:title="Chat Room" />
