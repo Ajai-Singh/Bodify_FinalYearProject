@@ -50,6 +50,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+
 import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
 import com.google.firebase.database.ValueEventListener;
@@ -557,7 +559,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                             String date = String.valueOf(stringBuffer);
                             newDate = "0" + date;
                         }
-                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice,whatDayToAddTo,newDate);
+                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice,whatDayToAddTo,newDate,servings, UUID.randomUUID().toString());
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                         databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {

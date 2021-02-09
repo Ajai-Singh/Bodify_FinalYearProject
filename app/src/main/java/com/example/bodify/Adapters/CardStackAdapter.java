@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
     private final List<Recipe> recipes;
@@ -282,7 +283,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                    Meal meal = new Meal(recipe.getTitle(), userID, recipe.getCalories(),
                                            recipe.getFats(), recipe.getSodium(), recipe.getCarbohydrates(),
                                            recipe.getSugar(), recipe.getProteins(),
-                                           Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,newDate);
+                                           Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,newDate,recipe.getServings(), UUID.randomUUID().toString());
                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                    databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                        if (task.isSuccessful()) {

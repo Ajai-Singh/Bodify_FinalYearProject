@@ -3,5 +3,8 @@
 
     <item
         android:id="@+id/deleteMeal"
-        android:title="Delete from Diary?" />
+        android:title="Delete from diary" />
+    <item
+        android:id="@+id/editMeal"
+        android:title="Edit meal" />
 </menu>

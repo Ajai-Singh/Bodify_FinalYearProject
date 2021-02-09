@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.crypto.Mac;
-
 public class MyService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();

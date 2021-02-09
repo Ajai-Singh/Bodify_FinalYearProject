@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Recipe> recipes;
@@ -283,7 +284,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 Meal meal = new Meal(recipe.getTitle(), userID, recipe.getCalories(),
                                         recipe.getFats(), recipe.getSodium(), recipe.getCarbohydrates(),
                                         recipe.getSugar(), recipe.getProteins(),
-                                        Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,newDate);
+                                        Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,newDate,recipe.getServings(), UUID.randomUUID().toString());
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
