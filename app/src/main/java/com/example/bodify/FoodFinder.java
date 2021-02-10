@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
@@ -34,6 +35,7 @@ import com.example.bodify.Models.Ingredient;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.Models.Favourite;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -51,7 +53,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
 import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
 import com.google.firebase.database.ValueEventListener;
@@ -80,6 +81,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private final Date date = new Date();
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,6 +97,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
         scan = findViewById(R.id.button4);
         find = findViewById(R.id.nutritionCheckButton);
         nutrition = findViewById(R.id.nutritionCheck);
+        constraintLayout = findViewById(R.id.clff);
         updateSpinners();
         nutritionChecker();
         mealSearch();
@@ -148,12 +151,9 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(FoodFinder.this);
                 dlgAlert.setMessage("Not All Fields are Filled!");
                 dlgAlert.setTitle("Error...");
-                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
                 dlgAlert.setCancelable(true);
                 dlgAlert.create().show();
-                dlgAlert.setPositiveButton("Ok",
-                        (dialog, which) -> {
-                        });
             } else {
                 AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query=" + choice.getText().toString() + "&apiKey=" + API_KEY + "&addRecipeNutrition=true&type=" + mealsSpinner.getSelectedItem().toString().toLowerCase())
                         .addPathParameter("pageNumber", "0")
@@ -164,7 +164,6 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                         .build().getAsString(new StringRequestListener() {
                     @Override
                     public void onResponse(String response) {
-
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray jsonArray = jsonObject.getJSONArray("results");
@@ -193,11 +192,13 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
                                 recipes.add(recipe);
                             }
+                            if(recipes.isEmpty()) {
+                             noRecipes();
+                            }
                             recyclerView.setHasFixedSize(true);
                             recyclerView.setLayoutManager(new LinearLayoutManager(FoodFinder.this));
                             recipeAdapter = new RecipeAdapter(recipes, FoodFinder.this);
                             recyclerView.setAdapter(recipeAdapter);
-
                         } catch (
                                 JSONException e) {
                             e.printStackTrace();
@@ -528,18 +529,21 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                     }
                 });
                 String finalPosition = position;
-                builder.setPositiveButton("Ok", (dialog, which) -> {
+                builder.setView(view);
+                builder.setPositiveButton("Create", (dialog, which) -> { });
+                builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
                     if (meals.getSelectedItemPosition() == 0 || quantity.getSelectedItemPosition() == 0) {
                         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(FoodFinder.this);
                         dlgAlert.setMessage("Not All Fields are Filled!");
                         dlgAlert.setTitle("Error...");
-                        dlgAlert.setPositiveButton("OK", null);
+                        dlgAlert.setPositiveButton("Ok", (dialog1, which) -> dialog1.dismiss());
                         dlgAlert.setCancelable(true);
                         dlgAlert.create().show();
-                        dlgAlert.setPositiveButton("Ok",
-                                (dialog1, which1) -> {
-                                });
                     } else {
+                        dialog.dismiss();
                         String positionToAddTo = null;
                         for(int i = 0; i < daysOfWeek.size(); i ++) {
                             if(daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
@@ -568,17 +572,18 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 Toast.makeText(FoodFinder.this, "Successfully saved", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(e -> Toast.makeText(FoodFinder.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-
                     }
-                }).setNegativeButton("Close", (dialog, which) -> dialog.cancel());
-                builder.setView(view);
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                });
             }
         });
         builder.setView(view);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void noRecipes() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no matches found for searched criteria", Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override

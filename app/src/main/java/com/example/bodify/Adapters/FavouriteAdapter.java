@@ -3,6 +3,7 @@ package com.example.bodify.Adapters;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -195,19 +196,21 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                             }
                         });
                         String finalDayPosition = dayPosition;
-                        builder.setPositiveButton("Ok", (dialog, which) ->
-                        {
+                        builder.setPositiveButton("Create", (dialog, which) -> { });
+                        builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
+                        builder.setView(view);
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
                             if (meals.getSelectedItemPosition() == 0 || quantity.getSelectedItemPosition() == 0) {
                                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(context);
                                 dlgAlert.setMessage("Not All Fields are Filled!");
                                 dlgAlert.setTitle("Error...");
-                                dlgAlert.setPositiveButton("OK", null);
+                                dlgAlert.setPositiveButton("Ok", (dialog12, which) -> dialog12.dismiss());
                                 dlgAlert.setCancelable(true);
                                 dlgAlert.create().show();
-                                dlgAlert.setPositiveButton("Ok",
-                                        (dialog1, which1) -> {
-                                        });
                             } else {
+                                dialog.dismiss();
                                 Favourite favourite = null;
                                 for (int i = 0; i < favourites.size(); i++) {
                                     if (i == holder.getAdapterPosition()) {
@@ -248,10 +251,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                     }
                                 }).addOnFailureListener(e -> Toast.makeText(context, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                             }
-                        }).setNegativeButton("Close", (dialog, which) -> dialog.cancel());
-                        builder.setView(view);
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+                        });
                         break;
                     case R.id.DeleteFromFavourites:
                         builder.setMessage("Are you sure you want to delete this item from your favourites").setNegativeButton("No", (dialog1, which) -> dialog1.cancel()).setPositiveButton("Yes", (dialog1, which) ->

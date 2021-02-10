@@ -241,19 +241,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                             }
                         });
                         String finalDayPosition = dayPosition;
-                        diaryBuilder.setPositiveButton("Ok", (diaryDialog, which) ->
-                        {
+                        diaryBuilder.setPositiveButton("Create", (d, which) -> { });
+                        diaryBuilder.setNegativeButton("Close", (d, which) -> d.cancel());
+                        diaryBuilder.setView(diaryView);
+                        AlertDialog diaryAlertDialog = diaryBuilder.create();
+                        diaryAlertDialog.show();
+                        diaryAlertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
                             if (meals.getSelectedItemPosition() == 0 || quantity.getSelectedItemPosition() == 0) {
                                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(context);
                                 dlgAlert.setMessage("Not All Fields are Filled!");
                                 dlgAlert.setTitle("Error...");
-                                dlgAlert.setPositiveButton("OK", null);
+                                dlgAlert.setPositiveButton("Ok", (dialog1, which1) -> dialog1.dismiss());
                                 dlgAlert.setCancelable(true);
                                 dlgAlert.create().show();
-                                dlgAlert.setPositiveButton("Ok",
-                                        (dialog1, which1) -> {
-                                        });
                             } else {
+                                diaryAlertDialog.dismiss();
                                 Recipe recipe = null;
                                 for (int i = 0; i < recipes.size(); i++) {
                                     if (i == holder.getAdapterPosition()) {
@@ -294,10 +296,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                     }
                                 }).addOnFailureListener(e -> Toast.makeText(context, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                             }
-                        }).setNegativeButton("Close", (diaryDialog, which) -> diaryDialog.cancel());
-                        diaryBuilder.setView(diaryView);
-                        AlertDialog diaryAlertDialog = diaryBuilder.create();
-                        diaryAlertDialog.show();
+                        });
                         break;
                     case R.id.ingredients:
                         final AlertDialog.Builder ingredientsBuilder = new AlertDialog.Builder(context);
