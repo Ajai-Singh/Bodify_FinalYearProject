@@ -276,10 +276,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 int f = subStringCD - finalDate;
                                 StringBuilder stringBuffer = new StringBuilder(formatter.format(date));
                                 stringBuffer.replace(0,2,String.valueOf(f));
-                                String newDate = null;
+                                String newDate;
                                 if(stringBuffer.length() == 9) {
                                     String date = String.valueOf(stringBuffer);
                                     newDate = "0" + date;
+                                }else {
+                                    newDate = String.valueOf(stringBuffer);
                                 }
                                 Meal meal = new Meal(recipe.getTitle(), userID, recipe.getCalories(),
                                         recipe.getFats(), recipe.getSodium(), recipe.getCarbohydrates(),

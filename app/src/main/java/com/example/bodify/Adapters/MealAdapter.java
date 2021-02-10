@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
+import com.example.bodify.TrackingDaysMeals.TuesdayMeals;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,12 +34,17 @@ import org.jetbrains.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+
+import android.os.Handler;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Meal> meals;
     private final Context context;
     private String mealAdapterChoice;
     private String quantityAdapterChoice;
+
     public MealAdapter(ArrayList<Meal> meals, Context context) {
         this.meals = meals;
         this.context = context;
@@ -52,6 +60,14 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
     @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        final ArrayList<String> daysOfWeek = new ArrayList<>();
+        daysOfWeek.add("Monday");
+        daysOfWeek.add("Tuesday");
+        daysOfWeek.add("Wednesday");
+        daysOfWeek.add("Thursday");
+        daysOfWeek.add("Friday");
+        daysOfWeek.add("Saturday");
+        daysOfWeek.add("Sunday");
         holder.setItemName(meals.get(position).getItemName());
         holder.setCaloriesConsumed(meals.get(position).getCalories() * meals.get(position).getNumberOfServings());
         holder.setFats(meals.get(position).getItemTotalFat() * meals.get(position).getNumberOfServings());
@@ -81,13 +97,13 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                         AlertDialog alertDialog = builder.create();
                         alertDialog.setTitle("Attention required!");
                         alertDialog.show();
-                    break;
+                        break;
                     case R.id.editMeal:
                         AlertDialog.Builder diaryBuilder = new AlertDialog.Builder(context);
                         final Spinner mealsSpinner;
                         final Spinner quantity;
                         final Spinner whatDay;
-                        final TextView header,whatDayHeader;
+                        final TextView header, whatDayHeader, servingsTV;
                         @SuppressLint("InflateParams")
                         LayoutInflater diaryInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View diaryView = diaryInflater.inflate(R.layout.addtodiarypopup, null);
@@ -97,42 +113,18 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                         whatDayHeader = diaryView.findViewById(R.id.whatDayHeader);
                         header.setText("Edit meal below");
                         whatDay = diaryView.findViewById(R.id.dayOfWeek);
+                        servingsTV = diaryView.findViewById(R.id.popUpServings);
+                        servingsTV.setVisibility(View.VISIBLE);
                         whatDay.setVisibility(View.INVISIBLE);
                         whatDayHeader.setVisibility(View.INVISIBLE);
-                        final ArrayList<String> mealTypes = new ArrayList<>();
-                        mealTypes.add("Breakfast");
-                        mealTypes.add("Lunch");
-                        mealTypes.add("Dinner");
-                        mealTypes.add("Other");
-                        int mealTypePosition = 0;
-                        for(int i = 0; i < mealTypes.size(); i++) {
-                            if(meals.get(holder.getAdapterPosition()).getMealType().equals(mealTypes.get(i))) {
-                                mealTypePosition = i;
-                                break;
-                            }
-                        }
-                        ArrayAdapter mealsAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, mealTypes);
-                        mealsSpinner.setAdapter(mealsAdapter);
-                        mealsSpinner.setSelection(mealTypePosition);
-                        mealsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        mealsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                mealAdapterChoice = parent.getItemAtPosition(position).toString();
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
+                        mealsSpinner.setVisibility(View.INVISIBLE);
                         ArrayList<Integer> servings = new ArrayList<>();
-                        for(int i = 1; i <= meals.get(holder.getAdapterPosition()).getOriginalServings(); i++) {
+                        for (int i = 1; i <= meals.get(holder.getAdapterPosition()).getOriginalServings(); i++) {
                             servings.add(i);
                         }
                         int servingsPosition = 0;
-                        for(int i = 0; i < servings.size(); i++) {
-                            if(servings.get(i).equals(meals.get(holder.getAdapterPosition()).getNumberOfServings())) {
+                        for (int i = 0; i < servings.size(); i++) {
+                            if (servings.get(i).equals(meals.get(holder.getAdapterPosition()).getNumberOfServings())) {
                                 servingsPosition = i;
                             }
                         }
@@ -151,27 +143,27 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
 
                             }
                         });
-                        int adapterPosition = holder.getAdapterPosition();
                         diaryBuilder.setPositiveButton("Update", (dialog, which) -> {
+                            int adapterPosition = holder.getAdapterPosition();
                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meals.get(holder.getAdapterPosition()).getDayOfWeek());
                             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                         Meal meal = dataSnapshot.getValue(Meal.class);
                                         assert meal != null;
                                         meal.setId(dataSnapshot.getKey());
                                         String mealID = meal.getUUID();
-                                        String arrayID = meals.get(adapterPosition).getUUID();
-                                        if(mealID.equals(arrayID)) {
+                                        String arrayID = null;
+                                        if (!meals.isEmpty()) {
+                                            arrayID = meals.get(adapterPosition).getUUID();
+                                        }
+                                        if (mealID.equals(arrayID)) {
                                             databaseReference.child(meal.getId()).child("numberOfServings").setValue(Integer.parseInt(quantityAdapterChoice));
-                                            databaseReference.child(meal.getId()).child("mealType").setValue(mealAdapterChoice);
-                                            break;
+                                            notifyDataSetChanged();
                                         }
                                     }
-                                    meals.clear();
-                                    notifyDataSetChanged();
-                            }
+                                }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
@@ -179,7 +171,6 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                                 }
                             });
                         });
-
                         diaryBuilder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
                         diaryBuilder.setView(diaryView);
                         AlertDialog diaryAlertDialog = diaryBuilder.create();
@@ -189,10 +180,6 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
             });
             popupMenu.show();
         });
-    }
-
-    public void update() {
-
     }
 
     @Override

@@ -230,10 +230,12 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 int f = subStringCD - finalDate;
                                 StringBuffer stringBuffer = new StringBuffer(formatter.format(date));
                                 stringBuffer.replace(0,2,String.valueOf(f));
-                                String newDate = null;
+                                String newDate;
                                 if(stringBuffer.length() == 9) {
                                     String date = String.valueOf(stringBuffer);
                                     newDate = "0" + date;
+                                } else {
+                                    newDate = String.valueOf(stringBuffer);
                                 }
                                 Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories()
                                         , favourite.getItemTotalFat(), favourite.getItemSodium(),
