@@ -11,12 +11,15 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -39,9 +42,11 @@ import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeableMethod;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -54,6 +59,7 @@ public class FoodSuggester extends Fragment {
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private ConstraintLayout constraintLayout;
     private CardStackView cardStackView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Nullable
     @Override
@@ -61,14 +67,24 @@ public class FoodSuggester extends Fragment {
         View view = inflater.inflate(R.layout.activity_food_suggester, container, false);
         cardStackView = view.findViewById(R.id.cardStack);
         constraintLayout = view.findViewById(R.id.foodSuggesterCL);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
         AndroidNetworking.initialize(getContext());
         ImageButton imageButton = view.findViewById(R.id.settings);
         ImageButton info = view.findViewById(R.id.recipeInfo);
         info.setOnClickListener(v -> infoSnackBar());
         imageButton.setOnClickListener(v -> {
-            startActivity(new Intent(getContext(),MacroSettings.class));
-            getActivity(). getFragmentManager(). popBackStack();
+            getActivity().getFragmentManager().popBackStack();
+            startActivity(new Intent(getContext(), MacroSettings.class));
         });
+        getRecipeCards();
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            getRecipeCards();
+            swipeRefreshLayout.setRefreshing(false);
+        });
+        return view;
+    }
+
+    public void getRecipeCards() {
         cardStackLayoutManager = new CardStackLayoutManager(getContext(), new CardStackListener() {
             @Override
             public void onCardDragging(Direction direction, float ratio) {
@@ -92,9 +108,10 @@ public class FoodSuggester extends Fragment {
                                     }
                                 }
                             }
-                            if(exists) {
+                            if (exists) {
                                 duplicateRecordSnackBar();
-                            } if(!exists){
+                            }
+                            if (!exists) {
                                 Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
                                         recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), userID, recipe.getServings());
                                 databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
@@ -106,6 +123,7 @@ public class FoodSuggester extends Fragment {
                                 });
                             }
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                             Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -115,7 +133,7 @@ public class FoodSuggester extends Fragment {
                 if (direction == Direction.Left) {
                     ignoredRecord();
                 }
-                if(cardStackLayoutManager.getTopPosition() == cardStackAdapter.getItemCount()) {
+                if (cardStackLayoutManager.getTopPosition() == cardStackAdapter.getItemCount()) {
                     showSnackBar();
                 }
             }
@@ -156,23 +174,22 @@ public class FoodSuggester extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 SuggestionMacros suggestionMacros = snapshot.getValue(SuggestionMacros.class);
-                if(suggestionMacros != null) {
-                    APIParsingWithConstraints(suggestionMacros.getCalories(),suggestionMacros.getFats(),suggestionMacros.getProteins(),suggestionMacros.getCarbohydrates());
+                if (suggestionMacros != null) {
+                    APIParsingWithConstraints(suggestionMacros.getCalories(), suggestionMacros.getFats(), suggestionMacros.getProteins(), suggestionMacros.getCarbohydrates());
                 } else {
-                    APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true");
+                    APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number" + 5);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(),"Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        return view;
     }
 
     public void APIParsing(String request) {
-        Log.i("No constrains","" + request);
+        Log.i("No constrains", "" + request);
         AndroidNetworking.get(request)
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "1")
@@ -210,7 +227,7 @@ public class FoodSuggester extends Fragment {
                         Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
                         recipes.add(recipe);
                     }
-                    cardStackAdapter = new CardStackAdapter(recipes,getContext());
+                    cardStackAdapter = new CardStackAdapter(recipes, getContext());
                     cardStackView.setLayoutManager(cardStackLayoutManager);
                     cardStackView.setAdapter(cardStackAdapter);
                     cardStackView.setItemAnimator(new DefaultItemAnimator());
@@ -221,14 +238,14 @@ public class FoodSuggester extends Fragment {
 
             @Override
             public void onError(ANError anError) {
-                Toast.makeText(getContext(),"Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void APIParsingWithConstraints(int calories,int fats,int proteins,int carbs) {
-        Log.i("constraints","" + fats);
-        AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&maxCarbs="+carbs+"&maxFat="+fats+"&maxProtein="+proteins+"&maxCalories="+calories)
+    public void APIParsingWithConstraints(int calories, int fats, int proteins, int carbs) {
+        Log.i("constraints", "" + fats);
+        AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&maxCarbs=" + carbs + "&maxFat=" + fats + "&maxProtein=" + proteins + "&maxCalories=" + calories + "&number" + 5)
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "1")
                 .addHeaders("token", "1234")
@@ -265,7 +282,7 @@ public class FoodSuggester extends Fragment {
                         Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
                         recipes.add(recipe);
                     }
-                    cardStackAdapter = new CardStackAdapter(recipes,getContext());
+                    cardStackAdapter = new CardStackAdapter(recipes, getContext());
                     cardStackView.setLayoutManager(cardStackLayoutManager);
                     cardStackView.setAdapter(cardStackAdapter);
                     cardStackView.setItemAnimator(new DefaultItemAnimator());
@@ -282,7 +299,7 @@ public class FoodSuggester extends Fragment {
     }
 
     public void showSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no results, Modify your settings ->", Snackbar.LENGTH_SHORT).setAction(
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Pull down to refresh or Modify your settings ->", Snackbar.LENGTH_LONG).setAction(
                 "Settings", v -> {
                     Intent intent = new Intent(getActivity(), MacroSettings.class);
                     startActivity(intent);

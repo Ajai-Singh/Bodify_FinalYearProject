@@ -12,6 +12,16 @@ import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.User;
+import com.example.bodify.TrackingDaysMacros.Friday;
+import com.example.bodify.TrackingDaysMacros.Saturday;
+import com.example.bodify.TrackingDaysMacros.Thursday;
+import com.example.bodify.TrackingDaysMeals.FridayMeals;
+import com.example.bodify.TrackingDaysMeals.MondayMeals;
+import com.example.bodify.TrackingDaysMeals.SaturdayMeals;
+import com.example.bodify.TrackingDaysMeals.SundayMeals;
+import com.example.bodify.TrackingDaysMeals.ThursdayMeals;
+import com.example.bodify.TrackingDaysMeals.TuesdayMeals;
+import com.example.bodify.TrackingDaysMeals.WednesdayMeals;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -262,6 +272,20 @@ public class MyService extends Service {
                                             databaseReference1.child(daysInDB.get(finalI)).child(meal.getId()).removeValue();
                                         }
                                     }
+                                    MondayMeals mondayMeals = new MondayMeals();
+                                    TuesdayMeals tuesdayMeals = new TuesdayMeals();
+                                    WednesdayMeals wednesdayMeals = new WednesdayMeals();
+                                    ThursdayMeals thursdayMeals = new ThursdayMeals();
+                                    FridayMeals fridayMeals = new FridayMeals();
+                                    SaturdayMeals saturdayMeals = new SaturdayMeals();
+                                    SundayMeals sundayMeals = new SundayMeals();
+                                    mondayMeals.getRCVData();
+                                    tuesdayMeals.getRCVData();
+                                    wednesdayMeals.getRCVData();
+                                    thursdayMeals.getRCVData();
+                                    fridayMeals.getRCVData();
+                                    saturdayMeals.getRCVData();
+                                    sundayMeals.getRCVData();
                                 }
 
                                 @Override

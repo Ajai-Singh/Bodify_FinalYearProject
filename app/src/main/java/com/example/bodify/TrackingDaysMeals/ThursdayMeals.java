@@ -20,7 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class ThursdayMeals extends Fragment {
     private MealAdapter mondayBreakfastAdapter;
@@ -54,14 +56,11 @@ public class ThursdayMeals extends Fragment {
         lunchMeals.clear();
         dinnerMeals.clear();
         otherMeals.clear();
-        populateBreakfastRCV();
-        populateLunchRCV();
-        populateDinnerRCV();
-        populateOtherRCV();
+        getRCVData();
         return view;
     }
 
-    public void populateBreakfastRCV() {
+    public void getRCVData() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -72,95 +71,167 @@ public class ThursdayMeals extends Fragment {
                     meal.setId(userSnapshot.getKey());
                     if (meal.getMealType().equals("Breakfast") && meal.getUserID().equals(userID)) {
                         breakfastMeals.add(meal);
-                    }
-                }
-                breakfastRecyclerView.setHasFixedSize(true);
-                breakfastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mondayBreakfastAdapter = new MealAdapter(breakfastMeals,getContext());
-                breakfastRecyclerView.setAdapter(mondayBreakfastAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(),"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public void populateLunchRCV() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    Meal meal = userSnapshot.getValue(Meal.class);
-                    assert meal != null;
-                    meal.setId(userSnapshot.getKey());
-                    if (meal.getMealType().equals("Lunch") && meal.getUserID().equals(userID)) {
+                    } else if (meal.getMealType().equals("Lunch") && meal.getUserID().equals(userID)) {
                         lunchMeals.add(meal);
-                    }
-                }
-                lunchRecyclerView.setHasFixedSize(true);
-                lunchRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mondayLunchAdapter = new MealAdapter(lunchMeals,getContext());
-                lunchRecyclerView.setAdapter(mondayLunchAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(),"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public void populateDinnerRCV() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    Meal meal = userSnapshot.getValue(Meal.class);
-                    assert meal != null;
-                    meal.setId(userSnapshot.getKey());
-                    if (meal.getMealType().equals("Dinner") && meal.getUserID().equals(userID)) {
+                    } else if (meal.getMealType().equals("Dinner") && meal.getUserID().equals(userID)) {
                         dinnerMeals.add(meal);
-                    }
-                }
-                dinnerRecyclerView.setHasFixedSize(true);
-                dinnerRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mondayDinnerAdapter = new MealAdapter(dinnerMeals,getContext());
-                dinnerRecyclerView.setAdapter(mondayDinnerAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(),"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public void populateOtherRCV() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    Meal meal = userSnapshot.getValue(Meal.class);
-                    assert meal != null;
-                    meal.setId(userSnapshot.getKey());
-                    if (meal.getMealType().equals("Other") && meal.getUserID().equals(userID)) {
+                    } else if (meal.getMealType().equals("Other") && meal.getUserID().equals(userID)) {
                         otherMeals.add(meal);
                     }
                 }
-                otherRecyclerView.setHasFixedSize(true);
-                otherRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mondayOtherAdapter = new MealAdapter(otherMeals,getContext());
-                otherRecyclerView.setAdapter(mondayOtherAdapter);
+                manipulateBreakfastMeals(breakfastMeals);
+                manipulateLunchMeals(lunchMeals);
+                manipulateDinnerMeals(dinnerMeals);
+                manipulateOtherMeals(otherMeals);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(),"Error Occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void manipulateBreakfastMeals(ArrayList<Meal> breakfastMeals) {
+        ArrayList<String> dbKeys = new ArrayList<>();
+        for (int i = 0; i < breakfastMeals.size(); i++) {
+            dbKeys.add(breakfastMeals.get(i).getId());
+        }
+        Set<String> uuids = new LinkedHashSet<>(dbKeys);
+        dbKeys.clear();
+        dbKeys.addAll(uuids);
+        ArrayList<Meal> meals = new ArrayList<>();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    for (int i = 0; i < dbKeys.size(); i++) {
+                        if (dbKeys.get(i).equals(userSnapshot.getKey())) {
+                            Meal meal = userSnapshot.getValue(Meal.class);
+                            meals.add(meal);
+                        }
+                    }
+                }
+                if (!meals.isEmpty()) {
+                    breakfastRecyclerView.setHasFixedSize(true);
+                    breakfastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    mondayBreakfastAdapter = new MealAdapter(meals, getContext());
+                    breakfastRecyclerView.setAdapter(mondayBreakfastAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void manipulateLunchMeals(ArrayList<Meal> lunchMeals) {
+        ArrayList<String> dbKeys = new ArrayList<>();
+        for (int i = 0; i < lunchMeals.size(); i++) {
+            dbKeys.add(lunchMeals.get(i).getId());
+        }
+        Set<String> uuids = new LinkedHashSet<>(dbKeys);
+        dbKeys.clear();
+        dbKeys.addAll(uuids);
+        ArrayList<Meal> meals = new ArrayList<>();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    for (int i = 0; i < dbKeys.size(); i++) {
+                        if (dbKeys.get(i).equals(userSnapshot.getKey())) {
+                            Meal meal = userSnapshot.getValue(Meal.class);
+                            meals.add(meal);
+                        }
+                    }
+                }
+                if (!meals.isEmpty()) {
+                    lunchRecyclerView.setHasFixedSize(true);
+                    lunchRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    mondayLunchAdapter = new MealAdapter(meals, getContext());
+                    lunchRecyclerView.setAdapter(mondayLunchAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void manipulateDinnerMeals(ArrayList<Meal> dinnerMeals) {
+        ArrayList<String> dbKeys = new ArrayList<>();
+        for (int i = 0; i < dinnerMeals.size(); i++) {
+            dbKeys.add(dinnerMeals.get(i).getId());
+        }
+        Set<String> uuids = new LinkedHashSet<>(dbKeys);
+        dbKeys.clear();
+        dbKeys.addAll(uuids);
+        ArrayList<Meal> meals = new ArrayList<>();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    for (int i = 0; i < dbKeys.size(); i++) {
+                        if (dbKeys.get(i).equals(userSnapshot.getKey())) {
+                            Meal meal = userSnapshot.getValue(Meal.class);
+                            meals.add(meal);
+                        }
+                    }
+                }
+                if (!meals.isEmpty()) {
+                    dinnerRecyclerView.setHasFixedSize(true);
+                    dinnerRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    mondayDinnerAdapter = new MealAdapter(meals, getContext());
+                    dinnerRecyclerView.setAdapter(mondayDinnerAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void manipulateOtherMeals(ArrayList<Meal> otherMeals) {
+        ArrayList<String> dbKeys = new ArrayList<>();
+        for (int i = 0; i < otherMeals.size(); i++) {
+            dbKeys.add(otherMeals.get(i).getId());
+        }
+        Set<String> uuids = new LinkedHashSet<>(dbKeys);
+        dbKeys.clear();
+        dbKeys.addAll(uuids);
+        ArrayList<Meal> meals = new ArrayList<>();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child("Thursday");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    for (int i = 0; i < dbKeys.size(); i++) {
+                        if (dbKeys.get(i).equals(userSnapshot.getKey())) {
+                            Meal meal = userSnapshot.getValue(Meal.class);
+                            meals.add(meal);
+                        }
+                    }
+                }
+                if (!meals.isEmpty()) {
+                    otherRecyclerView.setHasFixedSize(true);
+                    otherRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    mondayOtherAdapter = new MealAdapter(meals, getContext());
+                    otherRecyclerView.setAdapter(mondayOtherAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

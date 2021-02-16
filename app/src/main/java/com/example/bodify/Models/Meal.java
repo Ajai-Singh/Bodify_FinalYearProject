@@ -1,7 +1,5 @@
 package com.example.bodify.Models;
 
-import java.util.Objects;
-
 public class Meal {
     String itemName,userID,id,mealType,dayOfWeek,date,UUID;
     int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings,originalServings;
@@ -166,32 +164,5 @@ public class Meal {
                 ", numberOfServings=" + numberOfServings +
                 ", originalServings=" + originalServings +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Meal meal1 = (Meal) o;
-        return calories == meal1.calories &&
-                itemTotalFat == meal1.itemTotalFat &&
-                itemSodium == meal1.itemSodium &&
-                itemTotalCarbohydrates == meal1.itemTotalCarbohydrates &&
-                itemSugars == meal1.itemSugars &&
-                itemProtein == meal1.itemProtein &&
-                numberOfServings == meal1.numberOfServings &&
-                originalServings == meal1.originalServings &&
-                itemName.equals(meal1.itemName) &&
-                userID.equals(meal1.userID) &&
-                id.equals(meal1.id) &&
-                mealType.equals(meal1.mealType) &&
-                dayOfWeek.equals(meal1.dayOfWeek) &&
-                date.equals(meal1.date) &&
-                UUID.equals(meal1.UUID);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(itemName, userID, id, mealType, dayOfWeek, date, UUID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, numberOfServings, originalServings);
     }
 }

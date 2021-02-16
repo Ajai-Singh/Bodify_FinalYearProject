@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentManager;
 import com.example.bodify.Models.SuggestionMacros;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,14 +42,6 @@ public class MacroSettings extends AppCompatActivity {
         caloriesSB = findViewById(R.id.caloriesSeekBar);
         Button update = findViewById(R.id.updateSuggestion);
         Button remove = findViewById(R.id.removeConstraints);
-        Button back = findViewById(R.id.back);
-        back.setOnClickListener(v -> {
-            //TODO get back button working
-            FoodSuggester foodSuggester = new FoodSuggester();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.macroSettingsCL, foodSuggester).commit();
-            finish();
-        });
         fats = findViewById(R.id.fatCount);
         protein = findViewById(R.id.proteinCount);
         carbs = findViewById(R.id.carbCount);
