@@ -42,7 +42,6 @@ import android.os.Handler;
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Meal> meals;
     private final Context context;
-    private String mealAdapterChoice;
     private String quantityAdapterChoice;
 
     public MealAdapter(ArrayList<Meal> meals, Context context) {
