@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    android:padding="@dimen/box_inset_layout_padding"
     android:visibility="visible"
     tools:context=".FirebaseAuthentication.SignUp"
     tools:deviceIds="wear">
@@ -138,5 +137,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ProfilePicture" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

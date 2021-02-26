@@ -59,14 +59,6 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
     @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final ArrayList<String> daysOfWeek = new ArrayList<>();
-        daysOfWeek.add("Monday");
-        daysOfWeek.add("Tuesday");
-        daysOfWeek.add("Wednesday");
-        daysOfWeek.add("Thursday");
-        daysOfWeek.add("Friday");
-        daysOfWeek.add("Saturday");
-        daysOfWeek.add("Sunday");
         holder.setItemName(meals.get(position).getItemName());
         holder.setCaloriesConsumed(meals.get(position).getCalories() * meals.get(position).getNumberOfServings());
         holder.setFats(meals.get(position).getItemTotalFat() * meals.get(position).getNumberOfServings());

@@ -1,25 +1,20 @@
 package com.example.bodify;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -42,11 +37,9 @@ import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeableMethod;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Objects;
 

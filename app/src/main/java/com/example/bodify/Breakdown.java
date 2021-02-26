@@ -36,15 +36,9 @@ public class Breakdown extends Fragment {
         days.add("Fri");
         days.add("Sat");
         days.add("Sun");
-
-        tabLayout.addTab(tabLayout.newTab().setText("Mon"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tue"));
-        tabLayout.addTab(tabLayout.newTab().setText("Wed"));
-        tabLayout.addTab(tabLayout.newTab().setText("Thurs"));
-        tabLayout.addTab(tabLayout.newTab().setText("Fri"));
-        tabLayout.addTab(tabLayout.newTab().setText("Sat"));
-        tabLayout.addTab(tabLayout.newTab().setText("Sun"));
-
+        for(int i = 0; i < days.size(); i++) {
+            tabLayout.addTab(tabLayout.newTab().setText(days.get(i)));
+        }
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         final ViewPagerAdapter adapter = new ViewPagerAdapter(getContext(), getChildFragmentManager(), tabLayout.getTabCount());

@@ -70,12 +70,18 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 dlgAlert.setCancelable(true);
                 dlgAlert.create().show();
             } else if (Integer.parseInt(height.getText().toString()) > 232) {
-                height.setError("Error max height is 232CM");
+                height.setError("Error max height is 232CM!");
+                height.requestFocus();
+            } else if(height.getText().toString().length() == 1) {
+                height.setError("Invalid height!");
                 height.requestFocus();
             } else if(Double.parseDouble(weight.getText().toString()) > 442) {
-                weight.setError("Error max weight is 442KG");
+                weight.setError("Error max weight is 442KG!");
                 weight.requestFocus();
-            } else {
+            } else if(weight.getText().toString().length() == 1) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else{
                 Intent intent = getIntent();
                 String strUserName = intent.getStringExtra(MESSAGE_KEY);
                 String imageDownloadUrl = intent.getStringExtra(MESSAGE_KEY1);

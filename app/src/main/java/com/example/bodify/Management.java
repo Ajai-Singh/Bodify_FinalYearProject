@@ -18,6 +18,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import com.example.bodify.FirebaseAuthentication.LogIn;
+import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -34,6 +35,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Management extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
     private StorageReference storageReference;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final String userID = mAuth.getUid();
 
     @SuppressLint({"WrongConstant", "NonConstantResourceId"})
     @Override
@@ -47,6 +50,23 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.a);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        DatabaseReference macroRef = FirebaseDatabase.getInstance().getReference("Macros").child(userID);
+        macroRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Macro macro = snapshot.getValue(Macro.class);
+                if(macro == null) {
+                    startService(new Intent(Management.this, HealthService.class));
+                } else {
+                    stopService(new Intent(Management.this,HealthService.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {

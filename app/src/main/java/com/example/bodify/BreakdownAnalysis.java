@@ -1,11 +1,9 @@
 package com.example.bodify;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,13 +24,6 @@ import com.anychart.charts.Pie;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -87,6 +78,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         week = findViewById(R.id.weekStartingOf);
         pie = AnyChart.pie();
         anyChartView.setChart(pie);
+        anyChartView.setBackgroundColor(Color.RED);
         imageButton.setOnClickListener(v -> showInfoSnackBar());
         ArrayList<String> userIDs = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
@@ -297,11 +289,12 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
     public void getBarChartInformation(String userTag) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
         databaseReference.addValueEventListener(new ValueEventListener() {
-            ArrayList<Analysis> analyses = new ArrayList<>();
+            final ArrayList<Analysis> analyses = new ArrayList<>();
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot userSnapshot : snapshot.getChildren()) {
                     Analysis analysis = userSnapshot.getValue(Analysis.class);
+                    assert analysis != null;
                     if(analysis.getUserID().equals(userTag)) {
                         analyses.add(analysis);
                     }

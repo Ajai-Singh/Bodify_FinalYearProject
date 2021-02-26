@@ -12,9 +12,6 @@ import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.User;
-import com.example.bodify.TrackingDaysMacros.Friday;
-import com.example.bodify.TrackingDaysMacros.Saturday;
-import com.example.bodify.TrackingDaysMacros.Thursday;
 import com.example.bodify.TrackingDaysMeals.FridayMeals;
 import com.example.bodify.TrackingDaysMeals.MondayMeals;
 import com.example.bodify.TrackingDaysMeals.SaturdayMeals;
@@ -70,8 +67,9 @@ public class MyService extends Service {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                assert user != null;
-                getUserMacroCalories(user.getWeight());
+                if (user != null) {
+                    getUserMacroCalories(user.getWeight());
+                }
             }
 
             @Override

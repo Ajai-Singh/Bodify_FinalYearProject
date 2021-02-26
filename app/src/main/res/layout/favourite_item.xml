@@ -17,7 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:text="Title: "
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
@@ -29,8 +28,7 @@
         <TextView
             android:id="@+id/itemNameTextField"
             android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_height="45dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintStart_toEndOf="@+id/itemName"
             app:layout_constraintTop_toTopOf="parent" />
@@ -53,8 +51,8 @@
             android:id="@+id/textView27"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="32dp"
             android:text="Item calories: "
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,16 +62,16 @@
             android:id="@+id/favouriteCalories"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="11dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintStart_toEndOf="@+id/textView27"
             app:layout_constraintTop_toBottomOf="@+id/itemNameTextField" />
 
         <TextView
             android:id="@+id/favouritesCarbs"
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="11dp"
             android:layout_marginEnd="4dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,9 +79,9 @@
 
         <TextView
             android:id="@+id/favouritesProtein"
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="11dp"
             android:layout_marginEnd="4dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintEnd_toStartOf="@+id/favouritesCarbs"
@@ -91,9 +89,9 @@
 
         <TextView
             android:id="@+id/favouritesFats"
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="11dp"
             android:layout_marginEnd="4dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintEnd_toStartOf="@+id/favouritesProtein"

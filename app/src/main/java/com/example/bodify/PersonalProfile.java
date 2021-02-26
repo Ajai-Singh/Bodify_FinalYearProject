@@ -69,7 +69,6 @@ public class PersonalProfile extends AppCompatActivity {
                 getTweetCount();
             }
 
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(PersonalProfile.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -105,7 +104,7 @@ public class PersonalProfile extends AppCompatActivity {
     public void populateTweets(ArrayList<Post> tweets) {
         rcv.setHasFixedSize(true);
         rcv.setLayoutManager(new LinearLayoutManager(PersonalProfile.this));
-        RecyclerView.Adapter adapter = new UsersPostAdapter(tweets,PersonalProfile.this);
+        UsersPostAdapter adapter = new UsersPostAdapter(tweets,PersonalProfile.this);
         rcv.setAdapter(adapter);
         if(tweets.isEmpty()) {
             showSnackBar();

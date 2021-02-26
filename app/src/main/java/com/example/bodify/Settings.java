@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Settings extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
-    private FirebaseAuth mAuth;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final String userID = mAuth.getUid();
     private TextView email;
     private EditText userName,height,weight;
     private Spinner activityLevelSpinner,fitnessGoalSpinner,bodyType,preferredMacroNutrient;
@@ -48,9 +49,6 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         bodyType = findViewById(R.id.bodyCompositionSpinner);
         preferredMacroNutrient = findViewById(R.id.preferredMacroNutrientSpinner);
         updateSpinners();
-        mAuth = FirebaseAuth.getInstance();
-        final String userID = mAuth.getUid();
-        assert userID != null;
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -90,25 +88,18 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         });
 
         updateProfile.setOnClickListener(v -> {
-            String strInputtedUserName = userName.getText().toString().trim();
-            String strInputtedHeight = height.getText().toString().trim();
-            String strInputtedWeight = weight.getText().toString().trim();
-            String strFitnessGoalSpinner = fitnessGoalSpinner.getSelectedItem().toString();
-            String strActivityGoalSpinner = activityLevelSpinner.getSelectedItem().toString();
-            String strBodyType = bodyType.getSelectedItem().toString();
-            String strPreferredMacroNutrient = preferredMacroNutrient.getSelectedItem().toString();
-            if(TextUtils.isEmpty(strInputtedHeight)) {
+            if(TextUtils.isEmpty(height.getText().toString().trim())) {
                 height.setError("Height in CMs is required!");
                 height.requestFocus();
-            }else if(TextUtils.isEmpty(strInputtedWeight)) {
+            }else if(TextUtils.isEmpty(weight.getText().toString().trim())) {
                 weight.setError("Weight in KGs is required!");
                 weight.requestFocus();
-            }else if(TextUtils.isEmpty(strInputtedUserName)) {
-                userName.setError("Weight in KGs is required!");
+            }else if(TextUtils.isEmpty(userName.getText().toString().trim())) {
+                userName.setError("User name is required!");
                 userName.requestFocus();
             } else{
-                double dblHeight = Double.parseDouble(strInputtedHeight);
-                double dblWeight = Double.parseDouble(strInputtedWeight);
+                double dblHeight = Double.parseDouble(height.getText().toString().trim());
+                double dblWeight = Double.parseDouble(weight.getText().toString().trim());
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 assert firebaseUser != null;
                 String userID1 = firebaseUser.getUid();
@@ -117,13 +108,13 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
                 double bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
                 DecimalFormat decimalFormat = new DecimalFormat("##.00");
                 double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
-                databaseReference1.child("userName").setValue(strInputtedUserName);
+                databaseReference1.child("userName").setValue(userName.getText().toString().trim());
                 databaseReference1.child("weight").setValue(dblWeight);
                 databaseReference1.child("height").setValue(dblHeight);
-                databaseReference1.child("activityLevel").setValue(strActivityGoalSpinner);
-                databaseReference1.child("fitnessGoal").setValue(strFitnessGoalSpinner);
-                databaseReference1.child("preferredMacroNutrient").setValue(strPreferredMacroNutrient);
-                databaseReference1.child("bodyType").setValue(strBodyType);
+                databaseReference1.child("activityLevel").setValue(activityLevelSpinner.getSelectedItem().toString());
+                databaseReference1.child("fitnessGoal").setValue(fitnessGoalSpinner.getSelectedItem().toString());
+                databaseReference1.child("preferredMacroNutrient").setValue(preferredMacroNutrient.getSelectedItem().toString());
+                databaseReference1.child("bodyType").setValue(bodyType.getSelectedItem().toString());
                 databaseReference1.child("bodyMassIndicator").setValue(formattedBodyMassIndex);
                 databaseReference1.addValueEventListener(new ValueEventListener() {
                     @Override

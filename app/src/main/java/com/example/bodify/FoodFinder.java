@@ -184,7 +184,6 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                     String unit = ingredientsArray.getJSONObject(x).getString("unit");
                                     Ingredient ingredient = new Ingredient(ingredientName, ingredientAmount, unit);
                                     ingredients.add(ingredient);
-
                                 }
                                 for (int e = 0; e < jsonArray1.length(); e++) {
                                     macros.add(jsonArray1.getJSONObject(e).getInt("amount"));
@@ -318,7 +317,6 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    //String itemId = jsonObject.getString("item_id");//Might need in the future, will leave for now
                     createPost(jsonObject.getString("item_name"),jsonObject.getInt("nf_calories"),jsonObject.getInt("nf_calories_from_fat"),jsonObject.getInt("nf_total_fat"),
                             jsonObject.getInt("nf_sodium"),jsonObject.getInt("nf_total_carbohydrate"),jsonObject.getInt("nf_sugars"),jsonObject.getInt("nf_protein"),jsonObject.getInt("nf_servings_per_container"));
                 } catch (JSONException e) {
