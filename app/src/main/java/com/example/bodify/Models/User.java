@@ -5,7 +5,7 @@ public class User {
     private Double weight,bodyMassIndicator;
     private int height;
     private String mImageUrl;
-    private String date;
+    private String signUpDate;
     private String userID;
     private String id;
 
@@ -97,12 +97,12 @@ public class User {
         this.gender = gender;
     }
 
-    public String getDate() {
-        return date;
+    public String getsignUpDate() {
+        return signUpDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setsignUpDate(String signUpDate) {
+        this.signUpDate = signUpDate;
     }
 
     public String getUserID() {
@@ -124,7 +124,7 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, String bodyType, String preferredMacroNutrient, Double weight, Double bodyMassIndicator, int height,String mImageUrl,String date) {
+    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, String bodyType, String preferredMacroNutrient, Double weight, Double bodyMassIndicator, int height,String mImageUrl,String signUpDate) {
         this.userName = userName;
         this.email = email;
         this.gender = gender;
@@ -136,7 +136,7 @@ public class User {
         this.bodyMassIndicator = bodyMassIndicator;
         this.height = height;
         this.mImageUrl = mImageUrl;
-        this.date = date;
+        this.signUpDate = signUpDate;
     }
 
     @Override
@@ -153,7 +153,7 @@ public class User {
                 ", bodyMassIndicator=" + bodyMassIndicator +
                 ", height=" + height +
                 ", mImageUrl='" + mImageUrl + '\'' +
-                ", date='" + date + '\'' +
+                ", signUpDate='" + signUpDate + '\'' +
                 ", userID='" + userID + '\'' +
                 ", id='" + id + '\'' +
                 '}';

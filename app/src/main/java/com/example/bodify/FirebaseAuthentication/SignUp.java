@@ -103,7 +103,9 @@ public class SignUp extends AppCompatActivity {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1000);
         });
-        signInInstead.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), LogIn.class)));
+        signInInstead.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), LogIn.class));
+        });
         registerButton.setOnClickListener(v -> {
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
             databaseReference.addValueEventListener(new ValueEventListener() {
@@ -126,41 +128,37 @@ public class SignUp extends AppCompatActivity {
     }
 
     public void createUser(ArrayList<String> userNames) {
-        final String strUserName = userName.getText().toString().trim();
-        String strEmailAddress = emailAddress.getText().toString().trim();
-        String strPassword = password.getText().toString();
-        String strVerifyPassword = verifyPassword.getText().toString();
-        if (TextUtils.isEmpty(strUserName)) {
+        if (TextUtils.isEmpty(userName.getText().toString().trim())) {
             userName.setError("User Name is required.");
             userName.requestFocus();
-        } else if (TextUtils.isEmpty(strEmailAddress)) {
+        } else if (TextUtils.isEmpty(emailAddress.getText().toString().trim())) {
             emailAddress.setError("Email Address is required.");
             emailAddress.requestFocus();
-        } else if (TextUtils.isEmpty(strPassword)) {
+        } else if (TextUtils.isEmpty(password.getText().toString())) {
             password.setError("Password is required.");
             password.requestFocus();
-        } else if (TextUtils.isEmpty(strVerifyPassword)) {
+        } else if (TextUtils.isEmpty(verifyPassword.getText().toString())) {
             verifyPassword.setError("Password confirmation is required.");
             verifyPassword.requestFocus();
-        } else if (strPassword.length() < 6) {
+        } else if (password.getText().toString().length() < 6) {
             password.setError("Password length must be at least 6 characters.");
             password.requestFocus();
-        } else if (strVerifyPassword.length() < 6) {
+        } else if (verifyPassword.getText().toString().length() < 6) {
             verifyPassword.setError("Password length must be at least 6 characters.");
             verifyPassword.requestFocus();
-        } else if (!strVerifyPassword.equals(strPassword)) {
+        } else if (!verifyPassword.getText().toString().equals(password.getText().toString())) {
             password.setError("Passwords do not match");
             password.requestFocus();
             verifyPassword.setError("Passwords do not match");
             verifyPassword.requestFocus();
-        } else if (userNames.contains(strUserName)) {
+        } else if (userNames.contains(userName.getText().toString().trim())) {
             userName.setError("Error User name already exists!");
             userName.requestFocus();
         } else {
-            mAuth.createUserWithEmailAndPassword(strEmailAddress, strPassword).addOnCompleteListener(task -> {
+            mAuth.createUserWithEmailAndPassword(emailAddress.getText().toString().trim(), password.getText().toString()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Intent intent = new Intent(SignUp.this, Tailoring.class);
-                    intent.putExtra(MESSAGE_KEY, strUserName);
+                    intent.putExtra(MESSAGE_KEY, userName.getText().toString().trim());
                     intent.putExtra(MESSAGE_KEY1, imageDownloadUrl);
                     Toast.makeText(getApplicationContext(), "User Created Successfully!", Toast.LENGTH_SHORT).show();
                     startActivity(intent);

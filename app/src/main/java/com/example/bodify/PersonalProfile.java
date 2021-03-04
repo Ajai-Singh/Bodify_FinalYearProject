@@ -59,7 +59,7 @@ public class PersonalProfile extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 assert user != null;
-                dateJoined.setText(user.getDate());
+                dateJoined.setText(user.getsignUpDate());
                 storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     circleImageView.setImageBitmap(bitmap);

@@ -57,7 +57,7 @@ public class WeightProgression extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
                 assert user != null;
-                showBarChart(user.getWeight(),user.getDate());
+                showBarChart(user.getWeight(),user.getsignUpDate());
             }
 
             @Override

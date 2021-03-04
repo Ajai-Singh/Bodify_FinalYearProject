@@ -69,7 +69,7 @@ public class SpecificUsersPage extends AppCompatActivity {
                             circleImageView.setImageBitmap(bitmap);
                         });
                         currentUser.setText(user.getUserName());
-                        date.setText(user.getDate());
+                        date.setText(user.getsignUpDate());
                         userID = user.getId();
                         break;
                     }

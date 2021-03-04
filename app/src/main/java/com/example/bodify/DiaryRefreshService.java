@@ -33,10 +33,11 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-public class MyService extends Service {
+public class DiaryRefreshService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
@@ -61,7 +62,7 @@ public class MyService extends Service {
         return START_STICKY;
     }
 
-    public MyService() {
+    public DiaryRefreshService() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -252,7 +253,7 @@ public class MyService extends Service {
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                 assert userID != null;
                 Log.i("A", "count");
-                databaseReference.child("Analysis").child(String.valueOf(UUID.randomUUID())).setValue(analysis).addOnCompleteListener(task -> {
+                databaseReference.child("Analysis").push().setValue(analysis).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.i("A", "Successfully saved");
                         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek");
@@ -270,20 +271,38 @@ public class MyService extends Service {
                                             databaseReference1.child(daysInDB.get(finalI)).child(meal.getId()).removeValue();
                                         }
                                     }
-                                    MondayMeals mondayMeals = new MondayMeals();
-                                    TuesdayMeals tuesdayMeals = new TuesdayMeals();
-                                    WednesdayMeals wednesdayMeals = new WednesdayMeals();
-                                    ThursdayMeals thursdayMeals = new ThursdayMeals();
-                                    FridayMeals fridayMeals = new FridayMeals();
-                                    SaturdayMeals saturdayMeals = new SaturdayMeals();
-                                    SundayMeals sundayMeals = new SundayMeals();
-                                    mondayMeals.getRCVData();
-                                    tuesdayMeals.getRCVData();
-                                    wednesdayMeals.getRCVData();
-                                    thursdayMeals.getRCVData();
-                                    fridayMeals.getRCVData();
-                                    saturdayMeals.getRCVData();
-                                    sundayMeals.getRCVData();
+                                    Calendar calendar = Calendar.getInstance();
+                                    int day = calendar.get(Calendar.DAY_OF_WEEK);
+                                    switch (day) {
+                                        case Calendar.SUNDAY:
+                                            SundayMeals sundayMeals = new SundayMeals();
+                                            sundayMeals.getRCVData();
+                                            break;
+                                        case Calendar.MONDAY:
+                                            MondayMeals mondayMeals = new MondayMeals();
+                                            mondayMeals.getRCVData();
+                                            break;
+                                        case Calendar.TUESDAY:
+                                            TuesdayMeals tuesdayMeals = new TuesdayMeals();
+                                            tuesdayMeals.getRCVData();
+                                            break;
+                                        case Calendar.WEDNESDAY:
+                                            WednesdayMeals wednesdayMeals = new WednesdayMeals();
+                                            wednesdayMeals.getRCVData();
+                                            break;
+                                        case Calendar.THURSDAY:
+                                            ThursdayMeals thursdayMeals = new ThursdayMeals();
+                                            thursdayMeals.getRCVData();
+                                            break;
+                                        case Calendar.FRIDAY:
+                                            FridayMeals fridayMeals = new FridayMeals();
+                                            fridayMeals.getRCVData();
+                                            break;
+                                        case Calendar.SATURDAY:
+                                            SaturdayMeals saturdayMeals = new SaturdayMeals();
+                                            saturdayMeals.getRCVData();
+                                            break;
+                                    }
                                 }
 
                                 @Override
