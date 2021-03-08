@@ -2,9 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.bodify">
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
     <uses-feature android:name="android.hardware.type.watch" />
 
     <uses-permission
@@ -54,13 +52,11 @@
             android:theme="@style/Theme.test" />
         <activity android:name=".SpecificUsersPage" />
         <activity android:name=".BreakdownAnalysis" />
-
         <service android:name=".DiaryRefreshService" />
-
         <activity android:name=".MacroSettings" />
         <activity android:name=".WeightProgression" />
-
         <service android:name=".HealthService" />
         <activity android:name=".Deals" />
     </application>
+
 </manifest>
