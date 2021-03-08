@@ -59,6 +59,8 @@
 
         <activity android:name=".MacroSettings" />
         <activity android:name=".WeightProgression" />
+
         <service android:name=".HealthService" />
+        <activity android:name=".Deals" />
     </application>
 </manifest>

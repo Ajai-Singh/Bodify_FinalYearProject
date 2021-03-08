@@ -71,12 +71,9 @@ public class ViewAllUsersAdapter extends RecyclerView.Adapter<ViewAllUsersAdapte
 
         public void setImage(String i) {
             StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-            storageReference.child(i).getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    image.setImageBitmap(bitmap);
-                }
+            storageReference.child(i).getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                image.setImageBitmap(bitmap);
             });
         }
     }

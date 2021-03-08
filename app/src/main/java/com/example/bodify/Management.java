@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,6 +75,9 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     break;
                 case R.id.gymFinder:
                     startActivity(new Intent(Management.this, GymsNearMe.class));
+                    break;
+                case R.id.deals:
+                    startActivity(new Intent(Management.this,Deals.class));
                     break;
                 case R.id.dataAnalysis:
                     startActivity(new Intent(Management.this, BreakdownAnalysis.class));
