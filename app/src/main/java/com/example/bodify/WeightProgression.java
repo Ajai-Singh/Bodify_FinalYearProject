@@ -12,14 +12,18 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -32,7 +36,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -45,6 +51,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
     private final String userID = firebaseAuth.getUid();
     private ConstraintLayout constraintLayout;
     private Spinner spinner;
+    private YAxis leftAxis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +66,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barChart.setPinchZoom(false);
         barChart.setDoubleTapToZoomEnabled(false);
         analyses = (ArrayList<Analysis>) getIntent().getSerializableExtra("analyses");
+        leftAxis = barChart.getAxisLeft();
         showInfoSnackBar();
         populateSpinner();
         search.setOnClickListener(v -> {
@@ -81,18 +89,22 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                         switch (spinner.getSelectedItemPosition()) {
                             case 1:
                                 assert user != null;
+                                leftAxis.removeAllLimitLines();
                                 getWeightProgression(user.getWeight(), user.getsignUpDate());
                                 break;
                             case 2:
                                 assert user != null;
+                                leftAxis.removeAllLimitLines();
                                 getFatProgression(user.getsignUpDate());
                                 break;
                             case 3:
                                 assert user != null;
+                                leftAxis.removeAllLimitLines();
                                 getCarbProgression(user.getsignUpDate());
                                 break;
                             case 4:
                                 assert user != null;
+                                leftAxis.removeAllLimitLines();
                                 getProteinProgression(user.getsignUpDate());
                                 break;
                         }
@@ -103,7 +115,6 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                         Toast.makeText(WeightProgression.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
         });
     }
@@ -112,9 +123,9 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         ArrayList<String> spinnerValues = new ArrayList<>();
         spinnerValues.add("Select option!");
         spinnerValues.add("Weight progression");
-        spinnerValues.add("Fat progression");
-        spinnerValues.add("Carbohydrate progression");
-        spinnerValues.add("Protein progression");
+        spinnerValues.add("Fat progression AVG");
+        spinnerValues.add("Carbohydrate progression AVG");
+        spinnerValues.add("Protein progression AVG");
         ArrayAdapter<String> adapterNames = new ArrayAdapter<String>(WeightProgression.this, android.R.layout.simple_spinner_dropdown_item, spinnerValues) {
             @Override
             public boolean isEnabled(int position) {
@@ -185,6 +196,12 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                 xAxis.setGranularity(1f);
                 xAxis.setGranularityEnabled(true);
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabels));
+                LimitLine limitLine = new LimitLine((float) macro.getFats(), "Max Allowance");
+                limitLine.setLineWidth(4f);
+                limitLine.enableDashedLine(10f, 10f, 0f);
+                limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+                limitLine.setTextSize(10f);
+                leftAxis.addLimitLine(limitLine);
                 BarDataSet barDataSet = new BarDataSet(barEntries, "Fat progression");
                 BarData barData = new BarData(barDataSet);
                 barChart.clear();
@@ -223,6 +240,12 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                 xAxis.setGranularity(1f);
                 xAxis.setGranularityEnabled(true);
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabels));
+                LimitLine limitLine = new LimitLine((float) macro.getCarbohydrates(), "Max Allowance");
+                limitLine.setLineWidth(4f);
+                limitLine.enableDashedLine(10f, 10f, 0f);
+                limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+                limitLine.setTextSize(10f);
+                leftAxis.addLimitLine(limitLine);
                 BarDataSet barDataSet = new BarDataSet(barEntries, "Carbohydrate progression");
                 BarData barData = new BarData(barDataSet);
                 barChart.clear();
@@ -261,6 +284,12 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                 xAxis.setGranularity(1f);
                 xAxis.setGranularityEnabled(true);
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabels));
+                LimitLine limitLine = new LimitLine((float) macro.getProteins(), "Max Allowance");
+                limitLine.setLineWidth(4f);
+                limitLine.enableDashedLine(10f, 10f, 0f);
+                limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+                limitLine.setTextSize(10f);
+                leftAxis.addLimitLine(limitLine);
                 BarDataSet barDataSet = new BarDataSet(barEntries, "Protein progression");
                 BarData barData = new BarData(barDataSet);
                 barChart.clear();

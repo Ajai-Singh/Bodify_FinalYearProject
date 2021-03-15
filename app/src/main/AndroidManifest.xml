@@ -53,7 +53,6 @@
         <activity android:name=".SpecificUsersPage" />
         <activity android:name=".BreakdownAnalysis" />
         <service android:name=".DiaryRefreshService" />
-        <activity android:name=".MacroSettings" />
         <activity android:name=".WeightProgression" />
         <service android:name=".HealthService" />
         <activity android:name=".Deals" />

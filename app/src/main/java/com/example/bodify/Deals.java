@@ -2,12 +2,10 @@ package com.example.bodify;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Adapters.GroceryAdapter;
 import com.example.bodify.Models.Grocery;
-import com.google.firebase.auth.FirebaseAuth;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,8 +17,6 @@ import java.util.Objects;
 public class Deals extends AppCompatActivity {
     private RecyclerView recyclerView;
     private final ArrayList<Grocery> groceries = new ArrayList<>();
-    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final String userID = mAuth.getUid();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,24 +32,14 @@ public class Deals extends AppCompatActivity {
             Document document;
             String link = "https://www.tesco.ie/groceries/SpecialOffers/default.aspx";
             try {
-                String url,img;
+                String img;
                 document = Jsoup.connect(link).get();
                 Elements nameTag = document.getElementsByTag("strong");
                 Elements priceTag = document.getElementsByClass("linePrice");
                 Elements imageTag = document.getElementsByClass("image");
-                Elements urlTag = document.getElementsByTag("a");
                 ArrayList<String> names = new ArrayList<>();
                 ArrayList<String> prices = new ArrayList<>();
-                ArrayList<String> urls = new ArrayList<>();
                 ArrayList<String> images = new ArrayList<>();
-                for(Element u : urlTag) {
-                    if (u.toString().contains("promoId")) {
-                        url = u.toString().substring(10);
-                        url = url.substring(0,73);
-                        url = "tesco.ie/" + url;
-                        urls.add(url);
-                    }
-                }
                 for (Element n : nameTag) {
                     names.add(n.text());
                 }
@@ -67,13 +53,13 @@ public class Deals extends AppCompatActivity {
                     images.add(img);
                 }
                 for(int i = 0; i < names.size(); i++) {
-                    Grocery grocery = new Grocery(names.get(i),images.get(i),prices.get(i),urls.get(i),userID);
+                    Grocery grocery = new Grocery(names.get(i),images.get(i),prices.get(i));
                     groceries.add(grocery);
                 }
                 runOnUiThread(() -> {
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                    GroceryAdapter groceryAdapter = new GroceryAdapter(groceries, getApplicationContext());
+                    GroceryAdapter groceryAdapter = new GroceryAdapter(groceries);
                     recyclerView.setAdapter(groceryAdapter);
                 });
             } catch (IOException exception) {

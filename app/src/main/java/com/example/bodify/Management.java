@@ -101,7 +101,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     startActivity(new Intent(Management.this, Settings.class));
                     break;
                 case R.id.logOut:
-                    finish();
+                    mAuth.signOut();
                     startActivity(new Intent(Management.this, LogIn.class));
                     break;
             }

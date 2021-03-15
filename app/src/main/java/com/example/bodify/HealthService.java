@@ -105,6 +105,5 @@ public class HealthService extends Service {
         assert userID != null;
         databaseReference.child("Macros").child(userID).setValue(macro).addOnFailureListener(e -> Toast.makeText(HealthService.this,"Error Occurred: " + e.getMessage(),Toast.LENGTH_SHORT).show());
     }
-
 }
 

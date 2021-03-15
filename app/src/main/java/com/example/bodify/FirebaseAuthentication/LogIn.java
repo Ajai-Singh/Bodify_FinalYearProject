@@ -24,6 +24,10 @@ public class LogIn extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Log In Form");
         setContentView(R.layout.activity_log_in);
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() != null) {
+            startActivity(new Intent(LogIn.this, Management.class));
+            return;
+        }
         Button logIn = findViewById(R.id.logInButton);
         emailAddress = findViewById(R.id.userNameSignUp);
         password = findViewById(R.id.passwordTextField);

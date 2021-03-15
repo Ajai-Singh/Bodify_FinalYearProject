@@ -1,13 +1,18 @@
 package com.example.bodify;
 
-import android.content.Intent;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +28,7 @@ import com.example.bodify.Adapters.CardStackAdapter;
 import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Ingredient;
 import com.example.bodify.Models.Recipe;
-import com.example.bodify.Models.SuggestionMacros;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -52,8 +57,15 @@ public class FoodSuggester extends Fragment {
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private ConstraintLayout constraintLayout;
     private CardStackView cardStackView;
+    private ImageView headerArrowImage;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private SeekBar fatsSB, proteinsSB, carbsSB, caloriesSB;
+    private TextView fats, protein, carbs, calories;
+    private final int minimumFat = 1;
+    private final int minimumProtein = 10;
+    private final int minimumCarbs = 10;
+    private final int minimumCalories = 50;
     private SwipeRefreshLayout swipeRefreshLayout;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,20 +73,168 @@ public class FoodSuggester extends Fragment {
         cardStackView = view.findViewById(R.id.cardStack);
         constraintLayout = view.findViewById(R.id.foodSuggesterCL);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
+        ConstraintLayout bottomSheetConstraintLayout = view.findViewById(R.id.bottomSheet);
+        LinearLayout headerLayout = view.findViewById(R.id.header_layout);
+        headerArrowImage = view.findViewById(R.id.header_arrow);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetConstraintLayout);
+        fatsSB = view.findViewById(R.id.fatsSeekBar);
+        proteinsSB = view.findViewById(R.id.proteinsSeekBar);
+        carbsSB = view.findViewById(R.id.carbohydratesSeekBar);
+        caloriesSB = view.findViewById(R.id.caloriesSeekBar);
+        fats = view.findViewById(R.id.fatCount);
+        protein = view.findViewById(R.id.proteinCount);
+        carbs = view.findViewById(R.id.carbCount);
+        calories = view.findViewById(R.id.calorieCount);
+        Button update = view.findViewById(R.id.recipeFilters);
+        Button clear = view.findViewById(R.id.clearFilters);
         AndroidNetworking.initialize(getContext());
-        ImageButton imageButton = view.findViewById(R.id.settings);
         ImageButton info = view.findViewById(R.id.recipeInfo);
         info.setOnClickListener(v -> infoSnackBar());
-        imageButton.setOnClickListener(v -> {
-            getActivity().getFragmentManager().popBackStack();
-            startActivity(new Intent(getContext(), MacroSettings.class));
+        headerLayout.setOnClickListener(v -> {
+            if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            } else {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
         });
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                headerArrowImage.setRotation(180 * slideOffset);
+            }
+        });
+        seekBarFunctionality();
         getRecipeCards();
+        APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number" + 5);
+        update.setOnClickListener(v -> {
+            if (fatsSB.getProgress() == 0 || proteinsSB.getProgress() == 0 || carbsSB.getProgress() == 0 || caloriesSB.getProgress() == 0) {
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(getContext());
+                dlgAlert.setMessage("Error no values can be left at zero!");
+                dlgAlert.setTitle("Error...");
+                dlgAlert.setCancelable(true);
+                dlgAlert.setPositiveButton("Ok",
+                        (dialog, which) -> {
+                            dialog.cancel();
+                        });
+                dlgAlert.create().show();
+            } else {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                APIParsingWithConstraints(caloriesSB.getProgress(), fatsSB.getProgress(), proteinsSB.getProgress(), caloriesSB.getProgress());
+            }
+        });
+        clear.setOnClickListener(v -> {
+            caloriesSB.setProgress(0);
+            carbsSB.setProgress(0);
+            proteinsSB.setProgress(0);
+            fatsSB.setProgress(0);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number" + 5);
+        });
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            getRecipeCards();
+            caloriesSB.setProgress(0);
+            carbsSB.setProgress(0);
+            proteinsSB.setProgress(0);
+            fatsSB.setProgress(0);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number" + 5);
             swipeRefreshLayout.setRefreshing(false);
         });
         return view;
+    }
+
+    public void seekBarFunctionality() {
+        fatsSB.setMax(100);
+        proteinsSB.setMax(100);
+        carbsSB.setMax(100);
+        caloriesSB.setMax(800);
+        fatsSB.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (seekBar.getProgress() < minimumFat) {
+                    seekBar.setProgress(minimumFat);
+                } else {
+                    fats.setText(String.valueOf(progress));
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        proteinsSB.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (seekBar.getProgress() < minimumProtein) {
+                    seekBar.setProgress(minimumProtein);
+                } else {
+                    protein.setText(String.valueOf(progress));
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        carbsSB.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (seekBar.getProgress() < minimumCarbs) {
+                    seekBar.setProgress(minimumCarbs);
+                } else {
+                    carbs.setText(String.valueOf(progress));
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        caloriesSB.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (seekBar.getProgress() < minimumCalories) {
+                    seekBar.setProgress(minimumCalories);
+                } else {
+                    calories.setText(String.valueOf(progress));
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     public void getRecipeCards() {
@@ -103,8 +263,7 @@ public class FoodSuggester extends Fragment {
                             }
                             if (exists) {
                                 duplicateRecordSnackBar();
-                            }
-                            if (!exists) {
+                            } else {
                                 Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
                                         recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), userID, recipe.getServings());
                                 databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
@@ -162,27 +321,12 @@ public class FoodSuggester extends Fragment {
         cardStackLayoutManager.setSwipeableMethod(SwipeableMethod.Manual);
         cardStackLayoutManager.setOverlayInterpolator(new LinearInterpolator());
         assert userID != null;
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("RecipeSuggestionMacro").child(userID);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                SuggestionMacros suggestionMacros = snapshot.getValue(SuggestionMacros.class);
-                if (suggestionMacros != null) {
-                    APIParsingWithConstraints(suggestionMacros.getCalories(), suggestionMacros.getFats(), suggestionMacros.getProteins(), suggestionMacros.getCarbohydrates());
-                } else {
-                    APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number" + 5);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
+
 
     public void APIParsing(String request) {
         Log.i("No constrains", "" + request);
+        recipes.clear();
         AndroidNetworking.get(request)
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "1")
@@ -238,6 +382,7 @@ public class FoodSuggester extends Fragment {
 
     public void APIParsingWithConstraints(int calories, int fats, int proteins, int carbs) {
         Log.i("constraints", "" + fats);
+        recipes.clear();
         AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&maxCarbs=" + carbs + "&maxFat=" + fats + "&maxProtein=" + proteins + "&maxCalories=" + calories + "&number" + 5)
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "1")
@@ -286,20 +431,13 @@ public class FoodSuggester extends Fragment {
 
             @Override
             public void onError(ANError anError) {
-
+                Toast.makeText(getContext(), "Error occrred: " + anError, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void showSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Pull down to refresh or Modify your settings ->", Snackbar.LENGTH_LONG).setAction(
-                "Settings", v -> {
-                    Intent intent = new Intent(getActivity(), MacroSettings.class);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(0, 0);
-                    getActivity().finish();
-                }
-        );
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Modify settings to find more results!", Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 
@@ -314,12 +452,12 @@ public class FoodSuggester extends Fragment {
     }
 
     public void addedRecord() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to favourites", Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to favourites", Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 
     public void ignoredRecord() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Ignored", Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Ignored", Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 }

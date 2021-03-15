@@ -1,13 +1,12 @@
 package com.example.bodify.Models;
 
 public class Grocery {
-    private String name,imageUrl,price,url;
+    private String name,imageUrl,price;
 
-    public Grocery(String name, String imageUrl, String price,String url,String userID) {
+    public Grocery(String name, String imageUrl, String price) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.price = price;
-        this.url = url;
     }
 
     public String getName() {
@@ -32,13 +31,5 @@ public class Grocery {
 
     public void setPrice(String price) {
         this.price = price;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 }
