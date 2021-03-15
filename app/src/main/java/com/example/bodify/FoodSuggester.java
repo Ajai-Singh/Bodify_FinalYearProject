@@ -124,10 +124,12 @@ public class FoodSuggester extends Fragment {
                 dlgAlert.create().show();
             } else {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                getRecipeCards();
                 APIParsingWithConstraints(caloriesSB.getProgress(), fatsSB.getProgress(), proteinsSB.getProgress(), caloriesSB.getProgress());
             }
         });
         clear.setOnClickListener(v -> {
+            getRecipeCards();
             caloriesSB.setProgress(0);
             carbsSB.setProgress(0);
             proteinsSB.setProgress(0);
@@ -136,6 +138,7 @@ public class FoodSuggester extends Fragment {
             APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number" + 5);
         });
         swipeRefreshLayout.setOnRefreshListener(() -> {
+            getRecipeCards();
             caloriesSB.setProgress(0);
             carbsSB.setProgress(0);
             proteinsSB.setProgress(0);
@@ -287,6 +290,7 @@ public class FoodSuggester extends Fragment {
                 }
                 if (cardStackLayoutManager.getTopPosition() == cardStackAdapter.getItemCount()) {
                     showSnackBar();
+
                 }
             }
 
@@ -320,7 +324,6 @@ public class FoodSuggester extends Fragment {
         cardStackLayoutManager.setCanScrollHorizontal(true);
         cardStackLayoutManager.setSwipeableMethod(SwipeableMethod.Manual);
         cardStackLayoutManager.setOverlayInterpolator(new LinearInterpolator());
-        assert userID != null;
     }
 
 
