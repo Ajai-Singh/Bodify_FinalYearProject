@@ -3,7 +3,6 @@ package com.example.bodify.Adapters;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -254,8 +253,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                         });
                         break;
                     case R.id.DeleteFromFavourites:
-                        builder.setMessage("Are you sure you want to delete this item from your favourites").setNegativeButton("No", (dialog1, which) -> dialog1.cancel()).setPositiveButton("Yes", (dialog1, which) ->
-                                {
+                        builder.setMessage("Are you sure you want to delete this item from your favourites").setNegativeButton("No", (dialog1, which) -> dialog1.cancel()).setPositiveButton("Yes", (dialog1, which) -> {
                                     Favourite favourite = new Favourite();
                                     for (int i = 0; i < favourites.size(); i++) {
                                         if (holder.getAdapterPosition() == i) {

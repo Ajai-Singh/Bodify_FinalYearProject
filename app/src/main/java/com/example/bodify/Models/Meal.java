@@ -1,8 +1,8 @@
 package com.example.bodify.Models;
 
 public class Meal {
-    String itemName,userID,id,mealType,dayOfWeek,date,UUID;
-    int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings,originalServings;
+    private String itemName,userID,id,mealType,dayOfWeek,date,UUID;
+    private int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings,originalServings;
 
     public String getItemName() {
         return itemName;
@@ -143,26 +143,5 @@ public class Meal {
         this.date = date;
         this.originalServings = originalServings;
         this.UUID = UUID;
-    }
-
-    @Override
-    public String toString() {
-        return "Meal{" +
-                "itemName='" + itemName + '\'' +
-                ", userID='" + userID + '\'' +
-                ", id='" + id + '\'' +
-                ", mealType='" + mealType + '\'' +
-                ", dayOfWeek='" + dayOfWeek + '\'' +
-                ", date='" + date + '\'' +
-                ", UUID='" + UUID + '\'' +
-                ", calories=" + calories +
-                ", itemTotalFat=" + itemTotalFat +
-                ", itemSodium=" + itemSodium +
-                ", itemTotalCarbohydrates=" + itemTotalCarbohydrates +
-                ", itemSugars=" + itemSugars +
-                ", itemProtein=" + itemProtein +
-                ", numberOfServings=" + numberOfServings +
-                ", originalServings=" + originalServings +
-                '}';
     }
 }

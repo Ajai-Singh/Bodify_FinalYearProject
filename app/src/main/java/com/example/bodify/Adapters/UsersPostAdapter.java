@@ -104,8 +104,8 @@ public class UsersPostAdapter extends RecyclerView.Adapter<com.example.bodify.Ad
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, text, dateTime;
-        public TextView buttonViewOption;
+        private final TextView name, text, dateTime;
+        private final TextView buttonViewOption;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.usersUserName);

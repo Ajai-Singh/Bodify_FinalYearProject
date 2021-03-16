@@ -35,7 +35,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
 
 public class DiaryRefreshService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";

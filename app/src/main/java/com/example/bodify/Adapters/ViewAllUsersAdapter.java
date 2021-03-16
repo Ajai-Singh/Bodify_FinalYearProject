@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Models.User;
 import com.example.bodify.R;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
@@ -52,8 +51,8 @@ public class ViewAllUsersAdapter extends RecyclerView.Adapter<ViewAllUsersAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView image;
-        public TextView userName,email;
+        private final ImageView image;
+        private final TextView userName,email;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

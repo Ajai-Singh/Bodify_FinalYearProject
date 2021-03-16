@@ -50,46 +50,47 @@ public class HealthService extends Service {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                assert user != null;
-                double weightInPounds = user.getWeight() * 2.20462;
-                double requiredCalories = 0.0;
-                switch (user.getActivityLevel()) {
-                    case "1":
-                        requiredCalories = weightInPounds * 14;
-                        break;
-                    case "2":
-                        requiredCalories = weightInPounds * 15;
-                        break;
-                    case "3":
-                        requiredCalories = weightInPounds * 16;
-                        break;
+                if (user != null) {
+                    double weightInPounds = user.getWeight() * 2.20462;
+                    double requiredCalories = 0.0;
+                    switch (user.getActivityLevel()) {
+                        case "1":
+                            requiredCalories = weightInPounds * 14;
+                            break;
+                        case "2":
+                            requiredCalories = weightInPounds * 15;
+                            break;
+                        case "3":
+                            requiredCalories = weightInPounds * 16;
+                            break;
+                    }
+                    if (user.getFitnessGoal().equals("Lose Weight")) {
+                        requiredCalories = requiredCalories - 500;
+                    } else if (user.getFitnessGoal().equals("Gain Weight")) {
+                        requiredCalories = requiredCalories + 500;
+                    }
+                    DecimalFormat decimalFormat = new DecimalFormat("##.00");
+                    formattedCalorieIntake = Double.parseDouble(decimalFormat.format(requiredCalories));
+                    if (user.getBodyType().equalsIgnoreCase("Excess body fat")) {
+                        proteinAmount = (user.getWeight() * 2.20462) * 0.75;
+                    } else if (user.getBodyType().equalsIgnoreCase("Average Shape")) {
+                        proteinAmount = (user.getWeight() * 2.20462) * 1;
+                    } else if (user.getBodyType().equalsIgnoreCase("Good Shape")) {
+                        proteinAmount = (user.getWeight() * 2.20462) * 1.25;
+                    }
+                    if (user.getPreferredMacroNutrient().equalsIgnoreCase("Carbohydrates")) {
+                        fatAmount = (user.getWeight() * 2.20462) * 0.3;
+                    } else if (user.getPreferredMacroNutrient().equalsIgnoreCase("Don't have a preference")) {
+                        fatAmount = (user.getWeight() * 2.20462) * 0.35;
+                    } else if (user.getPreferredMacroNutrient().equalsIgnoreCase("Fats")) {
+                        fatAmount = (user.getWeight() * 2.20462) * 0.4;
+                    }
+                    proteinCalories = proteinAmount * 4;
+                    fatCalories = fatAmount * 9;
+                    carbohydrateCalories = formattedCalorieIntake - (proteinCalories + fatCalories);
+                    carbohydrateAmount = carbohydrateCalories / 4;
+                    setUserMacros(formattedCalorieIntake, fatAmount, carbohydrateAmount, proteinAmount);
                 }
-                if (user.getFitnessGoal().equals("Lose Weight")) {
-                    requiredCalories = requiredCalories - 500;
-                } else if (user.getFitnessGoal().equals("Gain Weight")) {
-                    requiredCalories = requiredCalories + 500;
-                }
-                DecimalFormat decimalFormat = new DecimalFormat("##.00");
-                formattedCalorieIntake = Double.parseDouble(decimalFormat.format(requiredCalories));
-                if (user.getBodyType().equalsIgnoreCase("Excess body fat")) {
-                    proteinAmount = (user.getWeight() * 2.20462) * 0.75;
-                } else if (user.getBodyType().equalsIgnoreCase("Average Shape")) {
-                    proteinAmount = (user.getWeight() * 2.20462) * 1;
-                } else if (user.getBodyType().equalsIgnoreCase("Good Shape")) {
-                    proteinAmount = (user.getWeight() * 2.20462) * 1.25;
-                }
-                if (user.getPreferredMacroNutrient().equalsIgnoreCase("Carbohydrates")) {
-                    fatAmount = (user.getWeight() * 2.20462) * 0.3;
-                } else if (user.getPreferredMacroNutrient().equalsIgnoreCase("Don't have a preference")) {
-                    fatAmount = (user.getWeight() * 2.20462) * 0.35;
-                } else if (user.getPreferredMacroNutrient().equalsIgnoreCase("Fats")) {
-                    fatAmount = (user.getWeight() * 2.20462) * 0.4;
-                }
-                proteinCalories = proteinAmount * 4;
-                fatCalories = fatAmount * 9;
-                carbohydrateCalories = formattedCalorieIntake - (proteinCalories + fatCalories);
-                carbohydrateAmount = carbohydrateCalories / 4;
-                setUserMacros(formattedCalorieIntake, fatAmount, carbohydrateAmount, proteinAmount);
             }
 
             @Override

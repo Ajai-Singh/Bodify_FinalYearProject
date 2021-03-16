@@ -1,10 +1,12 @@
 package com.example.bodify.Adapters;
 
-import android.util.Log;
+import android.content.Context;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Models.Post;
@@ -20,9 +22,11 @@ import java.util.ArrayList;
 
 public class PostAdapter extends RecyclerView.Adapter<com.example.bodify.Adapters.PostAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Post> posts;
+    private final Context context;
 
-    public PostAdapter(ArrayList<Post> posts) {
+    public PostAdapter(ArrayList<Post> posts,Context context) {
         this.posts = posts;
+        this.context = context;
     }
 
     @NonNull
@@ -51,7 +55,7 @@ public class PostAdapter extends RecyclerView.Adapter<com.example.bodify.Adapter
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.i("TAG", error.getMessage());
+                Toast.makeText(context,"Error occurred:" + error.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
         holder.setText(posts.get(position).getPostText());
@@ -68,7 +72,7 @@ public class PostAdapter extends RecyclerView.Adapter<com.example.bodify.Adapter
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, text, dateTime;
+        private final TextView name, text, dateTime;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

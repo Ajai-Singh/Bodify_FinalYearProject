@@ -1,7 +1,5 @@
 package com.example.bodify.Models;
 
-import androidx.annotation.NonNull;
-
 public class Post {
     private String date,postText,postID,id;
 
@@ -45,15 +43,5 @@ public class Post {
         this.date = date;
         this.postText = postText;
         this.postID = postID;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "Post{" +
-                "date='" + date + '\'' +
-                ", postText='" + postText + '\'' +
-                ", postID='" + postID + '\'' +
-                '}';
     }
 }

@@ -95,7 +95,7 @@ public class SpecificUsersPage extends AppCompatActivity {
                     assert post != null;
                     if (post.getPostID().equals(userID)) {
                         Log.i("num", "equals");
-                        tweetCount = tweetCount + 1;
+                        tweetCount += 1;
                     }
                     tweets.setText(String.valueOf(tweetCount));
                 }
@@ -121,9 +121,12 @@ public class SpecificUsersPage extends AppCompatActivity {
                         posts.add(post);
                     }
                 }
+                if(posts.isEmpty()) {
+                    tweets.setText("0");
+                }
                 rcv.setHasFixedSize(true);
                 rcv.setLayoutManager(new LinearLayoutManager(SpecificUsersPage.this));
-                adapter = new PostAdapter(posts);
+                adapter = new PostAdapter(posts,SpecificUsersPage.this);
                 rcv.setAdapter(adapter);
                 if(posts.isEmpty()) {
                     showSnackBar();

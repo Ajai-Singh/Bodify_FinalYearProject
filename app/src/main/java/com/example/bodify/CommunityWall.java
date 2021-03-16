@@ -122,7 +122,7 @@ public class CommunityWall extends AppCompatActivity {
                 recyclerView = findViewById(R.id.postRecyclerView);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(new LinearLayoutManager(CommunityWall.this));
-                adapter = new PostAdapter(posts);
+                adapter = new PostAdapter(posts,CommunityWall.this);
                 adapter.notifyDataSetChanged();
                 recyclerView.setAdapter(adapter);
             }

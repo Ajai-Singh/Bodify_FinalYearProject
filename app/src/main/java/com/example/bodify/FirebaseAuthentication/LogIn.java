@@ -16,14 +16,13 @@ import java.util.Objects;
 
 public class LogIn extends AppCompatActivity {
     private EditText emailAddress, password;
-    private FirebaseAuth mAuth;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Log In Form");
         setContentView(R.layout.activity_log_in);
-        mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser() != null) {
             startActivity(new Intent(LogIn.this, Management.class));
             return;
@@ -36,24 +35,21 @@ public class LogIn extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), SignUp.class));
         });
         logIn.setOnClickListener(v -> {
-            if(TextUtils.isEmpty(emailAddress.getText().toString().trim())) {
+            if (TextUtils.isEmpty(emailAddress.getText().toString().trim())) {
                 emailAddress.setError("Email Address is required.");
                 emailAddress.requestFocus();
-            }else if(TextUtils.isEmpty(password.getText().toString())) {
-                password.setError("Password is required.");
-                password.requestFocus();
-            }else if(password.getText().toString().length() < 6) {
-                password.setError("Password length must be >= len(6)");
+            } else if (password.getText().toString().length() < 6) {
+                password.setError("Password length must be >= 6 characters");
                 password.requestFocus();
             } else {
                 mAuth.signInWithEmailAndPassword(emailAddress.getText().toString().trim(), password.getText().toString()).addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         Toast.makeText(LogIn.this, "User verified", Toast.LENGTH_SHORT).show();
                         startService(new Intent(LogIn.this, DiaryRefreshService.class));
                         startActivity(new Intent(getApplicationContext(), Management.class));
                         emailAddress.setText("");
                         password.setText("");
-                    }else {
+                    } else {
                         Toast.makeText(LogIn.this, "Error occurred! " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

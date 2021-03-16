@@ -3,11 +3,9 @@ package com.example.bodify.Adapters;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bodify.Models.Favourite;
-import com.example.bodify.Models.Ingredient;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.R;
@@ -297,7 +294,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                    }).addOnFailureListener(e -> Toast.makeText(context, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                                }
                            });
-
                            break;
                        case R.id.ingredients:
                            final AlertDialog.Builder ingredientsBuilder = new AlertDialog.Builder(context);
@@ -393,6 +389,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             servings = itemView.findViewById(R.id.recipeCardServings);
             options = itemView.findViewById(R.id.recipeCardViewOptions);
         }
+
         @SuppressLint("SetTextI18n")
         public void setData(Recipe data) {
             Picasso.get().load(data.getImageUrl()).fit().centerCrop().into(recipeImage);

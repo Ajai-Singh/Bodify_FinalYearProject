@@ -1,8 +1,8 @@
 package com.example.bodify.Models;
 
 public class Favourite {
-    String itemName,userID,id;
-    int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
+    private String itemName,userID,id;
+    private int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
 
     public Favourite() {
 
@@ -98,21 +98,5 @@ public class Favourite {
         this.itemProtein = itemProtein;
         this.userID = userID;
         this.numberOfServings = numberOfServings;
-    }
-
-    @Override
-    public String toString() {
-        return "Favourite{" +
-                "itemName='" + itemName + '\'' +
-                ", userID='" + userID + '\'' +
-                ", id='" + id + '\'' +
-                ", calories=" + calories +
-                ", itemTotalFat=" + itemTotalFat +
-                ", itemSodium=" + itemSodium +
-                ", itemTotalCarbohydrates=" + itemTotalCarbohydrates +
-                ", itemSugars=" + itemSugars +
-                ", itemProtein=" + itemProtein +
-                ", numberOfServings=" + numberOfServings +
-                '}';
     }
 }

@@ -53,7 +53,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private final Date date = new Date();
 
-
     public RecipeAdapter(ArrayList<Recipe> recipes, Context context) {
         this.recipes = recipes;
         this.context = context;

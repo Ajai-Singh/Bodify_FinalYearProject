@@ -3,7 +3,6 @@ package com.example.bodify.Adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,7 +42,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name, amount, unit;
+        private final TextView name, amount, unit;
 
         public ViewHolder(@NonNull View v) {
             super(v);

@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class ChatRoom extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private EditText input;
     private FloatingActionButton fab;
     private FirebaseListAdapter<Message> adapter;
@@ -41,7 +41,6 @@ public class ChatRoom extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Chat Room");
         fab = findViewById(R.id.fab);
         input = findViewById(R.id.input);
-        mAuth = FirebaseAuth.getInstance();
         final String userID = mAuth.getUid();
         assert userID != null;
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
@@ -76,8 +75,9 @@ public class ChatRoom extends AppCompatActivity {
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                 databaseReference.child("Chat").push().setValue(comment).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(ChatRoom.this, "Message Saved", Toast.LENGTH_SHORT).show();
                         input.setText("");
+                    } else {
+                        Toast.makeText(ChatRoom.this, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(e -> Toast.makeText(ChatRoom.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }

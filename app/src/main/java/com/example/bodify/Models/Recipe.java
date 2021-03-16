@@ -147,24 +147,4 @@ public class Recipe {
         this.imageUrl = imageUrl;
         this.ingredients = ingredients;
     }
-
-    @Override
-    public String toString() {
-        return "Recipe{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", sourceUrl='" + sourceUrl + '\'' +
-                ", readyInMinutes='" + readyInMinutes + '\'' +
-                ", servings=" + servings +
-                ", recipeID='" + recipeID + '\'' +
-                ", calories=" + calories +
-                ", fats=" + fats +
-                ", carbohydrates=" + carbohydrates +
-                ", proteins=" + proteins +
-                ", sugar=" + sugar +
-                ", sodium=" + sodium +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", ingredients=" + ingredients +
-                '}';
-    }
 }

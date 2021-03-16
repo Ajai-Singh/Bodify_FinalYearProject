@@ -9,12 +9,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Adapters.ViewAllUsersAdapter;
 import com.example.bodify.Models.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,13 +35,15 @@ public class ViewAllUsers extends AppCompatActivity {
     private final ArrayList<User> users = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final FirebaseUser firebaseUser = mAuth.getCurrentUser();
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_users);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("App Users");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Bodify Users");
         EditText userName = findViewById(R.id.userNameSearch);
+        constraintLayout = findViewById(R.id.vucl);
         userName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -80,6 +84,9 @@ public class ViewAllUsers extends AppCompatActivity {
                     if (!user.getEmail().equals(firebaseUser.getEmail())) {
                         users.add(user);
                     }
+                }
+                if(users.isEmpty()) {
+                    showSnackBar();
                 }
                 recyclerView = findViewById(R.id.recyclerView);
                 recyclerView.setHasFixedSize(true);
@@ -122,4 +129,9 @@ public class ViewAllUsers extends AppCompatActivity {
             finish();
         }
     };
+
+    public void showSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no other users!", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
 }

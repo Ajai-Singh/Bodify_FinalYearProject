@@ -138,24 +138,4 @@ public class User {
         this.mImageUrl = mImageUrl;
         this.signUpDate = signUpDate;
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userName='" + userName + '\'' +
-                ", email='" + email + '\'' +
-                ", gender='" + gender + '\'' +
-                ", activityLevel='" + activityLevel + '\'' +
-                ", fitnessGoal='" + fitnessGoal + '\'' +
-                ", bodyType='" + bodyType + '\'' +
-                ", preferredMacroNutrient='" + preferredMacroNutrient + '\'' +
-                ", weight=" + weight +
-                ", bodyMassIndicator=" + bodyMassIndicator +
-                ", height=" + height +
-                ", mImageUrl='" + mImageUrl + '\'' +
-                ", signUpDate='" + signUpDate + '\'' +
-                ", userID='" + userID + '\'' +
-                ", id='" + id + '\'' +
-                '}';
-    }
 }

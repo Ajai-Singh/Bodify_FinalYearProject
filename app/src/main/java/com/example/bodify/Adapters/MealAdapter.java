@@ -3,10 +3,6 @@ package com.example.bodify.Adapters;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,29 +11,17 @@ import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
-import com.example.bodify.TrackingDaysMeals.TuesdayMeals;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-
-import android.os.Handler;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Meal> meals;
@@ -80,10 +64,29 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                                     break;
                                 }
                             }
-                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meal.getDayOfWeek()).child(meal.getId());
-                            databaseReference.removeValue();
-                            meals.clear();
-                            notifyDataSetChanged();
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meal.getDayOfWeek());
+                            Meal finalMeal = meal;
+                            databaseReference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for(DataSnapshot mealSnapshot : snapshot.getChildren()) {
+                                        Meal dbMeal = mealSnapshot.getValue(Meal.class);
+                                        assert dbMeal != null;
+                                        dbMeal.setId(mealSnapshot.getKey());
+                                        if(dbMeal.getUUID().equals(finalMeal.getUUID())) {
+                                            databaseReference.child(dbMeal.getId()).removeValue();
+                                            meals.clear();
+                                            notifyDataSetChanged();
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(context,"Error occurred:" + error.getMessage(),Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         });
                         AlertDialog alertDialog = builder.create();
                         alertDialog.setTitle("Attention required!");
@@ -158,7 +161,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-
+                                    Toast.makeText(context,"Error occurred:" + error.getMessage(),Toast.LENGTH_SHORT).show();
                                 }
                             });
                         });

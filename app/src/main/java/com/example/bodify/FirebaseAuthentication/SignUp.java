@@ -33,7 +33,7 @@ import java.util.Objects;
 
 public class SignUp extends AppCompatActivity {
     private EditText emailAddress, userName, password, verifyPassword;
-    private FirebaseAuth mAuth;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private StorageReference storageReference;
     private ImageView profilePlaceHolder;
     public static final String MESSAGE_KEY = "MESSAGE1";
@@ -88,7 +88,6 @@ public class SignUp extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Sign Up Form");
         storageReference = FirebaseStorage.getInstance().getReference("uploads");
-        mAuth = FirebaseAuth.getInstance();
         userName = findViewById(R.id.userNameSignUp);
         emailAddress = findViewById(R.id.emailAddressSignUp);
         password = findViewById(R.id.passwordTextField);
@@ -134,17 +133,11 @@ public class SignUp extends AppCompatActivity {
         } else if (TextUtils.isEmpty(emailAddress.getText().toString().trim())) {
             emailAddress.setError("Email Address is required.");
             emailAddress.requestFocus();
-        } else if (TextUtils.isEmpty(password.getText().toString())) {
-            password.setError("Password is required.");
-            password.requestFocus();
-        } else if (TextUtils.isEmpty(verifyPassword.getText().toString())) {
-            verifyPassword.setError("Password confirmation is required.");
-            verifyPassword.requestFocus();
         } else if (password.getText().toString().length() < 6) {
-            password.setError("Password length must be at least 6 characters.");
+            password.setError("Password length must be >= 6 characters.");
             password.requestFocus();
         } else if (verifyPassword.getText().toString().length() < 6) {
-            verifyPassword.setError("Password length must be at least 6 characters.");
+            verifyPassword.setError("Password length must be >= 6 characters.");
             verifyPassword.requestFocus();
         } else if (!verifyPassword.getText().toString().equals(password.getText().toString())) {
             password.setError("Passwords do not match");

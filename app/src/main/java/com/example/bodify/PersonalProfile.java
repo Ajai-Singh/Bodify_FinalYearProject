@@ -54,7 +54,7 @@ public class PersonalProfile extends AppCompatActivity {
 
     public void populateViews() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
@@ -63,7 +63,6 @@ public class PersonalProfile extends AppCompatActivity {
                 storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     circleImageView.setImageBitmap(bitmap);
-
                 });
                 myName.setText(user.getUserName());
                 getTweetCount();
@@ -87,10 +86,13 @@ public class PersonalProfile extends AppCompatActivity {
                     assert post != null;
                     post.setId(userSnapshot.getKey());
                     if(post.getPostID().equals(userID)) {
-                        count = count + 1;
+                        count += 1;
                         posts.add(post);
                     }
                     tweetCount.setText(String.valueOf(count));
+                }
+                if(posts.isEmpty()) {
+                    tweetCount.setText("0");
                 }
                 populateTweets(posts);
             }

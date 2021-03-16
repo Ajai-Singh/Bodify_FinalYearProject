@@ -115,7 +115,6 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         calories.setVisibility(View.INVISIBLE);
         week.setVisibility(View.INVISIBLE);
         weights.setVisibility(View.INVISIBLE);
-        informationSnackBar();
         search.setOnClickListener(v -> {
             if(userSP.getSelectedItemPosition() == 0) {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(BreakdownAnalysis.this);
@@ -183,6 +182,9 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         adapterNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         userSP.setAdapter(adapterNames);
         userSP.setOnItemSelectedListener(BreakdownAnalysis.this);
+        if(userNames.size() == 1) {
+            noDataSnackBar();
+        }
     }
 
     public void getNewSpinnerValue(String name) {
@@ -415,8 +417,8 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         snackbar.show();
     }
 
-    public void informationSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Search for user to see data", Snackbar.LENGTH_LONG);
+    public void noDataSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no user data available yet!", Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 

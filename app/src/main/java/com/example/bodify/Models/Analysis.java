@@ -76,16 +76,4 @@ public class Analysis implements Serializable {
         this.weekStarting = weekStarting;
         this.weight = weight;
     }
-
-    @Override
-    public String toString() {
-        return "Analysis{" +
-                "calories=" + calories +
-                ", fats=" + fats +
-                ", carbohydrates=" + carbohydrates +
-                ", proteins=" + proteins +
-                ", userID='" + userID + '\'' +
-                ", weekStarting='" + weekStarting + '\'' +
-                '}';
-    }
 }

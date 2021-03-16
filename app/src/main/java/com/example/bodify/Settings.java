@@ -52,7 +52,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         preferredMacroNutrient = findViewById(R.id.preferredMacroNutrientSpinner);
         updateSpinners();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
@@ -119,7 +119,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
                 databaseReference1.child("preferredMacroNutrient").setValue(preferredMacroNutrient.getSelectedItem().toString());
                 databaseReference1.child("bodyType").setValue(bodyType.getSelectedItem().toString());
                 databaseReference1.child("bodyMassIndicator").setValue(formattedBodyMassIndex);
-                databaseReference1.addValueEventListener(new ValueEventListener() {
+                databaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User user = snapshot.getValue(User.class);

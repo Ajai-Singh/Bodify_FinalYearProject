@@ -17,7 +17,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,7 +28,7 @@ import java.util.Objects;
 
 public class Health extends AppCompatActivity {
     private TextView bmi, weight, height, fitnessGoal, fitnessLevel, calorieIntake;
-    private FirebaseAuth mAuth;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private BarChart barChart;
     private final ArrayList<BarEntry> barEntries = new ArrayList<>();
     private Double formattedCalorieIntake;
@@ -55,16 +54,14 @@ public class Health extends AppCompatActivity {
         barChart.setTouchEnabled(false);
         barChart.setPinchZoom(false);
         barChart.setDoubleTapToZoomEnabled(false);
-        mAuth = FirebaseAuth.getInstance();
         updateFields();
     }
 
     public void updateFields() {
-        mAuth = FirebaseAuth.getInstance();
         final String userID = mAuth.getUid();
         assert userID != null;
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -146,10 +143,7 @@ public class Health extends AppCompatActivity {
     }
 
     public void setUserMacros(Double calories,Double fat,Double carbs,Double protein) {
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
         final String userID = mAuth.getUid();
-        assert firebaseUser != null;
         Macro macro = new Macro(Math.round(calories),Math.round(fat),Math.round(carbs),Math.round(protein),userID);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         assert userID != null;

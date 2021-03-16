@@ -1,7 +1,5 @@
 package com.example.bodify.Models;
 
-import org.jetbrains.annotations.NotNull;
-
 public class Ingredient {
     private String name;
     private Double amount;
@@ -39,14 +37,5 @@ public class Ingredient {
         this.name = name;
         this.amount = amount;
         this.unit = unit;
-    }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "Ingredient info: " +
-                "Ingredient name: " + name + '\'' +
-                ", Ingredient amount: " + amount +
-                ", Amount unit: " + unit + '\'';
     }
 }

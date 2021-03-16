@@ -54,15 +54,4 @@ public class Macro {
         this.proteins = proteins;
         this.userId = userId;
     }
-
-    @Override
-    public String toString() {
-        return "Macro{" +
-                "calorieConsumption=" + calorieConsumption +
-                ", fats=" + fats +
-                ", carbohydrates=" + carbohydrates +
-                ", proteins=" + proteins +
-                ", userId='" + userId + '\'' +
-                '}';
-    }
 }
