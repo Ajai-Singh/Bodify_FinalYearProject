@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="Total fat: "
+        android:text="Total fat (g): "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mealItemCalories" />
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="Total sodium: "
+        android:text="Total sodium (mg): "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mealTotalFat" />
@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="Total carbohydrates: "
+        android:text="Total carbohydrates (g): "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mealTotalSodium" />
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="Total sugars: "
+        android:text="Total sugars (g): "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mealTotalCarbohydrates" />
@@ -70,7 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="Total proteins: "
+        android:text="Total proteins (g): "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mealTotalSugars" />
@@ -204,8 +204,8 @@
 
     <ImageView
         android:id="@+id/recipeImage"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

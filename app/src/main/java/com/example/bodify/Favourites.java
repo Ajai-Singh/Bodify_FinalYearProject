@@ -124,8 +124,30 @@ public class Favourites extends Fragment {
                     databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(getContext(), "Item added to favourites", Toast.LENGTH_SHORT).show();
-                            favourites.clear();
-                            getAllFavourites();
+                            DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favourites");
+                            favRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                favourites.clear();
+                                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                                        Favourite favourite = userSnapshot.getValue(Favourite.class);
+                                        assert favourite != null;
+                                        favourite.setId(userSnapshot.getKey());
+                                        if (userID.equals(favourite.getUserID())) {
+                                            favourites.add(favourite);
+                                        }
+                                    }
+                                    recyclerView.setHasFixedSize(true);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                    favouriteAdapter = new FavouriteAdapter(favourites, getContext());
+                                    recyclerView.setAdapter(favouriteAdapter);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         } else {
                             Toast.makeText(getContext(), "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                         }

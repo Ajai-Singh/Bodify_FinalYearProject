@@ -110,7 +110,7 @@ public class FoodSuggester extends Fragment {
         });
         seekBarFunctionality();
         getRecipeCards();
-        APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number" + 5);
+        APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true");
         update.setOnClickListener(v -> {
             if (fatsSB.getProgress() == 0 || proteinsSB.getProgress() == 0 || carbsSB.getProgress() == 0 || caloriesSB.getProgress() == 0) {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(getContext());
@@ -135,7 +135,7 @@ public class FoodSuggester extends Fragment {
             proteinsSB.setProgress(0);
             fatsSB.setProgress(0);
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number" + 5);
+            APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true");
         });
         swipeRefreshLayout.setOnRefreshListener(() -> {
             getRecipeCards();
@@ -144,7 +144,7 @@ public class FoodSuggester extends Fragment {
             proteinsSB.setProgress(0);
             fatsSB.setProgress(0);
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&number" + 5);
+            APIParsing("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true");
             swipeRefreshLayout.setRefreshing(false);
         });
         return view;
@@ -386,7 +386,7 @@ public class FoodSuggester extends Fragment {
     public void APIParsingWithConstraints(int calories, int fats, int proteins, int carbs) {
         Log.i("constraints", "" + fats);
         recipes.clear();
-        AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&maxCarbs=" + carbs + "&maxFat=" + fats + "&maxProtein=" + proteins + "&maxCalories=" + calories + "&number" + 5)
+        AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&maxCarbs=" + carbs + "&maxFat=" + fats + "&maxProtein=" + proteins + "&maxCalories=" + calories)
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "1")
                 .addHeaders("token", "1234")
