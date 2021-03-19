@@ -3,12 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
     <group android:checkableBehavior="none">
-
-        <item
-            android:id="@+id/personalProfile"
-            android:icon="@drawable/profile"
-            android:title="Personal Profile"/>
-
         <item
             android:id="@+id/gymFinder"
             android:icon="@drawable/location"
@@ -32,16 +26,6 @@
             android:id="@+id/chat"
             android:icon="@drawable/chat"
             android:title="Chat Room" />
-
-        <item
-            android:id="@+id/communityWall"
-            android:icon="@drawable/postit"
-            android:title="Community Wall" />
-
-        <item
-            android:id="@+id/users"
-            android:icon="@drawable/friend"
-            android:title="View All users" />
 
         <item
             android:id="@+id/foodFinder"

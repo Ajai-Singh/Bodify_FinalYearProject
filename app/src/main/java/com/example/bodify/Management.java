@@ -70,9 +70,6 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
-                case R.id.personalProfile:
-                    startActivity(new Intent(Management.this, PersonalProfile.class));
-                    break;
                 case R.id.gymFinder:
                     startActivity(new Intent(Management.this, GymsNearMe.class));
                     break;
@@ -87,12 +84,6 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     break;
                 case R.id.chat:
                     startActivity(new Intent(Management.this, ChatRoom.class));
-                    break;
-                case R.id.communityWall:
-                    startActivity(new Intent(Management.this, CommunityWall.class));
-                    break;
-                case R.id.users:
-                    startActivity(new Intent(Management.this, ViewAllUsers.class));
                     break;
                 case R.id.foodFinder:
                     startActivity(new Intent(Management.this, FoodFinder.class));

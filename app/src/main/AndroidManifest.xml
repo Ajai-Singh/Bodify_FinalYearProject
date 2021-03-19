@@ -43,9 +43,6 @@
         <activity android:name=".GymsNearMe" />
         <activity android:name=".Settings" />
         <activity android:name=".Health" />
-        <activity
-            android:name=".ViewAllUsers"
-            android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".ChatRoom" />
         <activity
             android:name=".Management"
@@ -53,11 +50,6 @@
         <activity
             android:name=".FoodFinder"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".PersonalProfile" />
-        <activity
-            android:name=".CommunityWall"
-            android:theme="@style/Theme.test" />
-        <activity android:name=".SpecificUsersPage" />
         <activity android:name=".BreakdownAnalysis" />
         <service android:name=".DiaryRefreshService" />
         <activity android:name=".WeightProgression" />
