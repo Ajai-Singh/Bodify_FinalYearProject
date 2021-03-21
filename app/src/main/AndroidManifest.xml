@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.bodify"
     tools:ignore="MissingLeanbackLauncher">
+
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-feature android:name="android.hardware.type.watch" />
     <uses-feature
         android:name="android.software.leanback"
@@ -51,10 +53,15 @@
             android:name=".FoodFinder"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".BreakdownAnalysis" />
+
         <service android:name=".DiaryRefreshService" />
+
         <activity android:name=".WeightProgression" />
+
         <service android:name=".HealthService" />
+
         <activity android:name=".Deals" />
+        <activity android:name=".Test" android:theme="@style/Theme.test"/>
     </application>
 
 </manifest>
