@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,8 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,12 +46,11 @@ import java.util.Objects;
 
 public class Test extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private final ArrayList<String> themes = new ArrayList<>();
     private String spinnerSelection;
-    private ArrayList<Room> rooms;
     private ChatRoomAdapter chatRoomAdapter;
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    ArrayList<Room> rooms = new ArrayList<>();
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,12 +60,29 @@ public class Test extends AppCompatActivity {
         recyclerView = findViewById(R.id.chatRoomRCV);
         showAllRooms();
         imageView.setOnClickListener(v -> {
-            createChatRoom();
+            DatabaseReference roomReference = FirebaseDatabase.getInstance().getReference("Rooms");
+            roomReference.addValueEventListener(new ValueEventListener() {
+                final ArrayList<String> roomNames = new ArrayList<>();
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot roomSnapshot : snapshot.getChildren()) {
+                        Room room = roomSnapshot.getValue(Room.class);
+                        if (room != null) {
+                            roomNames.add(room.getTheme());
+                        }
+                    }
+                    createChatRoom(roomNames);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         });
     }
 
     public void showAllRooms() {
-        rooms = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Rooms");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -86,8 +106,8 @@ public class Test extends AppCompatActivity {
         });
     }
 
-    public void createChatRoom() {
-        rooms = new ArrayList<>();
+    public void createChatRoom(ArrayList<String> roomNames) {
+        ArrayList<String> themes = new ArrayList<>();
         AlertDialog.Builder builder = new AlertDialog.Builder(Test.this);
         @SuppressLint("InflateParams")
         View view = getLayoutInflater().inflate(R.layout.chatroomdialogue, null);
@@ -129,8 +149,7 @@ public class Test extends AppCompatActivity {
 
             }
         });
-        builder.setPositiveButton("Create", (dialog, which) -> {
-        });
+        builder.setPositiveButton("Create", (dialog, which) -> {});
         builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
         builder.setView(view);
         AlertDialog dialog = builder.create();
@@ -143,14 +162,43 @@ public class Test extends AppCompatActivity {
                 dlgAlert.setPositiveButton("OK", null);
                 dlgAlert.setCancelable(true);
                 dlgAlert.create().show();
+            } else if(roomNames.contains(spinner.getSelectedItem().toString())) {
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Test.this);
+                dlgAlert.setMessage("Error similar room exists!");
+                dlgAlert.setTitle("Error...");
+                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setCancelable(true);
+                dlgAlert.create().show();
             } else {
                 dialog.dismiss();
                 Room newRoom = new Room(spinnerSelection,mAuth.getUid());
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Rooms");
                 databaseReference.push().setValue(newRoom).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        chatRoomAdapter.notifyDataSetChanged();
+                        DatabaseReference roomRef = FirebaseDatabase.getInstance().getReference("Rooms");
+                        roomRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                rooms.clear();
+                                for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
+                                    Room room = roomSnapshot.getValue(Room.class);
+                                    rooms.add(room);
+                                }
+                                if (!rooms.isEmpty()) {
+                                    recyclerView.setHasFixedSize(true);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(Test.this));
+                                    chatRoomAdapter = new ChatRoomAdapter(rooms, Test.this);
+                                    recyclerView.setAdapter(chatRoomAdapter);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(Test.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         Toast.makeText(Test.this, "Chat room created!", Toast.LENGTH_SHORT).show();
+                        //startActivity(new Intent(Test.this,ChatBox.class));
                     } else {
                         Toast.makeText(Test.this, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }

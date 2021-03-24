@@ -61,7 +61,10 @@
         <service android:name=".HealthService" />
 
         <activity android:name=".Deals" />
-        <activity android:name=".Test" android:theme="@style/Theme.test"/>
+        <activity
+            android:name=".Test"
+            android:theme="@style/Theme.test" />
+        <activity android:name=".ChatBox" />
     </application>
 
 </manifest>

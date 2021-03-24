@@ -138,7 +138,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            startActivity(new Intent(this,Management.class));
         }
     }
 

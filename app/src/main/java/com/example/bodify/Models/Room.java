@@ -1,6 +1,10 @@
 package com.example.bodify.Models;
 
+import java.io.Serializable;
+
 public class Room {
+    //in the future remove userID
+
     private String theme,userID,id;
 
     public Room() {

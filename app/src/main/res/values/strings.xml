@@ -78,4 +78,7 @@
     <string name="title_activity_weight_progression">WeightProgression</string>
     <string name="title_activity_deals">Deals</string>
     <string name="title_activity_test">Test</string>
+    <string name="title_activity_chat_room_manager">ChatRoomManager</string>
+    <string name="title_activity_chat_room_splitter">ChatRoomSplitter</string>
+    <string name="title_activity_chat_box">ChatBox</string>
 </resources>

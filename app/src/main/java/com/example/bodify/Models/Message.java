@@ -1,7 +1,6 @@
 package com.example.bodify.Models;
 
 public class Message {
-
     private String messageText;
     private String messageUser;
     private String userId;
@@ -14,7 +13,7 @@ public class Message {
         this.dateTime = dateTime;
     }
 
-    public Message(){
+    public Message() {
 
     }
 
