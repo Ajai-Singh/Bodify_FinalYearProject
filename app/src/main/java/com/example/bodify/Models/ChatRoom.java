@@ -2,12 +2,12 @@ package com.example.bodify.Models;
 
 import java.util.ArrayList;
 
-public class CR {
+public class ChatRoom {
     private ArrayList<Message> messages;
     private String theme;
     private ArrayList<String> userIds;
 
-    public CR() {
+    public ChatRoom() {
 
     }
 
@@ -35,7 +35,7 @@ public class CR {
         this.userIds = userIds;
     }
 
-    public CR(ArrayList<Message> messages, String theme, ArrayList<String> userIds) {
+    public ChatRoom(ArrayList<Message> messages, String theme, ArrayList<String> userIds) {
         this.messages = messages;
         this.theme = theme;
         this.userIds = userIds;

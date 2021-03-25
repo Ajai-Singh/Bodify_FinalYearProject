@@ -1,11 +1,7 @@
 package com.example.bodify.Models;
 
-import java.io.Serializable;
-
 public class Room {
-    //in the future remove userID
-
-    private String theme,userID,id;
+    private String theme,id;
 
     public Room() {
 
@@ -19,14 +15,6 @@ public class Room {
         this.theme = theme;
     }
 
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
     public String getId() {
         return id;
     }
@@ -35,8 +23,7 @@ public class Room {
         this.id = id;
     }
 
-    public Room(String theme, String userID) {
+    public Room(String theme) {
         this.theme = theme;
-        this.userID = userID;
     }
 }

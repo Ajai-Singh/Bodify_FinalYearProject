@@ -590,6 +590,12 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(FoodFinder.this, Management.class));
+    }
 }
 
 

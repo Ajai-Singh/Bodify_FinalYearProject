@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Test"
+    android:background="@drawable/bg"
     tools:deviceIds="wear">
 
     <androidx.appcompat.widget.Toolbar
@@ -26,6 +27,23 @@
         android:layout_alignEnd="@id/chatRoomTB"
         android:background="@drawable/ic_baseline_post_add_24"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView53"
+        android:layout_width="211dp"
+        android:layout_height="50dp"
+        android:layout_alignEnd="@id/chatRoomTB"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="40dp"
+        android:layout_toStartOf="@+id/createChatRoom"
+        android:gravity="bottom"
+        android:text="Chat Rooms"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/createChatRoom"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView

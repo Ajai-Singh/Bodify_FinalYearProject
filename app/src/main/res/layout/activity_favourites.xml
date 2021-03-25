@@ -33,4 +33,18 @@
         android:layout_height="54dp"
         android:layout_alignEnd="@id/toolbar2"
         android:background="@drawable/ic_baseline_post_add_24" />
+
+    <TextView
+        android:id="@+id/textView53"
+        android:layout_width="211dp"
+        android:layout_height="50dp"
+        android:layout_alignEnd="@id/toolbar2"
+        android:layout_marginEnd="133dp"
+        android:layout_toStartOf="@+id/createCustomFavourite"
+        android:gravity="bottom"
+        android:text="Food Favourites"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 </RelativeLayout>

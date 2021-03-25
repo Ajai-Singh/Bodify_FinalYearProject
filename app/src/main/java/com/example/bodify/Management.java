@@ -117,7 +117,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     NavigationView navigationView = findViewById(R.id.nav_view);
                     View headerView = navigationView.getHeaderView(0);
                     TextView navUsername = headerView.findViewById(R.id.navigationDrawerName);
-                    navUsername.setText(user.getUserName());
+                    navUsername.setText("Name: " + user.getUserName());
                     final CircleImageView navProfilePicture = headerView.findViewById(R.id.navPicture);
                     storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);

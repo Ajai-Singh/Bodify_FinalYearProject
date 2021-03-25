@@ -1,6 +1,7 @@
 package com.example.bodify;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -173,5 +174,11 @@ public class Health extends AppCompatActivity {
         xLabels.add("Carbohydrates");
         xLabels.add("Proteins");
         return new ArrayList<>(xLabels);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(Health.this, Management.class));
     }
 }

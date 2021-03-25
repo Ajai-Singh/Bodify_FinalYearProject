@@ -2,45 +2,33 @@ package com.example.bodify;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.bodify.Adapters.ChatRoomAdapter;
-import com.example.bodify.Adapters.FavouriteAdapter;
 import com.example.bodify.Models.Room;
-import com.example.bodify.Models.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -49,8 +37,9 @@ public class Test extends AppCompatActivity {
     private String spinnerSelection;
     private ChatRoomAdapter chatRoomAdapter;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    ArrayList<Room> rooms = new ArrayList<>();
-    
+    private final ArrayList<Room> rooms = new ArrayList<>();
+    private ConstraintLayout constraintLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +47,7 @@ public class Test extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         ImageView imageView = findViewById(R.id.createChatRoom);
         recyclerView = findViewById(R.id.chatRoomRCV);
+        constraintLayout = findViewById(R.id.test);
         showAllRooms();
         imageView.setOnClickListener(v -> {
             DatabaseReference roomReference = FirebaseDatabase.getInstance().getReference("Rooms");
@@ -76,7 +66,7 @@ public class Test extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Toast.makeText(Test.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -96,6 +86,8 @@ public class Test extends AppCompatActivity {
                     recyclerView.setLayoutManager(new LinearLayoutManager(Test.this));
                     chatRoomAdapter = new ChatRoomAdapter(rooms, Test.this);
                     recyclerView.setAdapter(chatRoomAdapter);
+                } else {
+                    noDataSnackBar();
                 }
             }
 
@@ -171,7 +163,7 @@ public class Test extends AppCompatActivity {
                 dlgAlert.create().show();
             } else {
                 dialog.dismiss();
-                Room newRoom = new Room(spinnerSelection,mAuth.getUid());
+                Room newRoom = new Room(spinnerSelection);
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Rooms");
                 databaseReference.push().setValue(newRoom).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -198,12 +190,22 @@ public class Test extends AppCompatActivity {
                             }
                         });
                         Toast.makeText(Test.this, "Chat room created!", Toast.LENGTH_SHORT).show();
-                        //startActivity(new Intent(Test.this,ChatBox.class));
                     } else {
                         Toast.makeText(Test.this, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
+    }
+
+    public void noDataSnackBar() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no chats, Create one!", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(Test.this, Management.class));
     }
 }

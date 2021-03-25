@@ -1,14 +1,10 @@
 package com.example.bodify.Models;
 
 public class Message {
-    private String messageText;
-    private String messageUser;
-    private String userId;
-    private String dateTime;
+    private String messageText,userId,dateTime;
 
-    public Message(String messageText, String messageUser, String userId, String dateTime) {
+    public Message(String messageText, String userId, String dateTime) {
         this.messageText = messageText;
-        this.messageUser = messageUser;
         this.userId = userId;
         this.dateTime = dateTime;
     }
@@ -23,14 +19,6 @@ public class Message {
 
     public void setMessageText(String messageText) {
         this.messageText = messageText;
-    }
-
-    public String getMessageUser() {
-        return messageUser;
-    }
-
-    public void setMessageUser(String messageUser) {
-        this.messageUser = messageUser;
     }
 
     public String getUserId() {
