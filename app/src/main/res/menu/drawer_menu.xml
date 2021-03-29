@@ -22,27 +22,21 @@
             tools:ignore="HardcodedText" />
 
         <item
-            android:id="@+id/deals"
-            android:icon="@drawable/ribbon"
-            android:title="Grocery Deals"
-            tools:ignore="HardcodedText" />
-
-        <item
             android:id="@+id/healthPage"
             android:icon="@drawable/health"
             android:title="Health"
             tools:ignore="HardcodedText" />
 
         <item
-            android:id="@+id/settings"
-            android:icon="@drawable/settings"
-            android:title="Settings"
-            tools:ignore="HardcodedText" />
-
-        <item
             android:id="@+id/gymFinder"
             android:icon="@drawable/location"
             android:title="Gym Finder"
+            tools:ignore="HardcodedText" />
+
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/settings"
+            android:title="Settings"
             tools:ignore="HardcodedText" />
 
         <item

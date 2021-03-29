@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Test extends AppCompatActivity {
+public class ChatRooms extends AppCompatActivity {
     private RecyclerView recyclerView;
     private String spinnerSelection;
     private ChatRoomAdapter chatRoomAdapter;
@@ -66,7 +66,7 @@ public class Test extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(Test.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatRooms.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -83,8 +83,8 @@ public class Test extends AppCompatActivity {
                 }
                 if (!rooms.isEmpty()) {
                     recyclerView.setHasFixedSize(true);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(Test.this));
-                    chatRoomAdapter = new ChatRoomAdapter(rooms, Test.this);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(ChatRooms.this));
+                    chatRoomAdapter = new ChatRoomAdapter(rooms, ChatRooms.this);
                     recyclerView.setAdapter(chatRoomAdapter);
                 } else {
                     noDataSnackBar();
@@ -93,14 +93,14 @@ public class Test extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(Test.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatRooms.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void createChatRoom(ArrayList<String> roomNames) {
         ArrayList<String> themes = new ArrayList<>();
-        AlertDialog.Builder builder = new AlertDialog.Builder(Test.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ChatRooms.this);
         @SuppressLint("InflateParams")
         View view = getLayoutInflater().inflate(R.layout.chatroomdialogue, null);
         Spinner spinner = view.findViewById(R.id.chatRoomTheme);
@@ -110,7 +110,7 @@ public class Test extends AppCompatActivity {
         themes.add("Gain weight");
         themes.add("Macro-nutrients");
         themes.add("Other");
-        ArrayAdapter servingAdapter = new ArrayAdapter(Test.this, android.R.layout.simple_spinner_dropdown_item, themes) {
+        ArrayAdapter servingAdapter = new ArrayAdapter(ChatRooms.this, android.R.layout.simple_spinner_dropdown_item, themes) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
@@ -148,14 +148,14 @@ public class Test extends AppCompatActivity {
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
             if (spinner.getSelectedItemPosition() == 0) {
-                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Test.this);
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ChatRooms.this);
                 dlgAlert.setMessage("Select chat theme!");
                 dlgAlert.setTitle("Error...");
                 dlgAlert.setPositiveButton("OK", null);
                 dlgAlert.setCancelable(true);
                 dlgAlert.create().show();
             } else if(roomNames.contains(spinner.getSelectedItem().toString())) {
-                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Test.this);
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ChatRooms.this);
                 dlgAlert.setMessage("Error similar room exists!");
                 dlgAlert.setTitle("Error...");
                 dlgAlert.setPositiveButton("OK", null);
@@ -178,20 +178,20 @@ public class Test extends AppCompatActivity {
                                 }
                                 if (!rooms.isEmpty()) {
                                     recyclerView.setHasFixedSize(true);
-                                    recyclerView.setLayoutManager(new LinearLayoutManager(Test.this));
-                                    chatRoomAdapter = new ChatRoomAdapter(rooms, Test.this);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(ChatRooms.this));
+                                    chatRoomAdapter = new ChatRoomAdapter(rooms, ChatRooms.this);
                                     recyclerView.setAdapter(chatRoomAdapter);
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(Test.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ChatRooms.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-                        Toast.makeText(Test.this, "Chat room created!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChatRooms.this, "Chat room created!", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(Test.this, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChatRooms.this, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -206,6 +206,6 @@ public class Test extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
-        startActivity(new Intent(Test.this, Management.class));
+        startActivity(new Intent(ChatRooms.this, Management.class));
     }
 }

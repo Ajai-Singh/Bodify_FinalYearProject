@@ -151,6 +151,6 @@ public class ChatBox extends AppCompatActivity {
     @Override
     public void onBackPressed() {
        finish();
-       startActivity(new Intent(ChatBox.this, Test.class));
+       startActivity(new Intent(ChatBox.this, ChatRooms.class));
     }
 }

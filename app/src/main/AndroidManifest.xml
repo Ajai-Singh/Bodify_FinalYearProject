@@ -50,8 +50,8 @@
         <service android:name=".DiaryRefreshService" />
         <activity android:name=".WeightProgression" />
         <service android:name=".HealthService" />
-        <activity android:name=".Deals" />
-        <activity android:name=".Test" android:theme="@style/Theme.test" />
+
+        <activity android:name=".ChatRooms" android:theme="@style/Theme.test" />
         <activity android:name=".ChatBox" android:windowSoftInputMode="adjustPan"/>
     </application>
 </manifest>

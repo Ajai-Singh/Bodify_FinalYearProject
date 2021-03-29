@@ -16,6 +16,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+
+import com.example.bodify.Management;
 import com.example.bodify.Models.User;
 import com.example.bodify.R;
 import com.example.bodify.Tailoring;
@@ -164,6 +167,11 @@ public class SignUp extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+            startActivity(new Intent(this, SignUp.class));
     }
 }
 

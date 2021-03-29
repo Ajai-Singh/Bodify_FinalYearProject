@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.bodify.Management;
 import com.example.bodify.DiaryRefreshService;
 import com.example.bodify.R;
+import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
 import java.util.Objects;
 
@@ -55,5 +56,10 @@ public class LogIn extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, LogIn.class));
     }
 }

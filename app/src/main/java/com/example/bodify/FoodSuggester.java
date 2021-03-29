@@ -1,6 +1,7 @@
 package com.example.bodify;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -463,4 +465,6 @@ public class FoodSuggester extends Fragment {
         Snackbar snackbar = Snackbar.make(constraintLayout, "Ignored", Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
+
+    //ovveride on back pressed in a fragment
 }
