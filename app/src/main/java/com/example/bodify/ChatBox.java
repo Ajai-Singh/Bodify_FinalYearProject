@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -13,6 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.bodify.Adapters.ChatRoomAdapter;
 import com.example.bodify.Models.ChatRoom;
 import com.example.bodify.Models.Message;
 import com.example.bodify.Models.User;
@@ -72,6 +77,7 @@ public class ChatBox extends AppCompatActivity {
         adapter = new FirebaseListAdapter<Message>(options) {
             @Override
             protected void populateView(@org.jetbrains.annotations.NotNull @NotNull View v, @org.jetbrains.annotations.NotNull @NotNull Message model, int position) {
+
                 TextView messageText = v.findViewById(R.id.groupChatMessage);
                 TextView messageTime = v.findViewById(R.id.messageStamp);
                 CircleImageView circleImageView = v.findViewById(R.id.cardViewProfilePicture);
@@ -85,7 +91,7 @@ public class ChatBox extends AppCompatActivity {
                                 User user = userSnapshot.getValue(User.class);
                                 assert user != null;
                                 user.setUserID(userSnapshot.getKey());
-                                if (user.getUserID().equals(mAuth.getUid())) {
+                                if (user.getUserID().equals(model.getUserId())) {
                                     messageUser.setText("User: " + user.getUserName());
                                     StorageReference storageReference = FirebaseStorage.getInstance().getReference();
                                     storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {

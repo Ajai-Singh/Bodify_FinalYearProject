@@ -57,7 +57,7 @@ import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
 import com.google.firebase.database.ValueEventListener;
 
-public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class RecipeSearch extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private Spinner mealsSpinner;
     private ArrayList<String> mealTypes;
     private EditText choice, nutrition;
@@ -87,9 +87,9 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_finder);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Food Finder");
-        queue = Volley.newRequestQueue(FoodFinder.this);
-        AndroidNetworking.initialize(FoodFinder.this);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Recipe Search");
+        queue = Volley.newRequestQueue(RecipeSearch.this);
+        AndroidNetworking.initialize(RecipeSearch.this);
         mealsSpinner = findViewById(R.id.spinner);
         choice = findViewById(R.id.foodName);
         search = findViewById(R.id.searchMeals);
@@ -118,7 +118,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
         mealTypes.add("Beverage");
         mealTypes.add("Sauce");
         mealTypes.add("Drink");
-        ArrayAdapter<String> adapterMeals = new ArrayAdapter<String>(FoodFinder.this, android.R.layout.simple_spinner_dropdown_item, mealTypes) {
+        ArrayAdapter<String> adapterMeals = new ArrayAdapter<String>(RecipeSearch.this, android.R.layout.simple_spinner_dropdown_item, mealTypes) {
             @Override
             public boolean isEnabled(int position) {
                 return position != 0;
@@ -138,7 +138,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
         };
         adapterMeals.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mealsSpinner.setAdapter(adapterMeals);
-        mealsSpinner.setOnItemSelectedListener(FoodFinder.this);
+        mealsSpinner.setOnItemSelectedListener(RecipeSearch.this);
     }
 
     public void mealSearch() {
@@ -147,13 +147,16 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 recipes.clear();
                 recipeAdapter.notifyDataSetChanged();
             }
-            if (mealsSpinner.getSelectedItemPosition() == 0 || TextUtils.isEmpty(choice.getText().toString())) {
-                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(FoodFinder.this);
-                dlgAlert.setMessage("Not All Fields are Filled!");
+            if (mealsSpinner.getSelectedItemPosition() == 0) {
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(RecipeSearch.this);
+                dlgAlert.setMessage("Select Meal Type!");
                 dlgAlert.setTitle("Error...");
                 dlgAlert.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
                 dlgAlert.setCancelable(true);
                 dlgAlert.create().show();
+            } else if(TextUtils.isEmpty(choice.getText().toString())) {
+                choice.setError("Field cannot be empty!");
+                choice.requestFocus();
             } else {
                 AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query=" + choice.getText().toString() + "&apiKey=" + API_KEY + "&addRecipeNutrition=true&type=" + mealsSpinner.getSelectedItem().toString().toLowerCase())
                         .addPathParameter("pageNumber", "0")
@@ -192,11 +195,11 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 recipes.add(recipe);
                             }
                             if(recipes.isEmpty()) {
-                             noRecipes();
+                             noResultsFound();
                             }
                             recyclerView.setHasFixedSize(true);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(FoodFinder.this));
-                            recipeAdapter = new RecipeAdapter(recipes, FoodFinder.this);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(RecipeSearch.this));
+                            recipeAdapter = new RecipeAdapter(recipes, RecipeSearch.this);
                             recyclerView.setAdapter(recipeAdapter);
                         } catch (
                                 JSONException e) {
@@ -207,7 +210,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
 
                     @Override
                     public void onError(ANError anError) {
-                        Toast.makeText(FoodFinder.this, "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RecipeSearch.this, "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -224,7 +227,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         response -> {
                             try {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(FoodFinder.this);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(RecipeSearch.this);
                                 View view = getLayoutInflater().inflate(R.layout.quick_search_popup, null);
                                 TextView sugarTV = view.findViewById(R.id.quickSearchSugar);
                                 TextView fiberTV = view.findViewById(R.id.quickSearchFiber);
@@ -241,7 +244,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 JSONObject jsonObject = new JSONObject(response);
                                 JSONArray jsonArray = jsonObject.getJSONArray("items");
                                 if (jsonArray.length() == 0) {
-                                    Toast.makeText(FoodFinder.this, "No results found! Try again", Toast.LENGTH_SHORT).show();
+                                    noResultsFound();
                                 } else {
                                     for (int i = 0; i < jsonArray.length(); i++) {
                                         sugarTV.setText(String.valueOf(jsonArray.getJSONObject(i).getDouble("sugar_g")));
@@ -266,7 +269,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                                 e.printStackTrace();
                             }
                         },
-                        error -> Toast.makeText(FoodFinder.this, "Error Occurred" + error.getMessage(), Toast.LENGTH_SHORT).show()
+                        error -> Toast.makeText(RecipeSearch.this, "Error Occurred" + error.getMessage(), Toast.LENGTH_SHORT).show()
                 ) {
                     @Override
                     public Map<String, String> getHeaders() {
@@ -283,7 +286,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
     public void scanner() {
         scan.setOnClickListener(v -> {
             if (v.getId() == R.id.button4) {
-                IntentIntegrator scanIntegrator = new IntentIntegrator(FoodFinder.this);
+                IntentIntegrator scanIntegrator = new IntentIntegrator(RecipeSearch.this);
                 scanIntegrator.initiateScan();
             }
         });
@@ -301,7 +304,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 returnNutritionalInformation(scanContent);
             }
         } else {
-            Toast.makeText(FoodFinder.this, "No scan data received!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RecipeSearch.this, "No scan data received!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -320,13 +323,13 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                     createPost(jsonObject.getString("item_name"),jsonObject.getInt("nf_calories"),jsonObject.getInt("nf_calories_from_fat"),jsonObject.getInt("nf_total_fat"),
                             jsonObject.getInt("nf_sodium"),jsonObject.getInt("nf_total_carbohydrate"),jsonObject.getInt("nf_sugars"),jsonObject.getInt("nf_protein"),jsonObject.getInt("nf_servings_per_container"));
                 } catch (JSONException e) {
-                    Toast.makeText(FoodFinder.this, "Error Occurred" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RecipeSearch.this, "Error Occurred" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onError(ANError anError) {
-                Toast.makeText(FoodFinder.this, "Error Occurred" + anError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RecipeSearch.this, "Error Occurred" + anError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -337,7 +340,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                            final int servings) {
         TextView itemNameFromScan, itemCalories, itemCaloriesFromFat, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT, itemServingsT;
         Button addToFavourites, addToDiary;
-        AlertDialog.Builder builder = new AlertDialog.Builder(FoodFinder.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(RecipeSearch.this);
         @SuppressLint("InflateParams")
         View view = getLayoutInflater().inflate(R.layout.scanner_popup, null);
         itemNameFromScan = view.findViewById(R.id.itemNameTextView);
@@ -379,22 +382,22 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                         }
                     }
                     if(exists) {
-                        Toast.makeText(FoodFinder.this, "Error item already exists in Favourites", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RecipeSearch.this, "Error item already exists in Favourites", Toast.LENGTH_SHORT).show();
                     } if(!exists) {
                         Favourite favourite = new Favourite(itemName, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, userID, servings);
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                         databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(FoodFinder.this, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RecipeSearch.this, "Item added to favourites", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(FoodFinder.this, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RecipeSearch.this, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(FoodFinder.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RecipeSearch.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -405,7 +408,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 final Spinner meals;
                 final Spinner quantity;
                 final Spinner whatDay;
-                AlertDialog.Builder builder = new AlertDialog.Builder(FoodFinder.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(RecipeSearch.this);
                 @SuppressLint("InflateParams")
                 View view = getLayoutInflater().inflate(R.layout.addtodiarypopup, null);
                 meals = view.findViewById(R.id.when);
@@ -438,7 +441,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                         break;
                     }
                 }
-                ArrayAdapter dayAdapter = new ArrayAdapter(FoodFinder.this, android.R.layout.simple_spinner_dropdown_item, daysToShow);
+                ArrayAdapter dayAdapter = new ArrayAdapter(RecipeSearch.this, android.R.layout.simple_spinner_dropdown_item, daysToShow);
                 whatDay.setAdapter(dayAdapter);
                 whatDay.setSelection(defaultP);
                 dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -464,7 +467,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 for (int i = 1; i <= servings; i++) {
                     servingNumbers.add(String.valueOf(i));
                 }
-                ArrayAdapter servingAdapter = new ArrayAdapter(FoodFinder.this, android.R.layout.simple_spinner_dropdown_item, servingNumbers) {
+                ArrayAdapter servingAdapter = new ArrayAdapter(RecipeSearch.this, android.R.layout.simple_spinner_dropdown_item, servingNumbers) {
                     @Override
                     public boolean isEnabled(int position) {
                         return position != 0;
@@ -495,7 +498,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
 
                     }
                 });
-                ArrayAdapter mealsAdapter = new ArrayAdapter(FoodFinder.this, android.R.layout.simple_spinner_dropdown_item, mealTypes) {
+                ArrayAdapter mealsAdapter = new ArrayAdapter(RecipeSearch.this, android.R.layout.simple_spinner_dropdown_item, mealTypes) {
                     @Override
                     public boolean isEnabled(int position) {
                         return position != 0;
@@ -534,7 +537,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                 dialog.show();
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
                     if (meals.getSelectedItemPosition() == 0 || quantity.getSelectedItemPosition() == 0) {
-                        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(FoodFinder.this);
+                        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(RecipeSearch.this);
                         dlgAlert.setMessage("Not All Fields are Filled!");
                         dlgAlert.setTitle("Error...");
                         dlgAlert.setPositiveButton("Ok", (dialog1, which) -> dialog1.dismiss());
@@ -567,9 +570,9 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                         databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(FoodFinder.this, "Successfully saved", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RecipeSearch.this, "Successfully saved", Toast.LENGTH_SHORT).show();
                             }
-                        }).addOnFailureListener(e -> Toast.makeText(FoodFinder.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        }).addOnFailureListener(e -> Toast.makeText(RecipeSearch.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
                 });
             }
@@ -579,8 +582,8 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
         dialog.show();
     }
 
-    public void noRecipes() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no matches found for searched criteria", Snackbar.LENGTH_LONG);
+    public void noResultsFound() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no matches found for searched criteria!", Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 
@@ -594,7 +597,7 @@ public class FoodFinder extends AppCompatActivity implements AdapterView.OnItemS
     @Override
     public void onBackPressed() {
         finish();
-        startActivity(new Intent(FoodFinder.this, Management.class));
+        startActivity(new Intent(RecipeSearch.this, Management.class));
     }
 }
 

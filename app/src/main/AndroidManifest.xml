@@ -45,7 +45,7 @@
         <activity android:name=".Settings" />
         <activity android:name=".Health" />
         <activity android:name=".Management" android:theme="@style/Theme.test" />
-        <activity android:name=".FoodFinder" android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".RecipeSearch" android:windowSoftInputMode="adjustPan" />
         <activity android:name=".BreakdownAnalysis" />
         <service android:name=".DiaryRefreshService" />
         <activity android:name=".WeightProgression" />

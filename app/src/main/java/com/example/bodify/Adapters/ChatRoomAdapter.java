@@ -110,7 +110,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                                 userIds.add(mAuth.getUid());
                                                 Date date = new Date();
                                                 String currentDateTime = dateFormat.format(date);
-                                                Message message = new Message("Group chat created", mAuth.getUid(), currentDateTime);
+                                                Message message = new Message("Created group chat", mAuth.getUid(), currentDateTime);
                                                 messages.add(message);
                                                 ChatRoom newChatRoom = new ChatRoom(messages, rooms.get(position).getTheme(), userIds);
                                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ChatRoom");

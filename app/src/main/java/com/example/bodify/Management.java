@@ -83,7 +83,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                     startActivity(new Intent(Management.this, ChatRooms.class));
                     break;
                 case R.id.foodFinder:
-                    startActivity(new Intent(Management.this, FoodFinder.class));
+                    startActivity(new Intent(Management.this, RecipeSearch.class));
                     break;
                 case R.id.settings:
                     startActivity(new Intent(Management.this, Settings.class));

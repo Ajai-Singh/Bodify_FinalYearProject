@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -50,6 +51,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
     private ConstraintLayout constraintLayout;
     private Spinner spinner;
     private YAxis leftAxis;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +153,10 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
-        showSnackBar();
+        Intent intent = getIntent();
+        if(Objects.equals(mAuth.getUid(), intent.getStringExtra("userId"))) {
+            showSnackBar();
+        }
         barEntries.add(new BarEntry(0f, (float) weight));
         xLabels.add(date);
         for (int i = 0; i < analyses.size(); i++) {

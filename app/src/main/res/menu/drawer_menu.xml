@@ -6,7 +6,7 @@
         <item
             android:id="@+id/foodFinder"
             android:icon="@drawable/diet"
-            android:title="Food Finder"
+            android:title="Recipe Search"
             tools:ignore="HardcodedText" />
 
         <item

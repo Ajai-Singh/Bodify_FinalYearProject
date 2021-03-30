@@ -302,7 +302,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                         analyses.add(analysis);
                     }
                 }
-                showChart(analyses);
+                showChart(analyses,userTag);
             }
 
             @Override
@@ -312,10 +312,11 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         });
     }
 
-    public void showChart(ArrayList<Analysis> analyses) {
+    public void showChart(ArrayList<Analysis> analyses,String userTag) {
         weights.setOnClickListener(v -> {
             Intent intent = new Intent(BreakdownAnalysis.this, WeightProgression.class);
             intent.putExtra("analyses", analyses);
+            intent.putExtra("userId",userTag);
             startActivity(intent);
         });
     }

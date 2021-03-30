@@ -3,6 +3,8 @@ package com.example.bodify.Adapters;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +45,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
     @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        //holder.setServings(meals.get(position).getNumberOfServings());
         holder.setItemName(meals.get(position).getItemName());
         holder.setCaloriesConsumed(meals.get(position).getCalories() * meals.get(position).getNumberOfServings());
         holder.setFats(meals.get(position).getItemTotalFat() * meals.get(position).getNumberOfServings());
@@ -64,29 +67,32 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                                     break;
                                 }
                             }
-                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meal.getDayOfWeek());
-                            Meal finalMeal = meal;
-                            databaseReference.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for(DataSnapshot mealSnapshot : snapshot.getChildren()) {
-                                        Meal dbMeal = mealSnapshot.getValue(Meal.class);
-                                        assert dbMeal != null;
-                                        dbMeal.setId(mealSnapshot.getKey());
-                                        if(dbMeal.getUUID().equals(finalMeal.getUUID())) {
-                                            databaseReference.child(dbMeal.getId()).removeValue();
-                                            meals.clear();
-                                            notifyDataSetChanged();
-                                            break;
+                            Meal finalMeal1 = meal;
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(finalMeal1.getDayOfWeek());
+                                databaseReference.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for(DataSnapshot mealSnapshot : snapshot.getChildren()) {
+                                            Meal dbMeal = mealSnapshot.getValue(Meal.class);
+                                            assert dbMeal != null;
+                                            dbMeal.setId(mealSnapshot.getKey());
+                                            if(dbMeal.getUUID().equals(finalMeal1.getUUID())) {
+                                                databaseReference.child(dbMeal.getId()).removeValue();
+                                                meals.clear();
+                                                notifyDataSetChanged();
+                                                break;
+                                            }
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(context,"Error occurred:" + error.getMessage(),Toast.LENGTH_SHORT).show();
-                                }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(context,"Error occurred:" + error.getMessage(),Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             });
+
                         });
                         AlertDialog alertDialog = builder.create();
                         alertDialog.setTitle("Attention required!");
@@ -196,6 +202,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
             proteins = itemView.findViewById(R.id.proteinsTV);
             carbs = itemView.findViewById(R.id.carbsTV);
             menuOptions = itemView.findViewById(R.id.mealMenuOptions);
+            //servings = itemView.findViewById(R.id.textView55);
         }
 
         public void setItemName(String name) {
@@ -217,6 +224,10 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
         public void setCarbs(int c) {
             carbs.setText(String.valueOf(c).concat("C"));
         }
+
+//        public void setServings(int s) {
+//            servings.setText(String.valueOf("Servings: " + s));
+//        }
     }
 }
 
