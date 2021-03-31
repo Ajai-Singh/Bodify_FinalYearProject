@@ -36,6 +36,7 @@
         <activity android:name=".FirebaseAuthentication.LogIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -44,14 +45,26 @@
         <activity android:name=".GymsNearMe" />
         <activity android:name=".Settings" />
         <activity android:name=".Health" />
-        <activity android:name=".Management" android:theme="@style/Theme.test" />
-        <activity android:name=".RecipeSearch" android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Management"
+            android:theme="@style/Theme.test" />
+        <activity
+            android:name=".RecipeSearch"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".BreakdownAnalysis" />
+
         <service android:name=".DiaryRefreshService" />
+
         <activity android:name=".WeightProgression" />
+
         <service android:name=".HealthService" />
 
-        <activity android:name=".ChatRooms" android:theme="@style/Theme.test" />
-        <activity android:name=".ChatBox" android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".ChatRooms"
+            android:theme="@style/Theme.test" />
+        <activity
+            android:name=".ChatBox"
+            android:windowSoftInputMode="adjustPan" />
     </application>
+
 </manifest>

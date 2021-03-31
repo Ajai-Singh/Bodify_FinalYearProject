@@ -81,4 +81,5 @@
     <string name="title_activity_chat_room_manager">ChatRoomManager</string>
     <string name="title_activity_chat_room_splitter">ChatRoomSplitter</string>
     <string name="title_activity_chat_box">ChatBox</string>
+    <string name="title_activity_grocery_suggester">GrocerySuggester</string>
 </resources>

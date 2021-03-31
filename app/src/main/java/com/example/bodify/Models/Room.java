@@ -1,7 +1,7 @@
 package com.example.bodify.Models;
 
 public class Room {
-    private String theme,id;
+    private String theme,id,adminId;
 
     public Room() {
 
@@ -23,7 +23,16 @@ public class Room {
         this.id = id;
     }
 
-    public Room(String theme) {
+    public String getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(String adminId) {
+        this.adminId = adminId;
+    }
+
+    public Room(String theme,String adminId) {
         this.theme = theme;
+        this.adminId = adminId;
     }
 }

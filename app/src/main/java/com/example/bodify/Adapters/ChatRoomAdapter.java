@@ -75,8 +75,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                     });
 
                     holder.setTime(chatRoom.getMessages().get(chatRoom.getMessages().size() - 1).getDateTime());
-                    if(chatRoom.getUserIds().size() == 1 && chatRoom.getUserIds().get(0).equals("No users")) {
-                            holder.setCount("0");
+                    if (chatRoom.getUserIds().size() == 1 && chatRoom.getUserIds().get(0).equals("No users")) {
+                        holder.setCount("0");
                     } else {
                         holder.setCount(String.valueOf(chatRoom.getUserIds().size()));
                     }
@@ -96,48 +96,41 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 switch (item.getItemId()) {
                     case R.id.enterRoom:
-                        builder.setMessage("Would you like to enter chat room?")
-                                .setNegativeButton("No", (dialog1, which) -> dialog1.cancel())
-                                .setPositiveButton("Yes", (dialog1, which) -> {
-                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("ChatRoom").child(rooms.get(position).getTheme());
-                                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        final ArrayList<Message> messages = new ArrayList<>();
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            ChatRoom chatRoom = snapshot.getValue(ChatRoom.class);
-                                            if (chatRoom == null) {
-                                                ArrayList<String> userIds = new ArrayList<>();
-                                                userIds.add(mAuth.getUid());
-                                                Date date = new Date();
-                                                String currentDateTime = dateFormat.format(date);
-                                                Message message = new Message("Created group chat", mAuth.getUid(), currentDateTime);
-                                                messages.add(message);
-                                                ChatRoom newChatRoom = new ChatRoom(messages, rooms.get(position).getTheme(), userIds);
-                                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ChatRoom");
-                                                databaseReference.child(rooms.get(position).getTheme()).setValue(newChatRoom).addOnCompleteListener(task -> {
-                                                    if (task.isSuccessful()) {
-                                                        Toast.makeText(context, "Group Chat Created", Toast.LENGTH_SHORT).show();
-                                                    } else {
-                                                        Toast.makeText(context, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                            } else {
-                                                if (!chatRoom.getUserIds().contains(mAuth.getUid())) {
+                        DatabaseReference memberCheck = FirebaseDatabase.getInstance().getReference("ChatRoom").child(rooms.get(position).getTheme());
+                        memberCheck.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                ChatRoom chatRoom = snapshot.getValue(ChatRoom.class);
+                                if (chatRoom != null) {
+                                    if (chatRoom.getUserIds().contains(mAuth.getUid())) {
+                                        Intent intent = new Intent(context, ChatBox.class);
+                                        intent.putExtra("theme", rooms.get(position).getTheme());
+                                        context.startActivity(intent);
+                                    } else if (!chatRoom.getUserIds().contains(mAuth.getUid())) {
+                                        builder.setMessage("Would you like to enter chat room?")
+                                                .setNegativeButton("No", (dialog1, which) -> dialog1.cancel())
+                                                .setPositiveButton("Yes", (dialog1, which) -> {
                                                     DatabaseReference chatRoomReference = FirebaseDatabase.getInstance().getReference("ChatRoom").child(rooms.get(position).getTheme());
                                                     chatRoomReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                             ChatRoom dbChatRoom = snapshot.getValue(ChatRoom.class);
                                                             assert dbChatRoom != null;
-                                                            if(dbChatRoom.getUserIds().contains("No users"))
-                                                                for(int i = 0; i < dbChatRoom.getUserIds().size(); i++) {
-                                                                    if(dbChatRoom.getUserIds().get(i).equals("No users")) {
+                                                            if (dbChatRoom.getUserIds().contains("No users")) {
+                                                                for (int i = 0; i < dbChatRoom.getUserIds().size(); i++) {
+                                                                    if (dbChatRoom.getUserIds().get(i).equals("No users")) {
                                                                         dbChatRoom.getUserIds().remove(i);
                                                                         dbChatRoom.getUserIds().add(mAuth.getUid());
                                                                         break;
                                                                     }
                                                                 }
+                                                            } else {
+                                                                dbChatRoom.getUserIds().add(mAuth.getUid());
+                                                            }
                                                             chatRoomReference.child("userIds").setValue(dbChatRoom.getUserIds());
+                                                            Intent intent = new Intent(context, ChatBox.class);
+                                                            intent.putExtra("theme", rooms.get(position).getTheme());
+                                                            context.startActivity(intent);
                                                         }
 
                                                         @Override
@@ -145,22 +138,46 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                                             Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                                                         }
                                                     });
-                                                }
-                                            }
-                                        }
+                                                });
+                                        AlertDialog alertDialog = builder.create();
+                                        alertDialog.setTitle("Attention required!");
+                                        alertDialog.show();
+                                    }
+                                } else {
+                                    builder.setMessage("Would you like to enter chat room?")
+                                            .setNegativeButton("No", (dialog1, which) -> dialog1.cancel())
+                                            .setPositiveButton("Yes", (dialog1, which) -> {
+                                                ArrayList<String> userIds = new ArrayList<>();
+                                                userIds.add(mAuth.getUid());
+                                                Date date = new Date();
+                                                String currentDateTime = dateFormat.format(date);
+                                                ArrayList<Message> messages = new ArrayList<>();
+                                                Message message = new Message("Created group chat", mAuth.getUid(), currentDateTime);
+                                                messages.add(message);
+                                                ChatRoom newChatRoom = new ChatRoom(messages, rooms.get(position).getTheme(), userIds);
+                                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ChatRoom");
+                                                databaseReference.child(rooms.get(position).getTheme()).setValue(newChatRoom).addOnCompleteListener(task -> {
+                                                    if (task.isSuccessful()) {
+                                                        Toast.makeText(context, "Group Chat Created", Toast.LENGTH_SHORT).show();
+                                                        Intent intent = new Intent(context, ChatBox.class);
+                                                        intent.putExtra("theme", rooms.get(position).getTheme());
+                                                        context.startActivity(intent);
+                                                    } else {
+                                                        Toast.makeText(context, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            });
+                                    AlertDialog alertDialog = builder.create();
+                                    alertDialog.setTitle("Attention required!");
+                                    alertDialog.show();
+                                }
+                            }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-                                            Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                    Intent intent = new Intent(context, ChatBox.class);
-                                    intent.putExtra("theme", rooms.get(position).getTheme());
-                                    context.startActivity(intent);
-                                });
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.setTitle("Attention required!");
-                        alertDialog.show();
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         break;
                     case R.id.leaveChat:
                         DatabaseReference userChatCheck = FirebaseDatabase.getInstance().getReference("ChatRoom").child(rooms.get(position).getTheme());
@@ -168,7 +185,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 ChatRoom chatRoom = snapshot.getValue(ChatRoom.class);
-                                if(chatRoom != null) {
+                                if (chatRoom != null) {
                                     if (chatRoom.getUserIds().contains(mAuth.getUid())) {
                                         AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(context);
                                         deleteBuilder.setMessage("Are you sure you want to leave this room")
@@ -180,7 +197,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                                             break;
                                                         }
                                                     }
-                                                    if(chatRoom.getUserIds().isEmpty()) {
+                                                    if (chatRoom.getUserIds().isEmpty()) {
                                                         chatRoom.getUserIds().add("No users");
                                                     }
                                                     userChatCheck.child("userIds").setValue(chatRoom.getUserIds());
@@ -190,14 +207,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                         deleteDialog.setTitle("Attention required!");
                                         deleteDialog.show();
                                     } else {
-                                        Toast.makeText(context,"You're not a member of this chat",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "You're not a member of this chat", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(context,"Error occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                         break;

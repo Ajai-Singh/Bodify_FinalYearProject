@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Adapters.ChatRoomAdapter;
 import com.example.bodify.Models.Room;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +38,7 @@ public class ChatRooms extends AppCompatActivity {
     private ChatRoomAdapter chatRoomAdapter;
     private final ArrayList<Room> rooms = new ArrayList<>();
     private ConstraintLayout constraintLayout;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +163,7 @@ public class ChatRooms extends AppCompatActivity {
                 dlgAlert.create().show();
             } else {
                 dialog.dismiss();
-                Room newRoom = new Room(spinnerSelection);
+                Room newRoom = new Room(spinnerSelection, mAuth.getUid());
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Rooms");
                 databaseReference.push().setValue(newRoom).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

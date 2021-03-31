@@ -77,7 +77,6 @@ public class ChatBox extends AppCompatActivity {
         adapter = new FirebaseListAdapter<Message>(options) {
             @Override
             protected void populateView(@org.jetbrains.annotations.NotNull @NotNull View v, @org.jetbrains.annotations.NotNull @NotNull Message model, int position) {
-
                 TextView messageText = v.findViewById(R.id.groupChatMessage);
                 TextView messageTime = v.findViewById(R.id.messageStamp);
                 CircleImageView circleImageView = v.findViewById(R.id.cardViewProfilePicture);

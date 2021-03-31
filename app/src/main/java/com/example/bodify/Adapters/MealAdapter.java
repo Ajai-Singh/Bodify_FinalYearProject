@@ -45,7 +45,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
     @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        //holder.setServings(meals.get(position).getNumberOfServings());
+        holder.setServings(meals.get(position).getNumberOfServings());
         holder.setItemName(meals.get(position).getItemName());
         holder.setCaloriesConsumed(meals.get(position).getCalories() * meals.get(position).getNumberOfServings());
         holder.setFats(meals.get(position).getItemTotalFat() * meals.get(position).getNumberOfServings());
@@ -192,7 +192,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView itemName, caloriesConsumed, fats, proteins, carbs, menuOptions;
+        private final TextView itemName, caloriesConsumed, fats, proteins, carbs, menuOptions,servings;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -202,7 +202,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
             proteins = itemView.findViewById(R.id.proteinsTV);
             carbs = itemView.findViewById(R.id.carbsTV);
             menuOptions = itemView.findViewById(R.id.mealMenuOptions);
-            //servings = itemView.findViewById(R.id.textView55);
+            servings = itemView.findViewById(R.id.textView54);
         }
 
         public void setItemName(String name) {
@@ -225,9 +225,9 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
             carbs.setText(String.valueOf(c).concat("C"));
         }
 
-//        public void setServings(int s) {
-//            servings.setText(String.valueOf("Servings: " + s));
-//        }
+        public void setServings(int s) {
+            servings.setText(String.valueOf("Servings: " + s));
+        }
     }
 }
 
