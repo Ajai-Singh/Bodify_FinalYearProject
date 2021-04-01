@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import com.example.bodify.FirebaseAuthentication.LogIn;
+import com.example.bodify.Models.Habits;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,13 +32,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import java.util.ArrayList;
+import java.util.Objects;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Management extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
     private StorageReference storageReference;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final String userID = mAuth.getUid();
 
     @SuppressLint({"WrongConstant", "NonConstantResourceId"})
     @Override
@@ -50,40 +53,43 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.a);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        DatabaseReference macroRef = FirebaseDatabase.getInstance().getReference("Macros").child(userID);
+        DatabaseReference macroRef = FirebaseDatabase.getInstance().getReference("Macros").child(Objects.requireNonNull(mAuth.getUid()));
         macroRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Macro macro = snapshot.getValue(Macro.class);
-                if(macro == null) {
+                if (macro == null) {
                     startService(new Intent(Management.this, HealthService.class));
                 } else {
-                    stopService(new Intent(Management.this,HealthService.class));
+                    stopService(new Intent(Management.this, HealthService.class));
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(Management.this,"Error occurred: " + error.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(Management.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
-                case R.id.gymFinder:
-                    startActivity(new Intent(Management.this, GymsNearMe.class));
-                    break;
-                case R.id.dataAnalysis:
-                    startActivity(new Intent(Management.this, BreakdownAnalysis.class));
-                    break;
-                case R.id.healthPage:
-                    startActivity(new Intent(Management.this, Health.class));
+                case R.id.foodFinder:
+                    startActivity(new Intent(Management.this, RecipeSearch.class));
                     break;
                 case R.id.chat:
                     startActivity(new Intent(Management.this, ChatRooms.class));
                     break;
-                case R.id.foodFinder:
-                    startActivity(new Intent(Management.this, RecipeSearch.class));
+                case R.id.dataAnalysis:
+                    startActivity(new Intent(Management.this, BreakdownAnalysis.class));
+                    break;
+                case R.id.webScrap:
+                    startActivity(new Intent(Management.this, Groceries.class));
+                    break;
+                case R.id.healthPage:
+                    startActivity(new Intent(Management.this, Health.class));
+                    break;
+                case R.id.gymFinder:
+                    startActivity(new Intent(Management.this, GymsNearMe.class));
                     break;
                 case R.id.settings:
                     startActivity(new Intent(Management.this, Settings.class));
@@ -101,7 +107,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
         toggle.syncState();
         BottomNavigationView bottomNavigationView = findViewById(R.id.topNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragLayout,new Meals()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragLayout, new Meals()).commit();
         final String userID = mAuth.getUid();
         assert userID != null;
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
@@ -128,6 +134,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
                 Toast.makeText(Management.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+        creatingHabits();
     }
 
     @Override
@@ -135,7 +142,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            startActivity(new Intent(this,Management.class));
+            startActivity(new Intent(this, Management.class));
         }
     }
 
@@ -160,6 +167,34 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
         getSupportFragmentManager().beginTransaction().replace(R.id.fragLayout, fragment).commit();
         return true;
     };
+
+    public void creatingHabits() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Habits habits = snapshot.getValue(Habits.class);
+                if(habits == null) {
+                    Log.i("habits","null");
+                    ArrayList<String> breakfastNames = new ArrayList<>();
+                    breakfastNames.add("No Meals");
+                    ArrayList<String> lunchNames = new ArrayList<>();
+                    lunchNames.add("No Meals");
+                    ArrayList<String> dinnerNames = new ArrayList<>();
+                    dinnerNames.add("No Meals");
+                    ArrayList<String> otherNames = new ArrayList<>();
+                    otherNames.add("No Meals");
+                    Habits dbHabits = new Habits(breakfastNames,lunchNames,dinnerNames,otherNames);
+                    databaseReference.setValue(dbHabits);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,6 +33,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.example.bodify.Adapters.RecipeAdapter;
+import com.example.bodify.Models.Habits;
 import com.example.bodify.Models.Ingredient;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.Recipe;
@@ -154,7 +157,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                 dlgAlert.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
                 dlgAlert.setCancelable(true);
                 dlgAlert.create().show();
-            } else if(TextUtils.isEmpty(choice.getText().toString())) {
+            } else if (TextUtils.isEmpty(choice.getText().toString())) {
                 choice.setError("Field cannot be empty!");
                 choice.requestFocus();
             } else {
@@ -194,8 +197,8 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                                 Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
                                 recipes.add(recipe);
                             }
-                            if(recipes.isEmpty()) {
-                             noResultsFound();
+                            if (recipes.isEmpty()) {
+                                noResultsFound();
                             }
                             recyclerView.setHasFixedSize(true);
                             recyclerView.setLayoutManager(new LinearLayoutManager(RecipeSearch.this));
@@ -320,8 +323,8 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    createPost(jsonObject.getString("item_name"),jsonObject.getInt("nf_calories"),jsonObject.getInt("nf_calories_from_fat"),jsonObject.getInt("nf_total_fat"),
-                            jsonObject.getInt("nf_sodium"),jsonObject.getInt("nf_total_carbohydrate"),jsonObject.getInt("nf_sugars"),jsonObject.getInt("nf_protein"),jsonObject.getInt("nf_servings_per_container"));
+                    createPost(jsonObject.getString("item_name"), jsonObject.getInt("nf_calories"), jsonObject.getInt("nf_calories_from_fat"), jsonObject.getInt("nf_total_fat"),
+                            jsonObject.getInt("nf_sodium"), jsonObject.getInt("nf_total_carbohydrate"), jsonObject.getInt("nf_sugars"), jsonObject.getInt("nf_protein"), jsonObject.getInt("nf_servings_per_container"));
                 } catch (JSONException e) {
                     Toast.makeText(RecipeSearch.this, "Error Occurred" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -381,9 +384,10 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                             }
                         }
                     }
-                    if(exists) {
+                    if (exists) {
                         Toast.makeText(RecipeSearch.this, "Error item already exists in Favourites", Toast.LENGTH_SHORT).show();
-                    } if(!exists) {
+                    }
+                    if (!exists) {
                         Favourite favourite = new Favourite(itemName, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, userID, servings);
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                         databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
@@ -395,6 +399,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         });
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Toast.makeText(RecipeSearch.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -424,19 +429,19 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                 daysOfWeek.add("Sunday");
                 ArrayList<String> daysToShow = new ArrayList<>();
                 String position = null;
-                for(int i = 0; i < daysOfWeek.size(); i ++) {
-                    if(simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
+                for (int i = 0; i < daysOfWeek.size(); i++) {
+                    if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
                         String a = daysOfWeek.get(i);
                         position = String.valueOf(daysOfWeek.indexOf(a));
                         break;
                     }
                 }
-                for(int i = 0; i <= Integer.parseInt(Objects.requireNonNull(position)); i++) {
+                for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(position)); i++) {
                     daysToShow.add(daysOfWeek.get(i));
                 }
                 int defaultP = 0;
-                for(int i = 0; i < daysToShow.size(); i++) {
-                    if(simpleDateformat.format(today).equalsIgnoreCase(daysToShow.get(i))) {
+                for (int i = 0; i < daysToShow.size(); i++) {
+                    if (simpleDateformat.format(today).equalsIgnoreCase(daysToShow.get(i))) {
                         defaultP = i;
                         break;
                     }
@@ -531,7 +536,8 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                 });
                 String finalPosition = position;
                 builder.setView(view);
-                builder.setPositiveButton("Create", (dialog, which) -> { });
+                builder.setPositiveButton("Create", (dialog, which) -> {
+                });
                 builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
                 AlertDialog dialog = builder.create();
                 dialog.show();
@@ -546,8 +552,8 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                     } else {
                         dialog.dismiss();
                         String positionToAddTo = null;
-                        for(int i = 0; i < daysOfWeek.size(); i ++) {
-                            if(daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
+                        for (int i = 0; i < daysOfWeek.size(); i++) {
+                            if (daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
                                 String a = daysOfWeek.get(i);
                                 positionToAddTo = String.valueOf(daysOfWeek.indexOf(a));
                                 break;
@@ -555,22 +561,96 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         }
                         assert positionToAddTo != null;
                         int finalDate = Integer.parseInt(finalPosition) - Integer.parseInt(positionToAddTo);
-                        int subStringCD = Integer.parseInt(formatter.format(date).substring(0,2));
+                        int subStringCD = Integer.parseInt(formatter.format(date).substring(0, 2));
                         int f = subStringCD - finalDate;
                         StringBuffer stringBuffer = new StringBuffer(formatter.format(date));
-                        stringBuffer.replace(0,2,String.valueOf(f));
+                        stringBuffer.replace(0, 2, String.valueOf(f));
                         String newDate;
-                        if(stringBuffer.length() == 9) {
+                        if (stringBuffer.length() == 9) {
                             String date = String.valueOf(stringBuffer);
                             newDate = "0" + date;
                         } else {
                             newDate = String.valueOf(stringBuffer);
                         }
-                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice,whatDayToAddTo,newDate,servings, UUID.randomUUID().toString());
+                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, servings, UUID.randomUUID().toString());
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                         databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(RecipeSearch.this, "Successfully saved", Toast.LENGTH_SHORT).show();
+                                DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
+                                habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @RequiresApi(api = Build.VERSION_CODES.N)
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        Habits habits = snapshot.getValue(Habits.class);
+                                        if (habits != null) {
+                                            switch (mealAdapterChoice) {
+                                                case "Breakfast":
+                                                    if (habits.getBreakfastNames().contains("No Meals")) {
+                                                        for (int i = 0; i < Objects.requireNonNull(habits).getBreakfastNames().size(); i++) {
+                                                            if (habits.getBreakfastNames().get(i).equals("No Meals")) {
+                                                                habits.getBreakfastNames().remove(i);
+                                                                habits.getBreakfastNames().add(itemName);
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                    else if(habits.getBreakfastNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
+                                                        habits.getBreakfastNames().add(itemName);
+                                                    }
+                                                    habitReference.child("breakfastNames").setValue(habits.getBreakfastNames());
+                                                    break;
+                                                case "Lunch":
+                                                    if (habits.getLunchNames().contains("No Meals")) {
+                                                        for (int i = 0; i < Objects.requireNonNull(habits).getLunchNames().size(); i++) {
+                                                            if (habits.getLunchNames().get(i).equals("No Meals")) {
+                                                                habits.getLunchNames().remove(i);
+                                                                habits.getLunchNames().add(itemName);
+                                                                break;
+                                                            }
+                                                        }
+                                                    } else if(habits.getLunchNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
+                                                        habits.getLunchNames().add(itemName);
+                                                    }
+                                                    habitReference.child("lunchNames").setValue(habits.getLunchNames());
+                                                    break;
+                                                case "Dinner":
+                                                    if (habits.getDinnerNames().contains("No Meals")) {
+                                                        for (int i = 0; i < Objects.requireNonNull(habits).getDinnerNames().size(); i++) {
+                                                            if (habits.getDinnerNames().get(i).equals("No Meals")) {
+                                                                habits.getDinnerNames().remove(i);
+                                                                habits.getDinnerNames().add(itemName);
+                                                                break;
+                                                            }
+                                                        }
+                                                    } else if(habits.getDinnerNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
+                                                        habits.getDinnerNames().add(itemName);
+                                                    }
+                                                    habitReference.child("dinnerNames").setValue(habits.getDinnerNames());
+                                                    break;
+                                                case "Other":
+                                                    if (habits.getOtherNames().contains("No Meals")) {
+                                                        for (int i = 0; i < Objects.requireNonNull(habits).getOtherNames().size(); i++) {
+                                                            if (habits.getOtherNames().get(i).equals("No Meals")) {
+                                                                habits.getOtherNames().remove(i);
+                                                                habits.getOtherNames().add(itemName);
+                                                                break;
+                                                            }
+                                                        }
+                                                    } else if(habits.getOtherNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
+                                                        habits.getOtherNames().add(itemName);
+                                                    }
+                                                    habitReference.child("otherNames").setValue(habits.getOtherNames());
+                                                    break;
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(RecipeSearch.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
                         }).addOnFailureListener(e -> Toast.makeText(RecipeSearch.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
@@ -588,7 +668,8 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) { }
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {

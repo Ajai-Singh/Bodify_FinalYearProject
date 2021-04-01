@@ -65,6 +65,6 @@
         <activity
             android:name=".ChatBox"
             android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".Groceries" />
     </application>
-
 </manifest>

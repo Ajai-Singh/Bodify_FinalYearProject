@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +16,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Models.Favourite;
+import com.example.bodify.Models.Habits;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,6 +48,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private final Date date = new Date();
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     public FavouriteAdapter(ArrayList<Favourite> favourites, Context context) {
         this.favourites = favourites;
@@ -244,9 +252,84 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                         favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
                                         favourite.getItemProtein(), Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,newDate,favourite.getNumberOfServings(), UUID.randomUUID().toString());
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
+                                Favourite finalFavourite = favourite;
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(context, "Successfully saved", Toast.LENGTH_SHORT).show();
+                                        DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
+                                        habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @RequiresApi(api = Build.VERSION_CODES.N)
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                Habits habits = snapshot.getValue(Habits.class);
+                                                if (habits != null) {
+                                                    switch (mealAdapterChoice) {
+                                                        case "Breakfast":
+                                                            if (habits.getBreakfastNames().contains("No Meals")) {
+                                                                for (int i = 0; i < Objects.requireNonNull(habits).getBreakfastNames().size(); i++) {
+                                                                    if (habits.getBreakfastNames().get(i).equals("No Meals")) {
+                                                                        habits.getBreakfastNames().remove(i);
+                                                                        habits.getBreakfastNames().add(finalFavourite.getItemName());
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if(habits.getBreakfastNames().stream().noneMatch(finalFavourite.getItemName()::equalsIgnoreCase)) {
+                                                                habits.getBreakfastNames().add(finalFavourite.getItemName());
+                                                            }
+                                                            habitReference.child("breakfastNames").setValue(habits.getBreakfastNames());
+                                                            break;
+                                                        case "Lunch":
+                                                            if (habits.getLunchNames().contains("No Meals")) {
+                                                                for (int i = 0; i < Objects.requireNonNull(habits).getLunchNames().size(); i++) {
+                                                                    if (habits.getLunchNames().get(i).equals("No Meals")) {
+                                                                        habits.getLunchNames().remove(i);
+                                                                        habits.getLunchNames().add(finalFavourite.getItemName());
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            } else if(habits.getLunchNames().stream().noneMatch(finalFavourite.getItemName()::equalsIgnoreCase)) {
+                                                                habits.getLunchNames().add(finalFavourite.getItemName());
+                                                            }
+                                                            habitReference.child("lunchNames").setValue(habits.getLunchNames());
+                                                            break;
+                                                        case "Dinner":
+                                                            if (habits.getDinnerNames().contains("No Meals")) {
+                                                                for (int i = 0; i < Objects.requireNonNull(habits).getDinnerNames().size(); i++) {
+                                                                    if (habits.getDinnerNames().get(i).equals("No Meals")) {
+                                                                        habits.getDinnerNames().remove(i);
+                                                                        habits.getDinnerNames().add(finalFavourite.getItemName());
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            } else if(habits.getDinnerNames().stream().noneMatch(finalFavourite.getItemName()::equalsIgnoreCase)) {
+                                                                habits.getDinnerNames().add(finalFavourite.getItemName());
+                                                            }
+                                                            habitReference.child("dinnerNames").setValue(habits.getDinnerNames());
+                                                            break;
+                                                        case "Other":
+                                                            if (habits.getOtherNames().contains("No Meals")) {
+                                                                for (int i = 0; i < Objects.requireNonNull(habits).getOtherNames().size(); i++) {
+                                                                    if (habits.getOtherNames().get(i).equals("No Meals")) {
+                                                                        habits.getOtherNames().remove(i);
+                                                                        habits.getOtherNames().add(finalFavourite.getItemName());
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            } else if(habits.getOtherNames().stream().noneMatch(finalFavourite.getItemName()::equalsIgnoreCase)) {
+                                                                habits.getOtherNames().add(finalFavourite.getItemName());
+                                                            }
+                                                            habitReference.child("otherNames").setValue(habits.getOtherNames());
+                                                            break;
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     }
                                 }).addOnFailureListener(e -> Toast.makeText(context, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                             }
