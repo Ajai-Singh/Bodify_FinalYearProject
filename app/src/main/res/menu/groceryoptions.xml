@@ -3,4 +3,8 @@
     <item
         android:id="@+id/viewOnline"
         android:title="View online" />
+
+    <item
+        android:id="@+id/addToWishList"
+        android:title="Add to Wish List?" />
 </menu>

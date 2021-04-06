@@ -118,7 +118,7 @@ public class FoodSuggester extends Fragment {
         update.setOnClickListener(v -> {
             if (fatsSB.getProgress() == 0 || proteinsSB.getProgress() == 0 || carbsSB.getProgress() == 0 || caloriesSB.getProgress() == 0) {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(getContext());
-                dlgAlert.setMessage("Error no values can be left at zero!");
+                dlgAlert.setMessage("Error adjust all values!");
                 dlgAlert.setTitle("Error...");
                 dlgAlert.setCancelable(true);
                 dlgAlert.setPositiveButton("Ok",

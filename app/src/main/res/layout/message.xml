@@ -24,7 +24,9 @@
             android:id="@+id/userNameCardView"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="92dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/cardViewProfilePicture"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,8 +44,9 @@
             android:id="@+id/messageStamp"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="120dp"
             android:layout_marginTop="1dp"
-            android:layout_marginEnd="70dp"
+            android:layout_marginEnd="11dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/cardViewProfilePicture"

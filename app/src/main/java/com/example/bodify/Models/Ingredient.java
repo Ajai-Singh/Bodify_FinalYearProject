@@ -37,4 +37,13 @@ public class Ingredient {
         this.amount = amount;
         this.unit = unit;
     }
+
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "name='" + name + '\'' +
+                ", unit='" + unit + '\'' +
+                ", amount=" + amount +
+                '}';
+    }
 }

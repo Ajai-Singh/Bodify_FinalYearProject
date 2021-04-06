@@ -71,12 +71,10 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
     private EditText choice, nutrition;
     public static final String API_KEY = "de851175d709445bb3d6149a58107a93";
     private final ArrayList<Recipe> recipes = new ArrayList<>();
-    private final ArrayList<Ingredient> ingredients = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private Button search, scan, find;
     private RecyclerView recyclerView;
     private RecipeAdapter recipeAdapter;
-    private final ArrayList<Integer> macros = new ArrayList<>();
     private String quantityAdapterChoice;
     private String mealAdapterChoice;
     private String whatDayToAddTo;
@@ -179,6 +177,8 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                             JSONArray jsonArray = jsonObject.getJSONArray("results");
                             JSONObject jsonObject1;
                             for (int i = 0; i < jsonArray.length(); i++) {
+                                ArrayList<Ingredient> ingredients = new ArrayList<>();
+                                ArrayList<Integer> macros = new ArrayList<>();
                                 int id = jsonArray.getJSONObject(i).getInt("id");
                                 String title = jsonArray.getJSONObject(i).getString("title");
                                 String readyInMinutes = jsonArray.getJSONObject(i).getString("readyInMinutes");

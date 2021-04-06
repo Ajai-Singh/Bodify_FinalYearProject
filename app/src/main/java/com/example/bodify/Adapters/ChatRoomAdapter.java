@@ -213,6 +213,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                     } else {
                                         Toast.makeText(context, "You're not a member of this chat", Toast.LENGTH_SHORT).show();
                                     }
+                                } else {
+                                    Toast.makeText(context, "You're not a member of this chat", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
@@ -243,18 +245,22 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                                     users.add(user);
                                                 }
                                             }
-                                            final AlertDialog.Builder userBuilder = new AlertDialog.Builder(context);
-                                            LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                            View view2 = inflater2.inflate(R.layout.users, null);
-                                            RecyclerView recyclerView = view2.findViewById(R.id.userRCV);
-                                            recyclerView.setHasFixedSize(true);
-                                            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                                            ViewAllUsersAdapter viewAllUsersAdapter = new ViewAllUsersAdapter(users);
-                                            userBuilder.setNegativeButton("Close", (dialog15, which) -> dialog15.cancel());
-                                            recyclerView.setAdapter(viewAllUsersAdapter);
-                                            userBuilder.setView(view2);
-                                            AlertDialog userDlg = userBuilder.create();
-                                            userDlg.show();
+                                            if (users.isEmpty()) {
+                                                Toast.makeText(context,"Sorry no members!",Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                final AlertDialog.Builder userBuilder = new AlertDialog.Builder(context);
+                                                LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                                View view2 = inflater2.inflate(R.layout.users, null);
+                                                RecyclerView recyclerView = view2.findViewById(R.id.userRCV);
+                                                recyclerView.setHasFixedSize(true);
+                                                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                                ViewAllUsersAdapter viewAllUsersAdapter = new ViewAllUsersAdapter(users);
+                                                userBuilder.setNegativeButton("Close", (dialog15, which) -> dialog15.cancel());
+                                                recyclerView.setAdapter(viewAllUsersAdapter);
+                                                userBuilder.setView(view2);
+                                                AlertDialog userDlg = userBuilder.create();
+                                                userDlg.show();
+                                            }
                                         }
 
                                         @Override
@@ -262,6 +268,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                             Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
+                                } else {
+                                    Toast.makeText(context,"Sorry no members!",Toast.LENGTH_SHORT).show();
                                 }
                             }
 

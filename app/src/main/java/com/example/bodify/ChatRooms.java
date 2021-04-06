@@ -195,7 +195,7 @@ public class ChatRooms extends AppCompatActivity {
                                 Toast.makeText(ChatRooms.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-                        Toast.makeText(ChatRooms.this, "Chat room created!", Toast.LENGTH_SHORT).show();
+                        chatRoomCreated();
                     } else {
                         Toast.makeText(ChatRooms.this, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -206,6 +206,11 @@ public class ChatRooms extends AppCompatActivity {
 
     public void noDataSnackBar() {
         Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no chats, Create one!", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+    public void chatRoomCreated() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Chat room created!", Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 
