@@ -5,6 +5,10 @@
         android:title="Enter chat room" />
 
     <item
+        android:id="@+id/viewMembers"
+        android:title="View Chat members" />
+
+    <item
         android:id="@+id/leaveChat"
         android:title="Leave chat"/>
 </menu>

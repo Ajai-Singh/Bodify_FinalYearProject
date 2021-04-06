@@ -14,8 +14,10 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> implements View.OnClickListener {
@@ -73,11 +76,11 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                                 databaseReference.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        for(DataSnapshot mealSnapshot : snapshot.getChildren()) {
+                                        for (DataSnapshot mealSnapshot : snapshot.getChildren()) {
                                             Meal dbMeal = mealSnapshot.getValue(Meal.class);
                                             assert dbMeal != null;
                                             dbMeal.setId(mealSnapshot.getKey());
-                                            if(dbMeal.getUUID().equals(finalMeal1.getUUID())) {
+                                            if (dbMeal.getUUID().equals(finalMeal1.getUUID())) {
                                                 databaseReference.child(dbMeal.getId()).removeValue();
                                                 meals.clear();
                                                 notifyDataSetChanged();
@@ -88,7 +91,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-                                        Toast.makeText(context,"Error occurred:" + error.getMessage(),Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Error occurred:" + error.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             });
@@ -167,7 +170,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(context,"Error occurred:" + error.getMessage(),Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Error occurred:" + error.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                         });
@@ -192,7 +195,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView itemName, caloriesConsumed, fats, proteins, carbs, menuOptions,servings;
+        private final TextView itemName, caloriesConsumed, fats, proteins, carbs, menuOptions, servings;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

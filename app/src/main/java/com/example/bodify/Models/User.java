@@ -1,13 +1,9 @@
 package com.example.bodify.Models;
 
 public class User {
-    private String userName,email,gender,activityLevel,fitnessGoal,bodyType,preferredMacroNutrient;
-    private Double weight,bodyMassIndicator;
+    private String userName, email, gender, activityLevel, fitnessGoal, bodyType, preferredMacroNutrient, mImageUrl, signUpDate, userID;
+    private Double weight, bodyMassIndicator;
     private int height;
-    private String mImageUrl;
-    private String signUpDate;
-    private String userID;
-    private String id;
 
     public String getBodyType() {
         return bodyType;
@@ -113,18 +109,10 @@ public class User {
         this.userID = userID;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public User() {
     }
 
-    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, String bodyType, String preferredMacroNutrient, Double weight, Double bodyMassIndicator, int height,String mImageUrl,String signUpDate) {
+    public User(String userName, String email, String gender, String activityLevel, String fitnessGoal, String bodyType, String preferredMacroNutrient, Double weight, Double bodyMassIndicator, int height, String mImageUrl, String signUpDate) {
         this.userName = userName;
         this.email = email;
         this.gender = gender;

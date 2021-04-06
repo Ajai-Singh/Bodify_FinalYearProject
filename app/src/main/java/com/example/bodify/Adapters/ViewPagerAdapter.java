@@ -1,9 +1,11 @@
 package com.example.bodify.Adapters;
 
 import android.content.Context;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
 import com.example.bodify.TrackingDaysMacros.Friday;
 import com.example.bodify.TrackingDaysMacros.Monday;
 import com.example.bodify.TrackingDaysMacros.Saturday;
@@ -11,15 +13,14 @@ import com.example.bodify.TrackingDaysMacros.Sunday;
 import com.example.bodify.TrackingDaysMacros.Thursday;
 import com.example.bodify.TrackingDaysMacros.Tuesday;
 import com.example.bodify.TrackingDaysMacros.Wednesday;
+
 import org.jetbrains.annotations.NotNull;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
-    Context context;
-    int totalTabs;
+    private final int totalTabs;
 
     public ViewPagerAdapter(Context c, FragmentManager fm, int totalTabs) {
         super(fm);
-        context = c;
         this.totalTabs = totalTabs;
     }
 

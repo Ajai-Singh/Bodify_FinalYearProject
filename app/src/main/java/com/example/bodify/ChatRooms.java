@@ -13,12 +13,14 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.bodify.Adapters.ChatRoomAdapter;
 import com.example.bodify.Models.Room;
 import com.google.android.material.snackbar.Snackbar;
@@ -28,7 +30,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -43,7 +47,7 @@ public class ChatRooms extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_chatrooms);
         Toolbar toolbar = findViewById(R.id.toolbar);
         ImageView imageView = findViewById(R.id.createChatRoom);
         recyclerView = findViewById(R.id.chatRoomRCV);
@@ -53,9 +57,10 @@ public class ChatRooms extends AppCompatActivity {
             DatabaseReference roomReference = FirebaseDatabase.getInstance().getReference("Rooms");
             roomReference.addValueEventListener(new ValueEventListener() {
                 final ArrayList<String> roomNames = new ArrayList<>();
+
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot roomSnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
                         Room room = roomSnapshot.getValue(Room.class);
                         if (room != null) {
                             roomNames.add(room.getTheme());
@@ -141,7 +146,8 @@ public class ChatRooms extends AppCompatActivity {
 
             }
         });
-        builder.setPositiveButton("Create", (dialog, which) -> {});
+        builder.setPositiveButton("Create", (dialog, which) -> {
+        });
         builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
         builder.setView(view);
         AlertDialog dialog = builder.create();
@@ -154,7 +160,7 @@ public class ChatRooms extends AppCompatActivity {
                 dlgAlert.setPositiveButton("OK", null);
                 dlgAlert.setCancelable(true);
                 dlgAlert.create().show();
-            } else if(roomNames.contains(spinner.getSelectedItem().toString())) {
+            } else if (roomNames.contains(spinner.getSelectedItem().toString())) {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ChatRooms.this);
                 dlgAlert.setMessage("Error similar room exists!");
                 dlgAlert.setTitle("Error...");

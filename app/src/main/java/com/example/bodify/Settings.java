@@ -2,7 +2,6 @@ package com.example.bodify;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,23 +10,26 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.example.bodify.Models.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Settings extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final String userID = mAuth.getUid();
     private TextView email;
     private EditText userName, height, weight;
     private Spinner activityLevelSpinner, fitnessGoalSpinner, bodyType, preferredMacroNutrient;
@@ -35,6 +37,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     private final ArrayList<String> fitnessGoals = new ArrayList<>();
     private final ArrayList<String> bodyTypes = new ArrayList<>();
     private final ArrayList<String> preferredMacroNutrients = new ArrayList<>();
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +53,9 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         fitnessGoalSpinner = findViewById(R.id.fitnessGoalSpinner);
         bodyType = findViewById(R.id.bodyCompositionSpinner);
         preferredMacroNutrient = findViewById(R.id.preferredMacroNutrientSpinner);
+        constraintLayout = findViewById(R.id.scl);
         updateSpinners();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -64,21 +68,25 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
                     for (int i = 0; i < activityLevels.size(); i++) {
                         if (activityLevels.get(i).equalsIgnoreCase(user.getActivityLevel())) {
                             activityLevelSpinner.setSelection(i);
+                            break;
                         }
                     }
                     for (int i = 0; i < fitnessGoals.size(); i++) {
                         if (fitnessGoals.get(i).equalsIgnoreCase(user.getFitnessGoal())) {
                             fitnessGoalSpinner.setSelection(i);
+                            break;
                         }
                     }
                     for (int i = 0; i < bodyTypes.size(); i++) {
                         if (bodyTypes.get(i).equalsIgnoreCase(user.getBodyType())) {
                             bodyType.setSelection(i);
+                            break;
                         }
                     }
                     for (int i = 0; i < preferredMacroNutrients.size(); i++) {
                         if (preferredMacroNutrients.get(i).equalsIgnoreCase(user.getPreferredMacroNutrient())) {
                             preferredMacroNutrient.setSelection(i);
+                            break;
                         }
                     }
                 }
@@ -91,22 +99,22 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
         });
 
         updateProfile.setOnClickListener(v -> {
-            if (TextUtils.isEmpty(height.getText().toString().trim())) {
-                height.setError("Height in CMs is required!");
-                height.requestFocus();
-            } else if (TextUtils.isEmpty(weight.getText().toString().trim())) {
-                weight.setError("Weight in KGs is required!");
+            if (weight.getText().toString().length() < 2) {
+                weight.setError("Invalid weight!");
                 weight.requestFocus();
-            } else if (TextUtils.isEmpty(userName.getText().toString().trim())) {
-                userName.setError("User name is required!");
-                userName.requestFocus();
+            } else if (height.getText().toString().length() < 2) {
+                height.setError("Invalid height!");
+                height.requestFocus();
+            } else if (Double.parseDouble(weight.getText().toString()) > 442) {
+                weight.setError("Error max weight is 442KG!");
+            } else if (Integer.parseInt(height.getText().toString()) > 232) {
+                height.setError("Error max height is 232CM!");
+                height.requestFocus();
             } else {
+                weight.requestFocus();
                 double dblHeight = Double.parseDouble(height.getText().toString().trim());
                 double dblWeight = Double.parseDouble(weight.getText().toString().trim());
-                FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                assert firebaseUser != null;
-                String userID1 = firebaseUser.getUid();
-                DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("User").child(userID1);
+                DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("User").child(mAuth.getUid());
                 double heightInMetres = dblHeight / 100.00;
                 double bodyMassIndex = dblWeight / Math.pow(heightInMetres, 2.0);
                 DecimalFormat decimalFormat = new DecimalFormat("##.00");
@@ -126,28 +134,31 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
                         if (user != null) {
                             height.setText(String.valueOf(user.getHeight()));
                             weight.setText(String.valueOf(user.getWeight()));
-
                             for (int i = 0; i < activityLevels.size(); i++) {
                                 if (activityLevels.get(i).equalsIgnoreCase(user.getActivityLevel())) {
                                     activityLevelSpinner.setSelection(i);
+                                    break;
                                 }
                             }
                             for (int i = 0; i < fitnessGoals.size(); i++) {
                                 if (fitnessGoals.get(i).equalsIgnoreCase(user.getFitnessGoal())) {
                                     fitnessGoalSpinner.setSelection(i);
+                                    break;
                                 }
                             }
                             for (int i = 0; i < bodyTypes.size(); i++) {
                                 if (bodyTypes.get(i).equalsIgnoreCase(user.getBodyType())) {
                                     bodyType.setSelection(i);
+                                    break;
                                 }
                             }
                             for (int i = 0; i < preferredMacroNutrients.size(); i++) {
                                 if (preferredMacroNutrients.get(i).equalsIgnoreCase(user.getPreferredMacroNutrient())) {
                                     preferredMacroNutrient.setSelection(i);
+                                    break;
                                 }
                             }
-                            Toast.makeText(Settings.this, "Update Success", Toast.LENGTH_SHORT).show();
+                            update();
                         }
                     }
 
@@ -156,8 +167,8 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
                         Toast.makeText(Settings.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-                startService(new Intent(Settings.this,HealthService.class));
-                stopService(new Intent(Settings.this,HealthService.class));
+                startService(new Intent(Settings.this, HealthService.class));
+                stopService(new Intent(Settings.this, HealthService.class));
             }
         });
     }
@@ -211,5 +222,10 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     public void onBackPressed() {
         finish();
         startActivity(new Intent(Settings.this, Management.class));
+    }
+
+    public void update() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Update successful", Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 }

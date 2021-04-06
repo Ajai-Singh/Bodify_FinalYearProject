@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
 import com.github.mikephil.charting.charts.BarChart;
@@ -23,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -32,13 +35,7 @@ public class Health extends AppCompatActivity {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private BarChart barChart;
     private final ArrayList<BarEntry> barEntries = new ArrayList<>();
-    private Double formattedCalorieIntake;
-    private Double proteinAmount;
-    private Double carbohydrateAmount;
-    private Double fatAmount;
-    private Double proteinCalories;
-    private Double carbohydrateCalories;
-    private Double fatCalories;
+    private Double formattedCalorieIntake, proteinAmount, carbohydrateAmount, fatAmount, proteinCalories, carbohydrateCalories, fatCalories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,12 +140,10 @@ public class Health extends AppCompatActivity {
         });
     }
 
-    public void setUserMacros(Double calories,Double fat,Double carbs,Double protein) {
-        final String userID = mAuth.getUid();
-        Macro macro = new Macro(Math.round(calories),Math.round(fat),Math.round(carbs),Math.round(protein),userID);
+    public void setUserMacros(Double calories, Double fat, Double carbs, Double protein) {
+        Macro macro = new Macro(Math.round(calories), Math.round(fat), Math.round(carbs), Math.round(protein));
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        assert userID != null;
-        databaseReference.child("Macros").child(userID).setValue(macro).addOnFailureListener(e -> Toast.makeText(Health.this,"Error Occurred: " + e.getMessage(),Toast.LENGTH_SHORT).show());
+        databaseReference.child("Macros").child(Objects.requireNonNull(mAuth.getUid())).setValue(macro).addOnFailureListener(e -> Toast.makeText(Health.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     public void showChart(ArrayList<BarEntry> macros) {

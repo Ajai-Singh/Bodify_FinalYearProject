@@ -7,12 +7,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.bodify.Management;
 import com.example.bodify.DiaryRefreshService;
 import com.example.bodify.R;
-import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Objects;
 
 public class LogIn extends AppCompatActivity {
@@ -24,7 +26,7 @@ public class LogIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Log In Form");
         setContentView(R.layout.activity_log_in);
-        if(mAuth.getCurrentUser() != null) {
+        if (mAuth.getCurrentUser() != null) {
             startActivity(new Intent(LogIn.this, Management.class));
             return;
         }

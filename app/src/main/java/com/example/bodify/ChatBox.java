@@ -6,18 +6,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.bodify.Adapters.ChatRoomAdapter;
 import com.example.bodify.Models.ChatRoom;
 import com.example.bodify.Models.Message;
 import com.example.bodify.Models.User;
@@ -33,9 +30,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatBox extends AppCompatActivity {
@@ -81,31 +80,31 @@ public class ChatBox extends AppCompatActivity {
                 TextView messageTime = v.findViewById(R.id.messageStamp);
                 CircleImageView circleImageView = v.findViewById(R.id.cardViewProfilePicture);
                 TextView messageUser = v.findViewById(R.id.userNameCardView);
-                    DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
-                    userReference.addValueEventListener(new ValueEventListener() {
-                        @SuppressLint("SetTextI18n")
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                                User user = userSnapshot.getValue(User.class);
-                                assert user != null;
-                                user.setUserID(userSnapshot.getKey());
-                                if (user.getUserID().equals(model.getUserId())) {
-                                    messageUser.setText("User: " + user.getUserName());
-                                    StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-                                    storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {
-                                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                        circleImageView.setImageBitmap(bitmap);
-                                    });
-                                }
+                DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
+                userReference.addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                            User user = userSnapshot.getValue(User.class);
+                            assert user != null;
+                            user.setUserID(userSnapshot.getKey());
+                            if (user.getUserID().equals(model.getUserId())) {
+                                messageUser.setText("User: " + user.getUserName());
+                                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                                storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {
+                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                    circleImageView.setImageBitmap(bitmap);
+                                });
                             }
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(ChatBox.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(ChatBox.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
                 messageText.setText(model.getMessageText());
                 messageTime.setText(model.getDateTime());
             }
@@ -155,7 +154,7 @@ public class ChatBox extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-       finish();
-       startActivity(new Intent(ChatBox.this, ChatRooms.class));
+        finish();
+        startActivity(new Intent(ChatBox.this, ChatRooms.class));
     }
 }

@@ -3,7 +3,7 @@ package com.example.bodify.Models;
 import java.util.ArrayList;
 
 public class Habits {
-    private ArrayList<String> breakfastNames,lunchNames,dinnerNames,otherNames;
+    private ArrayList<String> breakfastNames, lunchNames, dinnerNames, otherNames;
 
     public Habits() {
 

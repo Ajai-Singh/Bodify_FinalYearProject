@@ -13,15 +13,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.bodify.Management;
 import com.example.bodify.Models.User;
 import com.example.bodify.R;
 import com.example.bodify.Tailoring;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -39,11 +41,10 @@ public class SignUp extends AppCompatActivity {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private StorageReference storageReference;
     private ImageView profilePlaceHolder;
-    public static final String MESSAGE_KEY = "MESSAGE1";
-    public static final String MESSAGE_KEY1 = "MESSAGE2";
     private Uri mImageUri;
     private String imageDownloadUrl;
     private final ArrayList<String> userNames = new ArrayList<>();
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -71,7 +72,7 @@ public class SignUp extends AppCompatActivity {
             fileReference.putFile(mImageUri)
                     .addOnSuccessListener(taskSnapshot -> {
                         pd.dismiss();
-                        Toast.makeText(getApplicationContext(), "Upload Successful", Toast.LENGTH_SHORT).show();
+                        uploadSuccessful();
                         imageDownloadUrl = fileReference.getPath();
                     }).addOnFailureListener(e -> {
                 pd.dismiss();
@@ -99,6 +100,7 @@ public class SignUp extends AppCompatActivity {
         Button registerButton = findViewById(R.id.signUpButton);
         Button uploadProfilePicture = findViewById(R.id.uploadPicture);
         profilePlaceHolder = findViewById(R.id.ProfilePicture);
+        constraintLayout = findViewById(R.id.signCl);
         uploadProfilePicture.setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setType("image/*");
@@ -116,7 +118,7 @@ public class SignUp extends AppCompatActivity {
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                         User user = userSnapshot.getValue(User.class);
                         assert user != null;
-                        userNames.add(user.getUserName());
+                        userNames.add(user.getUserName().toLowerCase());
                     }
                     createUser(userNames);
                 }
@@ -133,6 +135,9 @@ public class SignUp extends AppCompatActivity {
         if (TextUtils.isEmpty(userName.getText().toString().trim())) {
             userName.setError("User Name is required.");
             userName.requestFocus();
+        } else if (userNames.contains(userName.getText().toString().trim().toLowerCase())) {
+            userName.setError("Error User name already exists!");
+            userName.requestFocus();
         } else if (TextUtils.isEmpty(emailAddress.getText().toString().trim())) {
             emailAddress.setError("Email Address is required.");
             emailAddress.requestFocus();
@@ -147,16 +152,14 @@ public class SignUp extends AppCompatActivity {
             password.requestFocus();
             verifyPassword.setError("Passwords do not match");
             verifyPassword.requestFocus();
-        } else if (userNames.contains(userName.getText().toString().trim())) {
-            userName.setError("Error User name already exists!");
-            userName.requestFocus();
+        } else if(TextUtils.isEmpty(imageDownloadUrl)) {
+            noImageSelected();
         } else {
             mAuth.createUserWithEmailAndPassword(emailAddress.getText().toString().trim(), password.getText().toString()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Intent intent = new Intent(SignUp.this, Tailoring.class);
-                    intent.putExtra(MESSAGE_KEY, userName.getText().toString().trim());
-                    intent.putExtra(MESSAGE_KEY1, imageDownloadUrl);
-                    Toast.makeText(getApplicationContext(), "User Created Successfully!", Toast.LENGTH_SHORT).show();
+                    intent.putExtra("userName", userName.getText().toString().trim());
+                    intent.putExtra("imageUrl", imageDownloadUrl);
                     startActivity(intent);
                     userName.setText("");
                     emailAddress.setText("");
@@ -169,9 +172,19 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
+    public void noImageSelected() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Select profile picture!", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+    public void uploadSuccessful() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Image uploaded", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
     @Override
     public void onBackPressed() {
-            startActivity(new Intent(this, SignUp.class));
+        startActivity(new Intent(this, SignUp.class));
     }
 }
 

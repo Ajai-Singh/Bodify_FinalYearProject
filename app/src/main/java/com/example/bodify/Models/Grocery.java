@@ -1,12 +1,17 @@
 package com.example.bodify.Models;
 
 public class Grocery {
-    private String name,imageUrl,price;
+    private String name, imageUrl, price, pageLink;
 
-    public Grocery(String name, String imageUrl, String price) {
+    public Grocery(String name, String imageUrl, String price, String pageLink) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.price = price;
+        this.pageLink = pageLink;
+    }
+
+    public Grocery() {
+
     }
 
     public String getName() {
@@ -31,5 +36,13 @@ public class Grocery {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getPageLink() {
+        return pageLink;
+    }
+
+    public void setPageLink(String pageLink) {
+        this.pageLink = pageLink;
     }
 }

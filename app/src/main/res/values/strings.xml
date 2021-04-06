@@ -61,7 +61,7 @@
     <string name="title_activity_personal_profile">PersonalProfile</string>
     <string name="title_activity_permissions">PermissionsActivity</string>
     <string name="title_activity_map">MapActivity</string>
-    <string name="title_activity_view_all_users">viewAllUsers</string>
+    <string name="title_activity_view_all_users">viewAllUsersAdapter</string>
     <string name="title_activity_chat_room">chatRoom</string>
     <string name="title_activity_pedometer">Pedometer</string>
     <string name="title_activity_a_p_is">APIs</string>

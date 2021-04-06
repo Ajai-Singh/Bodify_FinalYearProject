@@ -1,9 +1,8 @@
 package com.example.bodify.Models;
 
 public class Ingredient {
-    private String name;
+    private String name, unit;
     private Double amount;
-    private String unit;
 
     public Ingredient() {
 

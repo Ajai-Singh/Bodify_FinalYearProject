@@ -1,8 +1,8 @@
 package com.example.bodify.Models;
 
 public class Meal {
-    private String itemName,userID,id,mealType,dayOfWeek,date,UUID;
-    private int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings,originalServings;
+    private String itemName, userID, id, mealType, dayOfWeek, date, UUID;
+    private int calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, numberOfServings, originalServings;
 
     public String getItemName() {
         return itemName;
@@ -35,7 +35,7 @@ public class Meal {
     public void setCalories(int calories) {
         this.calories = calories;
     }
-    
+
     public int getItemTotalFat() {
         return itemTotalFat;
     }
@@ -128,7 +128,7 @@ public class Meal {
 
     }
 
-    public Meal(String itemName, String userID, int calories, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings, String mealType,String dayOfWeek,String date,int originalServings,String UUID) {
+    public Meal(String itemName, String userID, int calories, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings, String mealType, String dayOfWeek, String date, int originalServings, String UUID) {
         this.itemName = itemName;
         this.userID = userID;
         this.calories = calories;

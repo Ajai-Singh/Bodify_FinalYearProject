@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,13 +16,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 public class HealthService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final String userID = mAuth.getUid();
-    private double formattedCalorieIntake,fatAmount,proteinAmount,proteinCalories,fatCalories,carbohydrateCalories,carbohydrateAmount;
+    private double formattedCalorieIntake, fatAmount, proteinAmount, proteinCalories, fatCalories, carbohydrateCalories, carbohydrateAmount;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -44,8 +47,7 @@ public class HealthService extends Service {
     }
 
     public void getValues() {
-        assert userID != null;
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -100,11 +102,10 @@ public class HealthService extends Service {
         });
     }
 
-    public void setUserMacros(Double calories,Double fat,Double carbs,Double protein) {
-        Macro macro = new Macro(Math.round(calories),Math.round(fat),Math.round(carbs),Math.round(protein),userID);
+    public void setUserMacros(Double calories, Double fat, Double carbs, Double protein) {
+        Macro macro = new Macro(Math.round(calories), Math.round(fat), Math.round(carbs), Math.round(protein));
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        assert userID != null;
-        databaseReference.child("Macros").child(userID).setValue(macro).addOnFailureListener(e -> Toast.makeText(HealthService.this,"Error Occurred: " + e.getMessage(),Toast.LENGTH_SHORT).show());
+        databaseReference.child("Macros").child(Objects.requireNonNull(mAuth.getUid())).setValue(macro).addOnFailureListener(e -> Toast.makeText(HealthService.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }
 

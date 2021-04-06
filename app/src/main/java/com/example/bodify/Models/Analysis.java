@@ -3,8 +3,8 @@ package com.example.bodify.Models;
 import java.io.Serializable;
 
 public class Analysis implements Serializable {
-    private int calories,fats,carbohydrates,proteins;
-    private String userID,weekStarting;
+    private int calories, fats, carbohydrates, proteins;
+    private String userID, weekStarting;
     private double weight;
 
     public Analysis() {
@@ -67,7 +67,7 @@ public class Analysis implements Serializable {
         this.weight = weight;
     }
 
-    public Analysis(int calories, int fats, int carbohydrates, int proteins, String userID, String weekStarting,double weight) {
+    public Analysis(int calories, int fats, int carbohydrates, int proteins, String userID, String weekStarting, double weight) {
         this.calories = calories;
         this.fats = fats;
         this.carbohydrates = carbohydrates;

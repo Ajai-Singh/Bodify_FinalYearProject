@@ -13,15 +13,16 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
-import com.example.bodify.FirebaseAuthentication.LogIn;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
@@ -32,7 +33,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,7 +45,6 @@ import java.util.Set;
 
 public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final String userID = mAuth.getUid();
     private ImageButton previous, next;
     private Pie pie;
     private TextView fatsTV, carbsTV, proteinsTV, caloriesTV, weightTV, week, header, carbs, fats, proteins, calories, weight;
@@ -117,7 +119,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         week.setVisibility(View.INVISIBLE);
         weights.setVisibility(View.INVISIBLE);
         search.setOnClickListener(v -> {
-            if(userSP.getSelectedItemPosition() == 0) {
+            if (userSP.getSelectedItemPosition() == 0) {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(BreakdownAnalysis.this);
                 dlgAlert.setMessage("Error no user selected");
                 dlgAlert.setTitle("Error...");
@@ -161,7 +163,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
     }
 
     public void populateSpinner(ArrayList<String> userNames) {
-        userNames.add(0,"Select user");
+        userNames.add(0, "Select user");
         ArrayAdapter<String> adapterNames = new ArrayAdapter<String>(BreakdownAnalysis.this, android.R.layout.simple_spinner_dropdown_item, userNames) {
             @Override
             public boolean isEnabled(int position) {
@@ -183,7 +185,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         adapterNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         userSP.setAdapter(adapterNames);
         userSP.setOnItemSelectedListener(BreakdownAnalysis.this);
-        if(userNames.size() == 1) {
+        if (userNames.size() == 1) {
             noDataSnackBar();
         }
     }
@@ -209,6 +211,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
         databaseReference.addValueEventListener(new ValueEventListener() {
             String userTag;
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
@@ -243,7 +246,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                         dates.add(analysis.getWeekStarting());
                     }
                 }
-                populateUI(dates,userTag);
+                populateUI(dates, userTag);
             }
 
             @Override
@@ -253,10 +256,10 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         });
     }
 
-    public void populateUI(ArrayList<String> weeks,String userTag) {
+    public void populateUI(ArrayList<String> weeks, String userTag) {
         week.setText(weeks.get(0));
         previous.setOnClickListener(new View.OnClickListener() {
-            int currentIndex = weeks.indexOf(week.getText());
+            int currentIndex = weeks.indexOf(week.getText().toString());
 
             @Override
             public void onClick(View v) {
@@ -266,12 +269,12 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                     currentIndex = currentIndex - 1;
                 }
                 week.setText(weeks.get(currentIndex));
-                readDB(week.getText().toString(),userTag);
+                readDB(week.getText().toString(), userTag);
                 getBarChartInformation(userTag);
             }
         });
         next.setOnClickListener(new View.OnClickListener() {
-            int currentIndex = weeks.indexOf(week.getText());
+            int currentIndex = weeks.indexOf(week.getText().toString());
 
             @Override
             public void onClick(View v) {
@@ -281,11 +284,11 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                     currentIndex = currentIndex + 1;
                 }
                 week.setText(weeks.get(currentIndex));
-                readDB(week.getText().toString(),userTag);
+                readDB(week.getText().toString(), userTag);
                 getBarChartInformation(userTag);
             }
         });
-        readDB(week.getText().toString(),userTag);
+        readDB(week.getText().toString(), userTag);
         getBarChartInformation(userTag);
     }
 
@@ -293,16 +296,17 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
         databaseReference.addValueEventListener(new ValueEventListener() {
             final ArrayList<Analysis> analyses = new ArrayList<>();
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot userSnapshot : snapshot.getChildren()) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     Analysis analysis = userSnapshot.getValue(Analysis.class);
                     assert analysis != null;
-                    if(analysis.getUserID().equals(userTag)) {
+                    if (analysis.getUserID().equals(userTag)) {
                         analyses.add(analysis);
                     }
                 }
-                showChart(analyses,userTag);
+                showChart(analyses, userTag);
             }
 
             @Override
@@ -312,16 +316,16 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         });
     }
 
-    public void showChart(ArrayList<Analysis> analyses,String userTag) {
+    public void showChart(ArrayList<Analysis> analyses, String userTag) {
         weights.setOnClickListener(v -> {
             Intent intent = new Intent(BreakdownAnalysis.this, WeightProgression.class);
             intent.putExtra("analyses", analyses);
-            intent.putExtra("userId",userTag);
+            intent.putExtra("userId", userTag);
             startActivity(intent);
         });
     }
 
-    public void readDB(String date,String userTag) {
+    public void readDB(String date, String userTag) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
         databaseReference.addValueEventListener(new ValueEventListener() {
             int calories, carbs, proteins, fats;
@@ -339,7 +343,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                         break;
                     }
                 }
-                populateGraph(calories, carbs, proteins, fats,userTag);
+                populateGraph(calories, carbs, proteins, fats, userTag);
             }
 
             @Override
@@ -349,7 +353,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         });
     }
 
-    public void populateGraph(int calories, int carbs, int proteins, int fats,String userTag) {
+    public void populateGraph(int calories, int carbs, int proteins, int fats, String userTag) {
         int[] macrosValues = {calories, carbs, proteins, fats};
         String[] macros = {"Calories", "Carbohydrates", "Proteins", "Fats"};
         List<DataEntry> dataEntries = new ArrayList<>();
@@ -387,7 +391,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                 double calorieNegative = macro.getCalorieConsumption() - calories;
                 calorieNegative *= 7;
                 double newWeight = calorieNegative / 7700;
-                DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+                DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
                 userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

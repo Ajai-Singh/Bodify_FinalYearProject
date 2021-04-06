@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.Meal;
@@ -25,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -98,7 +101,7 @@ public class DiaryRefreshService extends Service {
         });
     }
 
-    public void getDaysInDB(double calories,double weight) {
+    public void getDaysInDB(double calories, double weight) {
         daysInDB = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -109,7 +112,7 @@ public class DiaryRefreshService extends Service {
                     daysInDB.add(userSnapshot.getKey());
                     Log.i("", "" + daysInDB);
                 }
-                test(daysInDB,calories,weight);
+                test(daysInDB, calories, weight);
             }
 
             @Override
@@ -120,7 +123,7 @@ public class DiaryRefreshService extends Service {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void test(ArrayList<String> daysInDB,double dbCalories,double weight) {
+    public void test(ArrayList<String> daysInDB, double dbCalories, double weight) {
         dates = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek");
         for (int i = 0; i < daysInDB.size(); i++) {
@@ -140,7 +143,7 @@ public class DiaryRefreshService extends Service {
                         }
                     }
                     try {
-                        dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7, daysInDB,dbCalories,weight);
+                        dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7, daysInDB, dbCalories, weight);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -155,7 +158,7 @@ public class DiaryRefreshService extends Service {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void dates(ArrayList<String> dates, int calories, int fats, int carbohydrates, int proteins, ArrayList<String> daysInDB,double dbCalories,double weight) throws ParseException {
+    public void dates(ArrayList<String> dates, int calories, int fats, int carbohydrates, int proteins, ArrayList<String> daysInDB, double dbCalories, double weight) throws ParseException {
         final ArrayList<String> daysOfWeek = new ArrayList<>();
         daysOfWeek.add("Monday");
         daysOfWeek.add("Tuesday");
@@ -242,7 +245,7 @@ public class DiaryRefreshService extends Service {
             calorieNegative *= 7;
             double newWeight = calorieNegative / 7700;
             double finalWeight = Double.parseDouble(decimalFormat.format(weight - newWeight));
-            Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins, userID, String.valueOf(stringBuffer),finalWeight);
+            Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins, userID, String.valueOf(stringBuffer), finalWeight);
             //I need to test the OR clause on a different android phone
             //|| simpleDateFormat.format(currentWeekDay).equalsIgnoreCase("Monday") && localTime.isAfter(minDeleteTime) && localTime.isBefore(maxDeleteTime)
             //I need to come up with an OR clause because it wont work if the difference is never 7 days

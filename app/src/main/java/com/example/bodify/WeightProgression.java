@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,11 +12,11 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.bodify.FirebaseAuthentication.LogIn;
 import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
@@ -37,7 +36,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -46,12 +47,10 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
     private final ArrayList<BarEntry> barEntries = new ArrayList<>();
     private final ArrayList<String> xLabels = new ArrayList<>();
     private BarChart barChart;
-    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private final String userID = firebaseAuth.getUid();
     private ConstraintLayout constraintLayout;
     private Spinner spinner;
     private YAxis leftAxis;
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +80,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                         });
                 dlgAlert.create().show();
             } else {
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userID);
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
                 databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -154,7 +153,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
         Intent intent = getIntent();
-        if(Objects.equals(mAuth.getUid(), intent.getStringExtra("userId"))) {
+        if (Objects.equals(mAuth.getUid(), intent.getStringExtra("userId"))) {
             showSnackBar();
         }
         barEntries.add(new BarEntry(0f, (float) weight));
@@ -182,7 +181,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(userID);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(Objects.requireNonNull(mAuth.getUid()));
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -226,7 +225,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(userID);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(Objects.requireNonNull(mAuth.getUid()));
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -270,7 +269,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(userID);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(Objects.requireNonNull(mAuth.getUid()));
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

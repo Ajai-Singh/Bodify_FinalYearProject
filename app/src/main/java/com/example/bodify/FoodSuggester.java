@@ -1,7 +1,6 @@
 package com.example.bodify;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,13 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -44,9 +44,11 @@ import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeableMethod;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -55,7 +57,6 @@ public class FoodSuggester extends Fragment {
     private CardStackAdapter cardStackAdapter;
     private final ArrayList<Ingredient> ingredients = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final String userID = mAuth.getUid();
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private ConstraintLayout constraintLayout;
     private CardStackView cardStackView;
@@ -68,6 +69,7 @@ public class FoodSuggester extends Fragment {
     private final int minimumCarbs = 10;
     private final int minimumCalories = 50;
     private SwipeRefreshLayout swipeRefreshLayout;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -260,7 +262,7 @@ public class FoodSuggester extends Fragment {
                             for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                                 Favourite favourite = userSnapshot.getValue(Favourite.class);
                                 if (favourite != null) {
-                                    if (favourite.getItemName().equalsIgnoreCase(recipe.getTitle()) && favourite.getUserID().equalsIgnoreCase(userID)) {
+                                    if (favourite.getItemName().equalsIgnoreCase(recipe.getTitle()) && favourite.getUserID().equalsIgnoreCase(mAuth.getUid())) {
                                         exists = true;
                                         break;
                                     }
@@ -270,7 +272,7 @@ public class FoodSuggester extends Fragment {
                                 duplicateRecordSnackBar();
                             } else {
                                 Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
-                                        recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), userID, recipe.getServings());
+                                        recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), mAuth.getUid(), recipe.getServings());
                                 databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         addedRecord();
@@ -366,7 +368,7 @@ public class FoodSuggester extends Fragment {
                         for (int e = 0; e < jsonArray1.length(); e++) {
                             macros.add(jsonArray1.getJSONObject(e).getInt("amount"));
                         }
-                        Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
+                        Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, mAuth.getUid(), macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
                         recipes.add(recipe);
                     }
                     cardStackAdapter = new CardStackAdapter(recipes, getContext());
@@ -422,7 +424,7 @@ public class FoodSuggester extends Fragment {
                         for (int e = 0; e < jsonArray1.length(); e++) {
                             macros.add(jsonArray1.getJSONObject(e).getInt("amount"));
                         }
-                        Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
+                        Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, mAuth.getUid(), macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
                         recipes.add(recipe);
                     }
                     cardStackAdapter = new CardStackAdapter(recipes, getContext());
@@ -465,6 +467,4 @@ public class FoodSuggester extends Fragment {
         Snackbar snackbar = Snackbar.make(constraintLayout, "Ignored", Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
-
-    //ovveride on back pressed in a fragment
 }

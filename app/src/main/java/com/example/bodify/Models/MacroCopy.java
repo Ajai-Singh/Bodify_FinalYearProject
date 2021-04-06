@@ -1,7 +1,7 @@
 package com.example.bodify.Models;
 
 public class MacroCopy {
-    private double calorieConsumption,carbohydrateConsumption,fatConsumption,proteinConsumption;
+    private double calorieConsumption, carbohydrateConsumption, fatConsumption, proteinConsumption;
     private String userID;
 
     public MacroCopy() {
@@ -48,7 +48,7 @@ public class MacroCopy {
         this.userID = userID;
     }
 
-    public MacroCopy(double calorieConsumption, double carbohydrateConsumption, double fatConsumption,double proteinConsumption, String userID) {
+    public MacroCopy(double calorieConsumption, double carbohydrateConsumption, double fatConsumption, double proteinConsumption, String userID) {
         this.calorieConsumption = calorieConsumption;
         this.carbohydrateConsumption = carbohydrateConsumption;
         this.fatConsumption = fatConsumption;

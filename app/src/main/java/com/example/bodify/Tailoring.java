@@ -1,7 +1,6 @@
 package com.example.bodify;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -17,22 +16,26 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
 import com.example.bodify.Models.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
-import static com.example.bodify.FirebaseAuthentication.SignUp.MESSAGE_KEY;
-import static com.example.bodify.FirebaseAuthentication.SignUp.MESSAGE_KEY1;
 
 public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private EditText weight, height;
@@ -42,6 +45,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
     private ArrayList<String> activityLevels;
     private ArrayList<String> bodyTypes;
     private ArrayList<String> preferredFoods;
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,36 +59,31 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         activityLevelSpinner = findViewById(R.id.activityLevelSpinnerTailoring);
         bodyTypeSpinner = findViewById(R.id.bodyTypeSpinner);
         preferredFoodsSpinner = findViewById(R.id.foodTypeSpinner);
+        constraintLayout = findViewById(R.id.tcl);
         updateSpinners();
         Button submit = findViewById(R.id.submitButton);
         final FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         submit.setOnClickListener(v -> {
-            if ((weight.getText().toString().matches("") || height.getText().toString().matches("") || (fitnessGoalSpinner.getSelectedItemPosition() == 0) ||
-                    (activityLevelSpinner.getSelectedItemPosition() == 0) || (bodyTypeSpinner.getSelectedItemPosition() == 0) ||
-                    (genderSpinner.getSelectedItemPosition() == 0) || (preferredFoodsSpinner.getSelectedItemPosition() == 0))) {
-                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Tailoring.this);
-                dlgAlert.setMessage("Not All Fields are Filled!");
-                dlgAlert.setTitle("Error...");
-                dlgAlert.setPositiveButton("OK", null);
-                dlgAlert.setCancelable(true);
-                dlgAlert.create().show();
+            if (weight.getText().toString().length() < 2) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (height.getText().toString().length() < 2) {
+                height.setError("Invalid height!");
+                height.requestFocus();
+            } else if (Double.parseDouble(weight.getText().toString()) > 442) {
+                weight.setError("Error max weight is 442KG!");
             } else if (Integer.parseInt(height.getText().toString()) > 232) {
                 height.setError("Error max height is 232CM!");
                 height.requestFocus();
-            } else if(height.getText().toString().length() == 1) {
-                height.setError("Invalid height!");
-                height.requestFocus();
-            } else if(Double.parseDouble(weight.getText().toString()) > 442) {
-                weight.setError("Error max weight is 442KG!");
-                weight.requestFocus();
-            } else if(weight.getText().toString().length() == 1) {
-                weight.setError("Invalid weight!");
-                weight.requestFocus();
-            } else{
+            } else if ((fitnessGoalSpinner.getSelectedItemPosition() == 0) ||
+                    (activityLevelSpinner.getSelectedItemPosition() == 0) || (bodyTypeSpinner.getSelectedItemPosition() == 0) ||
+                    (genderSpinner.getSelectedItemPosition() == 0) || (preferredFoodsSpinner.getSelectedItemPosition() == 0)) {
+                fillFields();
+            } else {
                 Intent intent = getIntent();
-                String strUserName = intent.getStringExtra(MESSAGE_KEY);
-                String imageDownloadUrl = intent.getStringExtra(MESSAGE_KEY1);
+                String strUserName = intent.getStringExtra("userName");
+                String imageDownloadUrl = intent.getStringExtra("imageUrl");
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 assert firebaseUser != null;
                 String strEmail = firebaseUser.getEmail();
@@ -109,7 +108,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                                 R.drawable.info).setContentTitle("Welcome").setContentText(message).setAutoCancel(true);
                         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(Tailoring.this);
                         notificationManagerCompat.notify(0, builder.build());
-                        Toast.makeText(getApplicationContext(), "User Saved Successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "User Created Successfully!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), Management.class));
                     } else {
                         Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
@@ -254,6 +253,11 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         adapterPreferredFoods.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         preferredFoodsSpinner.setAdapter(adapterPreferredFoods);
         preferredFoodsSpinner.setOnItemSelectedListener(Tailoring.this);
+    }
+
+    public void fillFields() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Fill in drop downs!", Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override

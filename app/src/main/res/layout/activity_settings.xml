@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    android:padding="@dimen/box_inset_layout_padding"
+    android:id="@+id/scl"
     tools:context=".Settings">
 
 
@@ -98,7 +98,7 @@
         android:layout_marginEnd="153dp"
         android:autofillHints=""
         android:ems="10"
-        android:inputType="numberDecimal"
+        android:inputType="number"
         android:maxLength="3"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"

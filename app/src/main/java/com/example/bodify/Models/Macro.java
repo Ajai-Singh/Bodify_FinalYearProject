@@ -1,16 +1,7 @@
 package com.example.bodify.Models;
 
 public class Macro {
-    private Double calorieConsumption,fats,carbohydrates,proteins;
-    private String userId;
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+    private Double calorieConsumption, fats, carbohydrates, proteins;
 
     public Double getCalorieConsumption() {
         return calorieConsumption;
@@ -47,22 +38,10 @@ public class Macro {
     public Macro() {
     }
 
-    public Macro(double calorieConsumption, double fats, double carbohydrates, double proteins, String userId) {
+    public Macro(double calorieConsumption, double fats, double carbohydrates, double proteins) {
         this.calorieConsumption = calorieConsumption;
         this.fats = fats;
         this.carbohydrates = carbohydrates;
         this.proteins = proteins;
-        this.userId = userId;
-    }
-
-    @Override
-    public String toString() {
-        return "Macro{" +
-                "calorieConsumption=" + calorieConsumption +
-                ", fats=" + fats +
-                ", carbohydrates=" + carbohydrates +
-                ", proteins=" + proteins +
-                ", userId='" + userId + '\'' +
-                '}';
     }
 }

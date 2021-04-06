@@ -17,10 +17,12 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Habits;
@@ -33,7 +35,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -240,7 +244,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                             }
                         });
                         String finalDayPosition = dayPosition;
-                        diaryBuilder.setPositiveButton("Create", (d, which) -> { });
+                        diaryBuilder.setPositiveButton("Create", (d, which) -> {
+                        });
                         diaryBuilder.setNegativeButton("Close", (d, which) -> d.cancel());
                         diaryBuilder.setView(diaryView);
                         AlertDialog diaryAlertDialog = diaryBuilder.create();
@@ -264,8 +269,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 }
                                 assert recipe != null;
                                 String positionToAddTo = null;
-                                for(int i = 0; i < daysOfWeek.size(); i ++) {
-                                    if(daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
+                                for (int i = 0; i < daysOfWeek.size(); i++) {
+                                    if (daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
                                         String a = daysOfWeek.get(i);
                                         positionToAddTo = String.valueOf(daysOfWeek.indexOf(a));
                                         break;
@@ -273,21 +278,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 }
                                 assert positionToAddTo != null;
                                 int finalDate = Integer.parseInt(finalDayPosition) - Integer.parseInt(positionToAddTo);
-                                int subStringCD = Integer.parseInt(formatter.format(date).substring(0,2));
+                                int subStringCD = Integer.parseInt(formatter.format(date).substring(0, 2));
                                 int f = subStringCD - finalDate;
                                 StringBuilder stringBuffer = new StringBuilder(formatter.format(date));
-                                stringBuffer.replace(0,2,String.valueOf(f));
+                                stringBuffer.replace(0, 2, String.valueOf(f));
                                 String newDate;
-                                if(stringBuffer.length() == 9) {
+                                if (stringBuffer.length() == 9) {
                                     String date = String.valueOf(stringBuffer);
                                     newDate = "0" + date;
-                                }else {
+                                } else {
                                     newDate = String.valueOf(stringBuffer);
                                 }
                                 Meal meal = new Meal(recipe.getTitle(), userID, recipe.getCalories(),
                                         recipe.getFats(), recipe.getSodium(), recipe.getCarbohydrates(),
                                         recipe.getSugar(), recipe.getProteins(),
-                                        Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,newDate,recipe.getServings(), UUID.randomUUID().toString());
+                                        Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, recipe.getServings(), UUID.randomUUID().toString());
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                 Recipe finalRecipe = recipe;
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
@@ -310,8 +315,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                                                         break;
                                                                     }
                                                                 }
-                                                            }
-                                                            else if(habits.getBreakfastNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
+                                                            } else if (habits.getBreakfastNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
                                                                 habits.getBreakfastNames().add(finalRecipe.getTitle());
                                                             }
                                                             habitReference.child("breakfastNames").setValue(habits.getBreakfastNames());
@@ -325,7 +329,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if(habits.getLunchNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
+                                                            } else if (habits.getLunchNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
                                                                 habits.getLunchNames().add(finalRecipe.getTitle());
                                                             }
                                                             habitReference.child("lunchNames").setValue(habits.getLunchNames());
@@ -339,7 +343,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if(habits.getDinnerNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
+                                                            } else if (habits.getDinnerNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
                                                                 habits.getDinnerNames().add(finalRecipe.getTitle());
                                                             }
                                                             habitReference.child("dinnerNames").setValue(habits.getDinnerNames());
@@ -353,7 +357,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if(habits.getOtherNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
+                                                            } else if (habits.getOtherNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
                                                                 habits.getOtherNames().add(finalRecipe.getTitle());
                                                             }
                                                             habitReference.child("otherNames").setValue(habits.getOtherNames());
@@ -412,9 +416,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                             }
                                         }
                                     }
-                                    if(exists) {
+                                    if (exists) {
                                         Toast.makeText(context, "Error item already exists in Favourites", Toast.LENGTH_SHORT).show();
-                                    } if(!exists){
+                                    }
+                                    if (!exists) {
                                         assert finalRecipe != null;
                                         Favourite favourite = new Favourite(finalRecipe.getTitle(), finalRecipe.getCalories(), finalRecipe.getFats(),
                                                 finalRecipe.getSodium(), finalRecipe.getCarbohydrates(), finalRecipe.getSugar(), finalRecipe.getProteins(), userID, finalRecipe.getServings());
@@ -427,6 +432,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                         });
                                     }
                                 }
+
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
                                     Toast.makeText(context, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();

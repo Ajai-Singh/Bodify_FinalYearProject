@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -45,10 +47,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +60,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+
 import com.example.bodify.BarcodeReader.IntentIntegrator;
 import com.example.bodify.BarcodeReader.IntentResult;
 import com.google.firebase.database.ValueEventListener;
@@ -68,7 +73,6 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private final ArrayList<Ingredient> ingredients = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     private Button search, scan, find;
     private RecyclerView recyclerView;
     private RecipeAdapter recipeAdapter;
@@ -194,7 +198,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                                 for (int e = 0; e < jsonArray1.length(); e++) {
                                     macros.add(jsonArray1.getJSONObject(e).getInt("amount"));
                                 }
-                                Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, userID, macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
+                                Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, mAuth.getUid(), macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
                                 recipes.add(recipe);
                             }
                             if (recipes.isEmpty()) {
@@ -572,7 +576,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         } else {
                             newDate = String.valueOf(stringBuffer);
                         }
-                        Meal meal = new Meal(itemName, userID, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, servings, UUID.randomUUID().toString());
+                        Meal meal = new Meal(itemName, mAuth.getUid(), calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, servings, UUID.randomUUID().toString());
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                         databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
@@ -594,8 +598,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                                                                 break;
                                                             }
                                                         }
-                                                    }
-                                                    else if(habits.getBreakfastNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
+                                                    } else if (habits.getBreakfastNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
                                                         habits.getBreakfastNames().add(itemName);
                                                     }
                                                     habitReference.child("breakfastNames").setValue(habits.getBreakfastNames());
@@ -609,7 +612,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                                                                 break;
                                                             }
                                                         }
-                                                    } else if(habits.getLunchNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
+                                                    } else if (habits.getLunchNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
                                                         habits.getLunchNames().add(itemName);
                                                     }
                                                     habitReference.child("lunchNames").setValue(habits.getLunchNames());
@@ -623,7 +626,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                                                                 break;
                                                             }
                                                         }
-                                                    } else if(habits.getDinnerNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
+                                                    } else if (habits.getDinnerNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
                                                         habits.getDinnerNames().add(itemName);
                                                     }
                                                     habitReference.child("dinnerNames").setValue(habits.getDinnerNames());
@@ -637,7 +640,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                                                                 break;
                                                             }
                                                         }
-                                                    } else if(habits.getOtherNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
+                                                    } else if (habits.getOtherNames().stream().noneMatch(itemName::equalsIgnoreCase)) {
                                                         habits.getOtherNames().add(itemName);
                                                     }
                                                     habitReference.child("otherNames").setValue(habits.getOtherNames());

@@ -1,8 +1,8 @@
 package com.example.bodify.Models;
 
 public class Favourite {
-    private String itemName,userID,id;
-    private int calories,itemTotalFat,itemSodium,itemTotalCarbohydrates,itemSugars,itemProtein,numberOfServings;
+    private String itemName, userID, id;
+    private int calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, numberOfServings;
 
     public Favourite() {
 

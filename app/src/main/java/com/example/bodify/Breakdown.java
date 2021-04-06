@@ -2,16 +2,18 @@ package com.example.bodify;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+
 import com.example.bodify.Adapters.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,7 +29,6 @@ public class Breakdown extends Fragment {
         Date currentWeekDay = new Date();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
-        Log.i("TEST",simpleDateformat.format(currentWeekDay));
         ArrayList<String> days = new ArrayList<>();
         days.add("Mon");
         days.add("Tue");
@@ -36,7 +37,7 @@ public class Breakdown extends Fragment {
         days.add("Fri");
         days.add("Sat");
         days.add("Sun");
-        for(int i = 0; i < days.size(); i++) {
+        for (int i = 0; i < days.size(); i++) {
             tabLayout.addTab(tabLayout.newTab().setText(days.get(i)));
         }
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -44,16 +45,12 @@ public class Breakdown extends Fragment {
         final ViewPagerAdapter adapter = new ViewPagerAdapter(getContext(), getChildFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        String b = null;
-        for(int i = 0; i < days.size(); i ++) {
-            if(simpleDateformat.format(currentWeekDay).contains(days.get(i))) {
-                String a = days.get(i);
-                b = String.valueOf(days.indexOf(a));
+        for (int i = 0; i < days.size(); i++) {
+            if (simpleDateformat.format(currentWeekDay).contains(days.get(i))) {
+                viewPager.setCurrentItem(Integer.parseInt(String.valueOf(days.indexOf(days.get(i)))));
                 break;
             }
         }
-        assert b != null;
-        viewPager.setCurrentItem(Integer.parseInt(b));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

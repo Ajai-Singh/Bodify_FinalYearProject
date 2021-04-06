@@ -8,9 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.MacroCopy;
 import com.example.bodify.Models.Meal;
@@ -28,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class Friday extends Fragment {
@@ -107,32 +110,32 @@ public class Friday extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 MacroCopy macroCopy = snapshot.getValue(MacroCopy.class);
                 if (macroCopy != null) {
-                        if (macroCopy.getCarbohydrateConsumption() < 0) {
-                            carbohydratesTV.setTextColor(Color.parseColor("#FF0000"));
-                        } else {
-                            carbohydratesTV.setTextColor(Color.BLACK);
-                        }
-                        if (macroCopy.getFatConsumption() < 0) {
-                            fatsTV.setTextColor(Color.parseColor("#FF0000"));
-                        } else {
-                            fatsTV.setTextColor(Color.BLACK);
-                        }
-                        if (macroCopy.getProteinConsumption() < 0) {
-                            proteinsTV.setTextColor(Color.parseColor("#FF0000"));
-                        } else {
-                            proteinsTV.setTextColor(Color.BLACK);
-                        }
-                        if (macroCopy.getCalorieConsumption() < 0) {
-                            caloriesTV.setTextColor(Color.parseColor("#FF0000"));
-                        } else {
-                            caloriesTV.setTextColor(Color.BLACK);
-                        }
-                        caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
-                        fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
-                        proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
-                        carbohydratesTV.setText(String.valueOf(macroCopy.getCarbohydrateConsumption()));
+                    if (macroCopy.getCarbohydrateConsumption() < 0) {
+                        carbohydratesTV.setTextColor(Color.parseColor("#FF0000"));
+                    } else {
+                        carbohydratesTV.setTextColor(Color.BLACK);
                     }
+                    if (macroCopy.getFatConsumption() < 0) {
+                        fatsTV.setTextColor(Color.parseColor("#FF0000"));
+                    } else {
+                        fatsTV.setTextColor(Color.BLACK);
+                    }
+                    if (macroCopy.getProteinConsumption() < 0) {
+                        proteinsTV.setTextColor(Color.parseColor("#FF0000"));
+                    } else {
+                        proteinsTV.setTextColor(Color.BLACK);
+                    }
+                    if (macroCopy.getCalorieConsumption() < 0) {
+                        caloriesTV.setTextColor(Color.parseColor("#FF0000"));
+                    } else {
+                        caloriesTV.setTextColor(Color.BLACK);
+                    }
+                    caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
+                    fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
+                    proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
+                    carbohydratesTV.setText(String.valueOf(macroCopy.getCarbohydrateConsumption()));
                 }
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

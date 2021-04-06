@@ -10,8 +10,11 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.bodify.ChatBox;
 import com.example.bodify.Models.ChatRoom;
 import com.example.bodify.Models.Message;
@@ -24,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -209,6 +213,55 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                     } else {
                                         Toast.makeText(context, "You're not a member of this chat", Toast.LENGTH_SHORT).show();
                                     }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case R.id.viewMembers:
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("ChatRoom").child(rooms.get(position).getTheme());
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                ChatRoom chatRoom = snapshot.getValue(ChatRoom.class);
+                                if (chatRoom != null) {
+                                    ArrayList<String> userIds = new ArrayList<>(chatRoom.getUserIds());
+                                    DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
+                                    userReference.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            ArrayList<User> users = new ArrayList<>();
+                                            for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                                                User user = userSnapshot.getValue(User.class);
+                                                assert user != null;
+                                                user.setUserID(userSnapshot.getKey());
+                                                if (userIds.contains(user.getUserID())) {
+                                                    users.add(user);
+                                                }
+                                            }
+                                            final AlertDialog.Builder userBuilder = new AlertDialog.Builder(context);
+                                            LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                            View view2 = inflater2.inflate(R.layout.users, null);
+                                            RecyclerView recyclerView = view2.findViewById(R.id.userRCV);
+                                            recyclerView.setHasFixedSize(true);
+                                            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                            ViewAllUsersAdapter viewAllUsersAdapter = new ViewAllUsersAdapter(users);
+                                            userBuilder.setNegativeButton("Close", (dialog15, which) -> dialog15.cancel());
+                                            recyclerView.setAdapter(viewAllUsersAdapter);
+                                            userBuilder.setView(view2);
+                                            AlertDialog userDlg = userBuilder.create();
+                                            userDlg.show();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
                             }
 
