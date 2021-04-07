@@ -260,7 +260,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 Favourite finalFavourite = favourite;
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(context, "Successfully saved", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Toast.LENGTH_SHORT).show();
                                         DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
                                         habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @RequiresApi(api = Build.VERSION_CODES.N)

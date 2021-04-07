@@ -298,7 +298,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                     Recipe finalRecipe = recipe;
                                     databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(context, "Successfully saved", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, "Added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Toast.LENGTH_SHORT).show();
                                             DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
                                             habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -418,7 +418,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                             }
                                         }
                                         if (exists) {
-                                            Toast.makeText(context, "Error item already exists in Favourites", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, "Error item already exists in Favourites!", Toast.LENGTH_SHORT).show();
                                         }
                                         if (!exists) {
                                             assert finalRecipe != null;
@@ -426,9 +426,9 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                                     finalRecipe.getSodium(), finalRecipe.getCarbohydrates(), finalRecipe.getSugar(), finalRecipe.getProteins(), userID, finalRecipe.getServings());
                                             databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(context, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(context, "Item added to Favourites!", Toast.LENGTH_SHORT).show();
                                                 } else {
-                                                    Toast.makeText(context, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(context, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                         }

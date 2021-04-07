@@ -95,7 +95,6 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                                     }
                                 });
                             });
-
                         });
                         AlertDialog alertDialog = builder.create();
                         alertDialog.setTitle("Attention required!");

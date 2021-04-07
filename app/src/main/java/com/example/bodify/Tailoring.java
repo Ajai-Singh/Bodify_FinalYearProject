@@ -259,7 +259,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         Snackbar snackbar = Snackbar.make(constraintLayout, "Fill in drop downs!", Snackbar.LENGTH_LONG);
         snackbar.show();
     }
-
+    
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 

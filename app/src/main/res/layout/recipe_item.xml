@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="80dp"
     android:layout_marginHorizontal="10dp"
     android:layout_marginTop="0dp"
     android:layout_marginBottom="10dp"
@@ -10,8 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp">
-
+        android:layout_height="80dp">
 
         <TextView
             android:id="@+id/recipeTitle"
@@ -27,45 +26,25 @@
             android:id="@+id/timeToCook"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/source"
-            app:layout_constraintVertical_bias="0.975" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/Serving"
             android:layout_width="111dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="13dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/source"
-            app:layout_constraintVertical_bias="0.95" />
-
-        <TextView
-            android:id="@+id/source"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/sourceUrl"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipeTitle" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:layout_width="24dp"
             android:layout_height="20dp"
-            android:layout_marginTop="13dp"
             android:src="@drawable/clock"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/timeToCook"
-            app:layout_constraintTop_toBottomOf="@+id/source"
-            app:layout_constraintVertical_bias="0.981" />
+            app:layout_constraintEnd_toStartOf="@+id/timeToCook" />
 
         <TextView
             android:id="@+id/recipeOptions"
@@ -74,6 +53,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="16dp"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:text="&#8942;"

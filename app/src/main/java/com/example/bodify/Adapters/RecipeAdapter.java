@@ -76,13 +76,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.setRecipeName(recipes.get(position).getTitle());
-        holder.setUrl(recipes.get(position).getSourceUrl());
         holder.setServingQuantity(String.valueOf(recipes.get(position).getServings()));
         holder.setCookDuration(recipes.get(position).getReadyInMinutes());
-        holder.url.setOnClickListener(v -> {
-            Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(holder.url.getText().toString()));
-            v.getContext().startActivity(intent);
-        });
         holder.menuOptions.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(context, holder.menuOptions);
             popupMenu.inflate(R.menu.recipe_menu_options);
@@ -90,6 +85,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                 TextView itemNameFromScan, itemCalories, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT, itemServingsT;
                 ImageView imageView;
                 switch (item.getItemId()) {
+                    case R.id.onlineRecipe:
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(recipes.get(position).getSourceUrl()));
+                        context.startActivity(browserIntent);
+                        break;
                     case R.id.information:
                         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -297,7 +296,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 Recipe finalRecipe = recipe;
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(context, "Successfully saved", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Toast.LENGTH_SHORT).show();
                                         DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
                                         habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -417,7 +416,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                         }
                                     }
                                     if (exists) {
-                                        Toast.makeText(context, "Error item already exists in Favourites", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Error item already exists in Favourites!", Toast.LENGTH_SHORT).show();
                                     }
                                     if (!exists) {
                                         assert finalRecipe != null;
@@ -425,9 +424,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                                 finalRecipe.getSodium(), finalRecipe.getCarbohydrates(), finalRecipe.getSugar(), finalRecipe.getProteins(), userID, finalRecipe.getServings());
                                         databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(context, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, "Item added to Favourites!", Toast.LENGTH_SHORT).show();
                                             } else {
-                                                Toast.makeText(context, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
@@ -459,14 +458,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView recipeName, servingQuantity, cookDuration, url, menuOptions;
+        public TextView recipeName, servingQuantity, cookDuration, menuOptions;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             recipeName = itemView.findViewById(R.id.recipeTitle);
             servingQuantity = itemView.findViewById(R.id.Serving);
             cookDuration = itemView.findViewById(R.id.timeToCook);
-            url = itemView.findViewById(R.id.source);
             menuOptions = itemView.findViewById(R.id.recipeOptions);
         }
 
@@ -480,10 +478,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         public void setCookDuration(String cd) {
             cookDuration.setText(cd.concat(" Mins"));
-        }
-
-        public void setUrl(String u) {
-            url.setText(u);
         }
     }
 }

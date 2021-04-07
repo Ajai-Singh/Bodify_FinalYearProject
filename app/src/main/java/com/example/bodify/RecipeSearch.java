@@ -163,7 +163,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                 choice.setError("Field cannot be empty!");
                 choice.requestFocus();
             } else {
-                AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query=" + choice.getText().toString() + "&apiKey=" + API_KEY + "&addRecipeNutrition=true&type=" + mealsSpinner.getSelectedItem().toString().toLowerCase())
+                AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query=" + choice.getText().toString() + "&apiKey=" + API_KEY + "&addRecipeNutrition=true&type=" + mealsSpinner.getSelectedItem().toString().toLowerCase()+"&number="+3)
                         .addPathParameter("pageNumber", "0")
                         .addQueryParameter("limit", "1")
                         .addHeaders("token", "1234")

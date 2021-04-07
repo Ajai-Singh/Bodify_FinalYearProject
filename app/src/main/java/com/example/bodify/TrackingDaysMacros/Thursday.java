@@ -93,8 +93,8 @@ public class Thursday extends Fragment {
 
     public void createMacroCopyInDatabase(double a, double b, double c, double d) {
         assert userID != null;
-        MacroCopy macroCopy = new MacroCopy(a, b, c, d, userID);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("TemporaryMacros");
+        MacroCopy macroCopy = new MacroCopy(a, b, c, d);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("TemporaryMacros");
         databaseReference.child("Thursday").child(userID).setValue(macroCopy).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.i("Saved", "Successfully saved");

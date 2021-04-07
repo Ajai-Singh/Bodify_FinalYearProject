@@ -246,7 +246,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                                 }
                                             }
                                             if (users.isEmpty()) {
-                                                Toast.makeText(context,"Sorry no members!",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, "Sorry no members!", Toast.LENGTH_SHORT).show();
                                             } else {
                                                 final AlertDialog.Builder userBuilder = new AlertDialog.Builder(context);
                                                 LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -269,7 +269,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                         }
                                     });
                                 } else {
-                                    Toast.makeText(context,"Sorry no members!",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Sorry no members!", Toast.LENGTH_SHORT).show();
                                 }
                             }
 

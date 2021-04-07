@@ -1,11 +1,7 @@
 package com.example.bodify;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,16 +14,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bodify.Adapters.GroceryAdapter;
-import com.example.bodify.Adapters.WishListAdapter;
 import com.example.bodify.Models.Grocery;
 import com.example.bodify.Models.Habits;
-import com.example.bodify.Models.WishList;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -45,8 +37,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
-
 public class Groceries extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private GroceryAdapter groceryAdapter;
     private RecyclerView recyclerView;
@@ -62,8 +52,6 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
     private final ArrayList<String> prices = new ArrayList<>();
     private final ArrayList<String> productNames = new ArrayList<>();
     private final ArrayList<String> urls = new ArrayList<>();
-    private WishListAdapter wishListAdapter;
-    private final ArrayList<WishList> wishLists = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,47 +62,7 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
         spinner = findViewById(R.id.grocerySpinner);
         Button search = findViewById(R.id.grocerySearch);
         constraintLayout = findViewById(R.id.gcl);
-        Button wishList = findViewById(R.id.button3);
         populateSpinner();
-        wishList.setOnClickListener(v -> {
-            DatabaseReference wishListReference = FirebaseDatabase.getInstance().getReference("WishList");
-            wishListReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    for (DataSnapshot wishListSnapshot : snapshot.getChildren()) {
-                        WishList wishList = wishListSnapshot.getValue(WishList.class);
-                        if (wishList != null) {
-                            if (wishList.getUserID().equals(mAuth.getUid())) {
-                                wishLists.add(wishList);
-                            }
-                        }
-                    }
-                    if (wishLists.isEmpty()) {
-                        noDataWishList();
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Groceries.this);
-                        @SuppressLint("InflateParams")
-                        View view = getLayoutInflater().inflate(R.layout.wishlist, null);
-                        RecyclerView recyclerView = view.findViewById(R.id.wishListRCV);
-                        recyclerView.setHasFixedSize(true);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(Groceries.this));
-                        wishListAdapter = new WishListAdapter(wishLists, Groceries.this);
-                        builder.setNegativeButton("Close", (dialog15, which) -> dialog15.cancel());
-                        new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerView);
-                        recyclerView.setAdapter(wishListAdapter);
-                        builder.setView(view);
-                        AlertDialog userDlg = builder.create();
-                        userDlg.show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(Groceries.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
         search.setOnClickListener(v -> {
             DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
             habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -122,12 +70,7 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Habits habits = snapshot.getValue(Habits.class);
                     if (spinner.getSelectedItemPosition() == 0) {
-                        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Groceries.this);
-                        dlgAlert.setMessage("Select drop down value!");
-                        dlgAlert.setTitle("Error...");
-                        dlgAlert.setPositiveButton("OK", null);
-                        dlgAlert.setCancelable(true);
-                        dlgAlert.create().show();
+                        selectDropdownValue();
                     } else if (spinner.getSelectedItem().toString().equals("Breakfast")) {
                         assert habits != null;
                         if (habits.getBreakfastNames().isEmpty() || habits.getBreakfastNames().contains("No Meals")) {
@@ -202,7 +145,7 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
 
     public void populateSpinner() {
         meals = new ArrayList<>();
-        meals.add("Select meal!");
+        meals.add("Select meal of day!");
         meals.add("Breakfast");
         meals.add("Lunch");
         meals.add("Dinner");
@@ -449,8 +392,8 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
         snackbar.show();
     }
 
-    public void noDataWishList() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no items found!", Snackbar.LENGTH_SHORT);
+    public void selectDropdownValue() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Error, select drop down value!", Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 
@@ -463,56 +406,4 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-    ItemTouchHelper.SimpleCallback itemTouch = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                    .addBackgroundColor(ContextCompat.getColor(Groceries.this, R.color.grey))
-                    .addActionIcon(R.drawable.email)
-                    .create()
-                    .decorate();
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-        }
-
-        //TODO swipe to delete functionality not working
-        //get the index of the object first
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            wishLists.remove(viewHolder.getAdapterPosition());
-            wishListAdapter.notifyDataSetChanged();
-            Log.i("p","" + viewHolder.getAdapterPosition());
-
-
-
-//            DatabaseReference wishListReference = FirebaseDatabase.getInstance().getReference("WishList");
-//            wishListReference.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    for (DataSnapshot wishListSnapshot : snapshot.getChildren()) {
-//                        WishList wishList = wishListSnapshot.getValue(WishList.class);
-//                        if (wishList != null) {
-//                            wishList.setId(wishListSnapshot.getKey());
-//                            Log.i("p","" + viewHolder.getAdapterPosition());
-//                            if (wishList.getGrocery().equals(wishLists.get(viewHolder.getAdapterPosition()).getGrocery()) && wishList.getUserID().equals(mAuth.getUid())) {
-//                                Log.i("p","" + viewHolder.getAdapterPosition());
-//                                wishListReference.child(wishList.getId()).removeValue();
-//                                break;
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//                    Toast.makeText(Groceries.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//            });
-        }
-    };
 }

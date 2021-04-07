@@ -166,7 +166,7 @@ public class SignUp extends AppCompatActivity {
                     password.setText("");
                     verifyPassword.setText("");
                 } else {
-                    Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
+                    errorOccurred(Objects.requireNonNull(task.getException()).getMessage());
                 }
             });
         }
@@ -179,6 +179,11 @@ public class SignUp extends AppCompatActivity {
 
     public void uploadSuccessful() {
         Snackbar snackbar = Snackbar.make(constraintLayout, "Image uploaded", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+    public void errorOccurred(String errorMessage) {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + errorMessage, Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 

@@ -9,10 +9,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.bodify.Management;
 import com.example.bodify.DiaryRefreshService;
 import com.example.bodify.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
@@ -20,6 +22,7 @@ import java.util.Objects;
 public class LogIn extends AppCompatActivity {
     private EditText emailAddress, password;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class LogIn extends AppCompatActivity {
         emailAddress = findViewById(R.id.userNameSignUp);
         password = findViewById(R.id.passwordTextField);
         TextView createAcc = findViewById(R.id.createNewAccount);
+        constraintLayout = findViewById(R.id.logInCL);
         createAcc.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), SignUp.class));
         });
@@ -47,17 +51,21 @@ public class LogIn extends AppCompatActivity {
             } else {
                 mAuth.signInWithEmailAndPassword(emailAddress.getText().toString().trim(), password.getText().toString()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(LogIn.this, "User verified", Toast.LENGTH_SHORT).show();
                         startService(new Intent(LogIn.this, DiaryRefreshService.class));
                         startActivity(new Intent(getApplicationContext(), Management.class));
                         emailAddress.setText("");
                         password.setText("");
                     } else {
-                        Toast.makeText(LogIn.this, "Error occurred! " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        errorOccurred(Objects.requireNonNull(task.getException()).getMessage());
                     }
                 });
             }
         });
+    }
+
+    public void errorOccurred(String errorMessage) {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + errorMessage, Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 
     @Override
