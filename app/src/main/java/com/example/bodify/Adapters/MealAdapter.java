@@ -3,8 +3,11 @@ package com.example.bodify.Adapters;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,10 +38,12 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
     private final ArrayList<Meal> meals;
     private final Context context;
     private String quantityAdapterChoice;
+    private final ConstraintLayout constraintLayout;
 
-    public MealAdapter(ArrayList<Meal> meals, Context context) {
+    public MealAdapter(ArrayList<Meal> meals, Context context, ConstraintLayout constraintLayout) {
         this.meals = meals;
         this.context = context;
+        this.constraintLayout = constraintLayout;
     }
 
     @NonNull
@@ -60,6 +68,34 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             popupMenu.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
+                    case R.id.viewMealOnline:
+                        DatabaseReference dbMealSnapshot = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meals.get(position).getDayOfWeek());
+                        dbMealSnapshot.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot mealSnapshot : snapshot.getChildren()) {
+                                    Meal meal = mealSnapshot.getValue(Meal.class);
+                                    if (meal != null) {
+                                        if (meal.getUUID().equals(meals.get(position).getUUID())) {
+                                            if (meal.getSourceUrl().equalsIgnoreCase("no url")) {
+                                                Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no recipe available!", Snackbar.LENGTH_SHORT);
+                                                snackbar.show();
+                                            } else {
+                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(meals.get(position).getSourceUrl()));
+                                                context.startActivity(browserIntent);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                snackbar.show();
+                            }
+                        });
+                        break;
                     case R.id.deleteMeal:
                         builder.setMessage("Are you sure you want to delete this meal")
                                 .setNegativeButton("No", (dialog, which) -> dialog.cancel()).setPositiveButton("Yes", (dialog, which) -> {
@@ -91,7 +127,8 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-                                        Toast.makeText(context, "Error occurred:" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
                                     }
                                 });
                             });
@@ -169,7 +206,8 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(context, "Error occurred:" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                    snackbar.show();
                                 }
                             });
                         });
@@ -177,6 +215,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                         diaryBuilder.setView(diaryView);
                         AlertDialog diaryAlertDialog = diaryBuilder.create();
                         diaryAlertDialog.show();
+                        break;
                 }
                 return false;
             });

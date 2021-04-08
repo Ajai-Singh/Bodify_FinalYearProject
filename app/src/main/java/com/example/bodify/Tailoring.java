@@ -1,6 +1,7 @@
 package com.example.bodify;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -79,7 +80,12 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
             } else if ((fitnessGoalSpinner.getSelectedItemPosition() == 0) ||
                     (activityLevelSpinner.getSelectedItemPosition() == 0) || (bodyTypeSpinner.getSelectedItemPosition() == 0) ||
                     (genderSpinner.getSelectedItemPosition() == 0) || (preferredFoodsSpinner.getSelectedItemPosition() == 0)) {
-                fillFields();
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Tailoring.this);
+                dlgAlert.setMessage("Select all drop down values!");
+                dlgAlert.setTitle("Error...");
+                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setCancelable(true);
+                dlgAlert.create().show();
             } else {
                 Intent intent = getIntent();
                 String strUserName = intent.getStringExtra("userName");
@@ -111,7 +117,8 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                         Toast.makeText(getApplicationContext(), "User Created Successfully!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), Management.class));
                     } else {
-                        Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                     }
                 });
             }
@@ -253,11 +260,6 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         adapterPreferredFoods.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         preferredFoodsSpinner.setAdapter(adapterPreferredFoods);
         preferredFoodsSpinner.setOnItemSelectedListener(Tailoring.this);
-    }
-
-    public void fillFields() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Fill in drop downs!", Snackbar.LENGTH_LONG);
-        snackbar.show();
     }
     
     @Override

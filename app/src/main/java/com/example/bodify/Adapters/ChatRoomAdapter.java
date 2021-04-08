@@ -9,9 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +21,7 @@ import com.example.bodify.Models.Message;
 import com.example.bodify.Models.Room;
 import com.example.bodify.Models.User;
 import com.example.bodify.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,7 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 
 public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Room> rooms;
@@ -39,10 +39,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private final ConstraintLayout constraintLayout;
 
-    public ChatRoomAdapter(ArrayList<Room> rooms, Context context) {
+    public ChatRoomAdapter(ArrayList<Room> rooms, Context context, ConstraintLayout constraintLayout) {
         this.rooms = rooms;
         this.context = context;
+        this.constraintLayout = constraintLayout;
     }
 
     @NonNull
@@ -74,7 +76,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                            snackbar.show();
                         }
                     });
 
@@ -89,7 +92,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
         });
         holder.setTheme(rooms.get(position).getTheme());
@@ -139,7 +143,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
 
                                                         @Override
                                                         public void onCancelled(@NonNull DatabaseError error) {
-                                                            Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                                            Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                                            snackbar.show();
                                                         }
                                                     });
                                                 });
@@ -162,12 +167,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ChatRoom");
                                                 databaseReference.child(rooms.get(position).getTheme()).setValue(newChatRoom).addOnCompleteListener(task -> {
                                                     if (task.isSuccessful()) {
-                                                        Toast.makeText(context, "Group Chat Created", Toast.LENGTH_SHORT).show();
+                                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Group Chat Created!", Snackbar.LENGTH_SHORT);
+                                                        snackbar.show();
                                                         Intent intent = new Intent(context, ChatBox.class);
                                                         intent.putExtra("theme", rooms.get(position).getTheme());
                                                         context.startActivity(intent);
                                                     } else {
-                                                        Toast.makeText(context, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + task.getException().getMessage(), Snackbar.LENGTH_SHORT);
+                                                        snackbar.show();
                                                     }
                                                 });
                                             });
@@ -179,7 +186,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                snackbar.show();
                             }
                         });
                         break;
@@ -211,16 +219,19 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                         deleteDialog.setTitle("Attention required!");
                                         deleteDialog.show();
                                     } else {
-                                        Toast.makeText(context, "You're not a member of this chat", Toast.LENGTH_SHORT).show();
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, "You're not a member of this chat", Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
                                     }
                                 } else {
-                                    Toast.makeText(context, "You're not a member of this chat", Toast.LENGTH_SHORT).show();
+                                    Snackbar snackbar = Snackbar.make(constraintLayout, "You're not a member of this chat", Snackbar.LENGTH_SHORT);
+                                    snackbar.show();
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                snackbar.show();
                             }
                         });
                         break;
@@ -246,7 +257,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                                 }
                                             }
                                             if (users.isEmpty()) {
-                                                Toast.makeText(context, "Sorry no members!", Toast.LENGTH_SHORT).show();
+                                                Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no members!", Snackbar.LENGTH_SHORT);
+                                                snackbar.show();
                                             } else {
                                                 final AlertDialog.Builder userBuilder = new AlertDialog.Builder(context);
                                                 LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -265,17 +277,20 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError error) {
-                                            Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                            Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                            snackbar.show();
                                         }
                                     });
                                 } else {
-                                    Toast.makeText(context, "Sorry no members!", Toast.LENGTH_SHORT).show();
+                                    Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no members!", Snackbar.LENGTH_SHORT);
+                                    snackbar.show();
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                snackbar.show();
                             }
                         });
                         break;

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bodify.Adapters.FavouriteAdapter;
 import com.example.bodify.Models.Favourite;
+import com.example.bodify.Models.Ingredient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -122,7 +123,7 @@ public class Favourites extends Fragment {
                     dialog.dismiss();
                     Favourite favourite = new Favourite(itemName.getText().toString(), Integer.parseInt(calories.getText().toString()), Integer.parseInt(fat.getText().toString()),
                             Integer.parseInt(sodium.getText().toString()), Integer.parseInt(carbs.getText().toString()), Integer.parseInt(sugar.getText().toString()),
-                            Integer.parseInt(protein.getText().toString()), mAuth.getUid(), Integer.parseInt(servings.getText().toString()));
+                            Integer.parseInt(protein.getText().toString()), mAuth.getUid(), Integer.parseInt(servings.getText().toString()), "no url");
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                     databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {

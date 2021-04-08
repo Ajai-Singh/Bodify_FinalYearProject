@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -70,7 +69,8 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Habits habits = snapshot.getValue(Habits.class);
                     if (spinner.getSelectedItemPosition() == 0) {
-                        selectDropdownValue();
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error, select drop down value!", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                     } else if (spinner.getSelectedItem().toString().equals("Breakfast")) {
                         assert habits != null;
                         if (habits.getBreakfastNames().isEmpty() || habits.getBreakfastNames().contains("No Meals")) {
@@ -136,7 +136,7 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(Groceries.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    errorOccurred(error.getMessage());
                 }
             });
         });
@@ -392,8 +392,8 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
         snackbar.show();
     }
 
-    public void selectDropdownValue() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Error, select drop down value!", Snackbar.LENGTH_SHORT);
+    public void errorOccurred(String errorMessage) {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + errorMessage, Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 

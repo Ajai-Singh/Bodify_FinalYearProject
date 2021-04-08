@@ -1,7 +1,7 @@
 package com.example.bodify.Models;
 
 public class Meal {
-    private String itemName, userID, id, mealType, dayOfWeek, date, UUID;
+    private String itemName, userID, id, mealType, dayOfWeek, date, UUID,sourceUrl;
     private int calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, numberOfServings, originalServings;
 
     public String getItemName() {
@@ -124,11 +124,20 @@ public class Meal {
         this.UUID = UUID;
     }
 
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
+
     public Meal() {
 
     }
 
-    public Meal(String itemName, String userID, int calories, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings, String mealType, String dayOfWeek, String date, int originalServings, String UUID) {
+    public Meal(String itemName, String userID, int calories, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, int numberOfServings,
+                String mealType, String dayOfWeek, String date, int originalServings, String UUID, String sourceUrl) {
         this.itemName = itemName;
         this.userID = userID;
         this.calories = calories;
@@ -143,5 +152,6 @@ public class Meal {
         this.date = date;
         this.originalServings = originalServings;
         this.UUID = UUID;
+        this.sourceUrl = sourceUrl;
     }
 }

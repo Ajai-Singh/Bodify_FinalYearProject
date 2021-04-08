@@ -16,10 +16,10 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +29,7 @@ import com.example.bodify.Models.Habits;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.Recipe;
 import com.example.bodify.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,10 +62,12 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+    private final ConstraintLayout constraintLayout;
 
-    public CardStackAdapter(List<Recipe> recipes, Context context) {
+    public CardStackAdapter(List<Recipe> recipes, Context context, ConstraintLayout constraintLayout) {
         this.recipes = recipes;
         this.context = context;
+        this.constraintLayout = constraintLayout;
     }
 
     @NonNull
@@ -290,15 +293,16 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                     } else {
                                         newDate = String.valueOf(stringBuffer);
                                     }
-                                    Meal meal = new Meal(recipe.getTitle(), userID, recipe.getCalories(),
+                                    Meal meal =new Meal(recipe.getTitle(), userID, recipe.getCalories(),
                                             recipe.getFats(), recipe.getSodium(), recipe.getCarbohydrates(),
                                             recipe.getSugar(), recipe.getProteins(),
-                                            Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, recipe.getServings(), UUID.randomUUID().toString());
+                                            Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, recipe.getServings(), UUID.randomUUID().toString(), recipe.getSourceUrl());
                                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                     Recipe finalRecipe = recipe;
                                     databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(context, "Added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Toast.LENGTH_SHORT).show();
+                                            Snackbar snackbar = Snackbar.make(constraintLayout, "Added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Snackbar.LENGTH_SHORT);
+                                            snackbar.show();
                                             DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
                                             habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -369,11 +373,15 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
                                                 @Override
                                                 public void onCancelled(@NonNull DatabaseError error) {
-                                                    Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                                    snackbar.show();
                                                 }
                                             });
                                         }
-                                    }).addOnFailureListener(e -> Toast.makeText(context, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                    }).addOnFailureListener(e -> {
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + e.getMessage(), Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
+                                    });
                                 }
                             });
                             break;
@@ -418,17 +426,20 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                             }
                                         }
                                         if (exists) {
-                                            Toast.makeText(context, "Error item already exists in Favourites!", Toast.LENGTH_SHORT).show();
+                                            Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites!", Snackbar.LENGTH_SHORT);
+                                            snackbar.show();
                                         }
                                         if (!exists) {
                                             assert finalRecipe != null;
                                             Favourite favourite = new Favourite(finalRecipe.getTitle(), finalRecipe.getCalories(), finalRecipe.getFats(),
-                                                    finalRecipe.getSodium(), finalRecipe.getCarbohydrates(), finalRecipe.getSugar(), finalRecipe.getProteins(), userID, finalRecipe.getServings());
+                                                    finalRecipe.getSodium(), finalRecipe.getCarbohydrates(), finalRecipe.getSugar(), finalRecipe.getProteins(), userID, finalRecipe.getServings(), finalRecipe.getSourceUrl());
                                             databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(context, "Item added to Favourites!", Toast.LENGTH_SHORT).show();
+                                                    Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to Favourites!", Snackbar.LENGTH_SHORT);
+                                                    snackbar.show();
                                                 } else {
-                                                    Toast.makeText(context, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                                    Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);
+                                                    snackbar.show();
                                                 }
                                             });
                                         }
@@ -436,7 +447,8 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-                                        Toast.makeText(context, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
                                     }
                                 });
                             });

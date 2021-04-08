@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,6 +37,7 @@ public class Health extends AppCompatActivity {
     private BarChart barChart;
     private final ArrayList<BarEntry> barEntries = new ArrayList<>();
     private Double formattedCalorieIntake, proteinAmount, carbohydrateAmount, fatAmount, proteinCalories, carbohydrateCalories, fatCalories;
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class Health extends AppCompatActivity {
         fitnessGoal = findViewById(R.id.currentFitnessGoal);
         fitnessLevel = findViewById(R.id.fitnessLevelTextField);
         calorieIntake = findViewById(R.id.calorieIntakeTextField);
+        constraintLayout = findViewById(R.id.hcl);
         barChart = findViewById(R.id.barChart);
         barChart.setTouchEnabled(false);
         barChart.setPinchZoom(false);
@@ -135,7 +138,8 @@ public class Health extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(Health.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
         });
     }
@@ -143,7 +147,10 @@ public class Health extends AppCompatActivity {
     public void setUserMacros(Double calories, Double fat, Double carbs, Double protein) {
         Macro macro = new Macro(Math.round(calories), Math.round(fat), Math.round(carbs), Math.round(protein));
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("Macros").child(Objects.requireNonNull(mAuth.getUid())).setValue(macro).addOnFailureListener(e -> Toast.makeText(Health.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        databaseReference.child("Macros").child(Objects.requireNonNull(mAuth.getUid())).setValue(macro).addOnFailureListener(e -> {
+            Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + e.getMessage(), Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        });
     }
 
     public void showChart(ArrayList<BarEntry> macros) {

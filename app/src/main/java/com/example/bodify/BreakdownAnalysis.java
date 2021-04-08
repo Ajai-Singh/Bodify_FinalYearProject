@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -82,7 +81,10 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         pie = AnyChart.pie();
         anyChartView.setChart(pie);
         anyChartView.setBackgroundColor(Color.RED);
-        imageButton.setOnClickListener(v -> showInfoSnackBar());
+        imageButton.setOnClickListener(v -> {
+            Snackbar snackbar = Snackbar.make(constraintLayout, "If any values are shown in red, You have gone over your recommended amount!", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        });
         ArrayList<String> userIDs = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -98,7 +100,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                errorOccurred(error.getMessage());
             }
         });
         next.setVisibility(View.INVISIBLE);
@@ -157,7 +159,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                errorOccurred(error.getMessage());
             }
         });
     }
@@ -186,7 +188,8 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         userSP.setAdapter(adapterNames);
         userSP.setOnItemSelectedListener(BreakdownAnalysis.this);
         if (userNames.size() == 1) {
-            noDataSnackBar();
+            Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no user data available yet!", Snackbar.LENGTH_SHORT);
+            snackbar.show();
         }
     }
 
@@ -228,7 +231,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                errorOccurred(error.getMessage());
             }
         });
     }
@@ -251,7 +254,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                errorOccurred(error.getMessage());
             }
         });
     }
@@ -348,7 +351,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                errorOccurred(error.getMessage());
             }
         });
     }
@@ -402,7 +405,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        errorOccurred(error.getMessage());
                     }
                 });
                 caloriesTV.setText(String.valueOf(calories));
@@ -412,19 +415,14 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(BreakdownAnalysis.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onCancelled(@NonNull DatabaseError error) {;
+                errorOccurred(error.getMessage());
             }
         });
     }
 
-    public void showInfoSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "If any values are shown in red, You have gone over your recommended amount!", Snackbar.LENGTH_LONG);
-        snackbar.show();
-    }
-
-    public void noDataSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no user data available yet!", Snackbar.LENGTH_LONG);
+    public void errorOccurred(String errorMessage) {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + errorMessage, Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 

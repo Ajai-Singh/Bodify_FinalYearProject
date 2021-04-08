@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -86,7 +85,7 @@ public class Sunday extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("error", "" + error.getMessage());
             }
         });
     }
@@ -99,7 +98,7 @@ public class Sunday extends Fragment {
             if (task.isSuccessful()) {
                 Log.i("Saved", "Successfully saved");
             }
-        }).addOnFailureListener(e -> Toast.makeText(getContext(), "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e -> Log.i("error", "" + e.getMessage()));
     }
 
     public void setUIComponents() {
@@ -139,7 +138,7 @@ public class Sunday extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("error", "" + error.getMessage());
             }
         });
     }
@@ -175,7 +174,7 @@ public class Sunday extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("error", "" + error.getMessage());
             }
         });
     }
@@ -231,7 +230,7 @@ public class Sunday extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("error", "" + error.getMessage());
             }
         });
     }
@@ -283,7 +282,7 @@ public class Sunday extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("error", "" + error.getMessage());
             }
         });
     }
@@ -307,7 +306,7 @@ public class Sunday extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred!" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("error", "" + error.getMessage());
             }
         });
     }

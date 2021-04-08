@@ -3,7 +3,9 @@ package com.example.bodify.Adapters;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,12 +20,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Habits;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -80,6 +84,32 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
             popup.setOnMenuItemClickListener(item -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 switch (item.getItemId()) {
+                    case R.id.viewFavOnline:
+                        DatabaseReference dbFavSnapshot = FirebaseDatabase.getInstance().getReference("Favourites");
+                        dbFavSnapshot.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot favSnapshot : snapshot.getChildren()) {
+                                    Favourite favourite = favSnapshot.getValue(Favourite.class);
+                                    if (favourite != null) {
+                                        if (favourite.getItemName().equals(favourites.get(position).getItemName())) {
+                                            if (favourite.getSourceUrl().equalsIgnoreCase("no url")) {
+                                                Toast.makeText(context, "Sorry no recipe available!", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(favourites.get(position).getSourceUrl()));
+                                                context.startActivity(browserIntent);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
                     case R.id.addToDiary:
                         final Spinner meals;
                         final Spinner quantity;
@@ -255,7 +285,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 Meal meal = new Meal(favourite.getItemName(), favourite.getUserID(), favourite.getCalories()
                                         , favourite.getItemTotalFat(), favourite.getItemSodium(),
                                         favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
-                                        favourite.getItemProtein(), Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, favourite.getNumberOfServings(), UUID.randomUUID().toString());
+                                        favourite.getItemProtein(), Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, favourite.getNumberOfServings(), UUID.randomUUID().toString(), favourite.getSourceUrl());
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                                 Favourite finalFavourite = favourite;
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
@@ -350,13 +380,14 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                             }
                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Favourites");
                             databaseReference.child(favourite.getId()).removeValue();
-                            Toast.makeText(context, "Item removed from Favourites!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Item removed from Favourites!", Toast.LENGTH_SHORT).show();
                             favourites.clear();
                             notifyDataSetChanged();
                         });
                         AlertDialog alertDialog = builder.create();
                         alertDialog.setTitle("Attention required!");
                         alertDialog.show();
+                        break;
                 }
                 return false;
             });

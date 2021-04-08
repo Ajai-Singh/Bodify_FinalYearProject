@@ -6,6 +6,10 @@
         android:title="Add to Diary" />
 
     <item
+        android:title="View Recipe Online"
+        android:id="@+id/viewFavOnline" />
+
+    <item
         android:id="@+id/DeleteFromFavourites"
         android:title="Delete Item" />
 </menu>

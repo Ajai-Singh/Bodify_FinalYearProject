@@ -70,7 +70,7 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(Management.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("Error ", "Occurred: " + error.getMessage());
             }
         });
         navigationView.setItemIconTintList(null);

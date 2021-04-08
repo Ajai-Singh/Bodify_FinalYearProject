@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,7 +70,7 @@ public class ChatRooms extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(ChatRooms.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    errorOccurred(error.getMessage());
                 }
             });
         });
@@ -89,16 +88,39 @@ public class ChatRooms extends AppCompatActivity {
                 if (!rooms.isEmpty()) {
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(new LinearLayoutManager(ChatRooms.this));
-                    chatRoomAdapter = new ChatRoomAdapter(rooms, ChatRooms.this);
+                    chatRoomAdapter = new ChatRoomAdapter(rooms, ChatRooms.this, constraintLayout);
                     recyclerView.setAdapter(chatRoomAdapter);
                 } else {
-                    noDataSnackBar();
+                    Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no Chats! ", Snackbar.LENGTH_LONG)
+                            .setAction("Create Chat?", view -> {
+                                DatabaseReference roomReference = FirebaseDatabase.getInstance().getReference("Rooms");
+                                roomReference.addValueEventListener(new ValueEventListener() {
+                                    final ArrayList<String> roomNames = new ArrayList<>();
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                                        for (DataSnapshot roomSnapshot : snapshot1.getChildren()) {
+                                            Room room = roomSnapshot.getValue(Room.class);
+                                            if (room != null) {
+                                                roomNames.add(room.getTheme());
+                                            }
+                                        }
+                                        createChatRoom(roomNames);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        errorOccurred(error.getMessage());
+                                    }
+                                });
+                            });
+                    snackbar.setActionTextColor(Color.RED);
+                    snackbar.show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ChatRooms.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                errorOccurred(error.getMessage());
             }
         });
     }
@@ -146,8 +168,7 @@ public class ChatRooms extends AppCompatActivity {
 
             }
         });
-        builder.setPositiveButton("Create", (dialog, which) -> {
-        });
+        builder.setPositiveButton("Create", (dialog, which) -> { });
         builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
         builder.setView(view);
         AlertDialog dialog = builder.create();
@@ -185,32 +206,28 @@ public class ChatRooms extends AppCompatActivity {
                                 if (!rooms.isEmpty()) {
                                     recyclerView.setHasFixedSize(true);
                                     recyclerView.setLayoutManager(new LinearLayoutManager(ChatRooms.this));
-                                    chatRoomAdapter = new ChatRoomAdapter(rooms, ChatRooms.this);
+                                    chatRoomAdapter = new ChatRoomAdapter(rooms, ChatRooms.this, constraintLayout);
                                     recyclerView.setAdapter(chatRoomAdapter);
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(ChatRooms.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                errorOccurred(error.getMessage());
                             }
                         });
-                        chatRoomCreated();
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Chat room created!", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                     } else {
-                        Toast.makeText(ChatRooms.this, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        errorOccurred(Objects.requireNonNull(task.getException()).getMessage());
                     }
                 });
             }
         });
     }
 
-    public void noDataSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no chats, Create one!", Snackbar.LENGTH_SHORT);
-        snackbar.show();
-    }
-
-    public void chatRoomCreated() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Chat room created!", Snackbar.LENGTH_SHORT);
+    public void errorOccurred(String errorMessage) {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + errorMessage, Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 

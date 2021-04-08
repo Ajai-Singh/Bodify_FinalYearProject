@@ -7,4 +7,7 @@
     <item
         android:id="@+id/editMeal"
         android:title="Edit meal" />
+    <item
+        android:id="@+id/viewMealOnline"
+        android:title="View Meal Online?" />
 </menu>

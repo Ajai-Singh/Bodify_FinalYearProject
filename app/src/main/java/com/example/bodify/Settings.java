@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +42,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Personal Profile");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("User Settings");
         userName = findViewById(R.id.userNameTextField);
         email = findViewById(R.id.emailAddressTextField);
         height = findViewById(R.id.heightTextFieldPP);
@@ -94,7 +93,8 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getApplicationContext(), "Database Access Error!" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(constraintLayout, "Database Access Error!" + error.getMessage(), Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
         });
 
@@ -164,7 +164,8 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(Settings.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                     }
                 });
                 startService(new Intent(Settings.this, HealthService.class));

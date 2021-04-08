@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,7 +65,6 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barChart.setDoubleTapToZoomEnabled(false);
         analyses = (ArrayList<Analysis>) getIntent().getSerializableExtra("analyses");
         leftAxis = barChart.getAxisLeft();
-        showInfoSnackBar();
         populateSpinner();
         search.setOnClickListener(v -> {
             if (spinner.getSelectedItemPosition() == 0) {
@@ -111,7 +109,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(WeightProgression.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        errorOccurred(error.getMessage());
                     }
                 });
             }
@@ -154,7 +152,15 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barChart.setVisibility(View.VISIBLE);
         Intent intent = getIntent();
         if (Objects.equals(mAuth.getUid(), intent.getStringExtra("userId"))) {
-            showSnackBar();
+            Snackbar snackbar = Snackbar.make(constraintLayout, "Update your weight accordingly", Snackbar.LENGTH_LONG).setAction(
+                    "Settings", v -> {
+                        Intent i = new Intent(WeightProgression.this, Settings.class);
+                        startActivity(i);
+                        finish();
+                    }
+            );
+            snackbar.setActionTextColor(Color.RED);
+            snackbar.show();
         }
         barEntries.add(new BarEntry(0f, (float) weight));
         xLabels.add(date);
@@ -216,7 +222,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(WeightProgression.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                errorOccurred(error.getMessage());
             }
         });
     }
@@ -260,7 +266,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(WeightProgression.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                errorOccurred(error.getMessage());
             }
         });
     }
@@ -304,24 +310,13 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(WeightProgression.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                errorOccurred(error.getMessage());
             }
         });
     }
 
-    public void showSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Update your weight accordingly", Snackbar.LENGTH_LONG).setAction(
-                "Settings", v -> {
-                    Intent intent = new Intent(WeightProgression.this, Settings.class);
-                    startActivity(intent);
-                    finish();
-                }
-        );
-        snackbar.show();
-    }
-
-    public void showInfoSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Select drop down value", Snackbar.LENGTH_LONG);
+    public void errorOccurred(String errorMessage) {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + errorMessage, Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 

@@ -72,17 +72,19 @@ public class SignUp extends AppCompatActivity {
             fileReference.putFile(mImageUri)
                     .addOnSuccessListener(taskSnapshot -> {
                         pd.dismiss();
-                        uploadSuccessful();
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Image uploaded!", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                         imageDownloadUrl = fileReference.getPath();
                     }).addOnFailureListener(e -> {
                 pd.dismiss();
-                Toast.makeText(getApplicationContext(), "Error Occurred!" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                errorOccurred(e.getMessage());
             }).addOnProgressListener(snapshot -> {
                 double progressPercent = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                 pd.setMessage("Percentage " + (int) progressPercent + " " + "%");
             });
         } else {
-            Toast.makeText(SignUp.this, "No file selected", Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(constraintLayout, "No file selected!", Snackbar.LENGTH_SHORT);
+            snackbar.show();
         }
     }
 
@@ -125,7 +127,7 @@ public class SignUp extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(SignUp.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    errorOccurred(error.getMessage());
                 }
             });
         });
@@ -152,8 +154,9 @@ public class SignUp extends AppCompatActivity {
             password.requestFocus();
             verifyPassword.setError("Passwords do not match");
             verifyPassword.requestFocus();
-        } else if(TextUtils.isEmpty(imageDownloadUrl)) {
-            noImageSelected();
+        } else if (TextUtils.isEmpty(imageDownloadUrl)) {
+            Snackbar snackbar = Snackbar.make(constraintLayout, "Select profile picture!", Snackbar.LENGTH_SHORT);
+            snackbar.show();
         } else {
             mAuth.createUserWithEmailAndPassword(emailAddress.getText().toString().trim(), password.getText().toString()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -166,20 +169,10 @@ public class SignUp extends AppCompatActivity {
                     password.setText("");
                     verifyPassword.setText("");
                 } else {
-                    errorOccurred(Objects.requireNonNull(task.getException()).getMessage());
+                    Toast.makeText(getApplicationContext(), "Error Occurred!" + Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
-    }
-
-    public void noImageSelected() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Select profile picture!", Snackbar.LENGTH_SHORT);
-        snackbar.show();
-    }
-
-    public void uploadSuccessful() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Image uploaded", Snackbar.LENGTH_SHORT);
-        snackbar.show();
     }
 
     public void errorOccurred(String errorMessage) {

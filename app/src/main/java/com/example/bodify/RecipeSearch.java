@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,7 +71,8 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
     public static final String API_KEY = "de851175d709445bb3d6149a58107a93";
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private Button search, scan, find;
+    private Button search;
+    private Button find;
     private RecyclerView recyclerView;
     private RecipeAdapter recipeAdapter;
     private String quantityAdapterChoice;
@@ -99,14 +99,17 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
         choice = findViewById(R.id.foodName);
         search = findViewById(R.id.searchMeals);
         recyclerView = findViewById(R.id.recipeRCV);
-        scan = findViewById(R.id.button4);
+        Button scan = findViewById(R.id.button4);
         find = findViewById(R.id.nutritionCheckButton);
         nutrition = findViewById(R.id.nutritionCheck);
         constraintLayout = findViewById(R.id.clff);
         updateSpinners();
         nutritionChecker();
         mealSearch();
-        scanner();
+        scan.setOnClickListener(v -> {
+            IntentIntegrator scanIntegrator = new IntentIntegrator(RecipeSearch.this);
+            scanIntegrator.initiateScan();
+        });
     }
 
     public void updateSpinners() {
@@ -163,7 +166,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                 choice.setError("Field cannot be empty!");
                 choice.requestFocus();
             } else {
-                AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query=" + choice.getText().toString() + "&apiKey=" + API_KEY + "&addRecipeNutrition=true&type=" + mealsSpinner.getSelectedItem().toString().toLowerCase()+"&number="+3)
+                AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query=" + choice.getText().toString() + "&apiKey=" + API_KEY + "&addRecipeNutrition=true&type=" + mealsSpinner.getSelectedItem().toString().toLowerCase() + "&number=" + 1)
                         .addPathParameter("pageNumber", "0")
                         .addQueryParameter("limit", "1")
                         .addHeaders("token", "1234")
@@ -206,10 +209,9 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                             }
                             recyclerView.setHasFixedSize(true);
                             recyclerView.setLayoutManager(new LinearLayoutManager(RecipeSearch.this));
-                            recipeAdapter = new RecipeAdapter(recipes, RecipeSearch.this);
+                            recipeAdapter = new RecipeAdapter(recipes, RecipeSearch.this, constraintLayout);
                             recyclerView.setAdapter(recipeAdapter);
-                        } catch (
-                                JSONException e) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
@@ -217,7 +219,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
 
                     @Override
                     public void onError(ANError anError) {
-                        Toast.makeText(RecipeSearch.this, "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
+                        errorOccurred(anError.getMessage());
                     }
                 });
             }
@@ -276,8 +278,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                                 e.printStackTrace();
                             }
                         },
-                        error -> Toast.makeText(RecipeSearch.this, "Error Occurred" + error.getMessage(), Toast.LENGTH_SHORT).show()
-                ) {
+                        error -> errorOccurred(error.getMessage())) {
                     @Override
                     public Map<String, String> getHeaders() {
                         Map<String, String> params = new HashMap<>();
@@ -286,15 +287,6 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                     }
                 };
                 queue.add(stringRequest);
-            }
-        });
-    }
-
-    public void scanner() {
-        scan.setOnClickListener(v -> {
-            if (v.getId() == R.id.button4) {
-                IntentIntegrator scanIntegrator = new IntentIntegrator(RecipeSearch.this);
-                scanIntegrator.initiateScan();
             }
         });
     }
@@ -311,7 +303,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                 returnNutritionalInformation(scanContent);
             }
         } else {
-            Toast.makeText(RecipeSearch.this, "No scan data received!", Toast.LENGTH_SHORT).show();
+            noScannedData();
         }
     }
 
@@ -330,13 +322,14 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                     createPost(jsonObject.getString("item_name"), jsonObject.getInt("nf_calories"), jsonObject.getInt("nf_calories_from_fat"), jsonObject.getInt("nf_total_fat"),
                             jsonObject.getInt("nf_sodium"), jsonObject.getInt("nf_total_carbohydrate"), jsonObject.getInt("nf_sugars"), jsonObject.getInt("nf_protein"), jsonObject.getInt("nf_servings_per_container"));
                 } catch (JSONException e) {
-                    Toast.makeText(RecipeSearch.this, "Error Occurred" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onError(ANError anError) {
-                Toast.makeText(RecipeSearch.this, "Error Occurred" + anError.getMessage(), Toast.LENGTH_SHORT).show();
+                    Snackbar snackbar = Snackbar.make(constraintLayout, "Invalid UPC provided", Snackbar.LENGTH_SHORT);
+                    snackbar.show();
             }
         });
     }
@@ -389,16 +382,16 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                     if (exists) {
-                        Toast.makeText(RecipeSearch.this, "Error item already exists in Favourites", Toast.LENGTH_SHORT).show();
+                        duplicateFavourite();
                     }
                     if (!exists) {
-                        Favourite favourite = new Favourite(itemName, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, userID, servings);
+                        Favourite favourite = new Favourite(itemName, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, userID, servings, "no url");
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                         databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(RecipeSearch.this, "Item added to favourites", Toast.LENGTH_SHORT).show();
+                                addedToFavourites();
                             } else {
-                                Toast.makeText(RecipeSearch.this, "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                errorOccurred(Objects.requireNonNull(task.getException()).getMessage());
                             }
                         });
                     }
@@ -406,7 +399,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(RecipeSearch.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    errorOccurred(error.getMessage());
                 }
             });
         });
@@ -576,11 +569,14 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         } else {
                             newDate = String.valueOf(stringBuffer);
                         }
-                        Meal meal = new Meal(itemName, mAuth.getUid(), calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, servings, UUID.randomUUID().toString());
+                        Meal meal = new Meal(itemName, mAuth.getUid(), calories, itemTotalFat, itemSodium,
+                                itemTotalCarbohydrates, itemSugars, itemProtein,
+                                Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,
+                                newDate, servings, UUID.randomUUID().toString(),"no url");
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                         databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(RecipeSearch.this, "Successfully saved", Toast.LENGTH_SHORT).show();
+                                addedToDiary(mealAdapterChoice, whatDayToAddTo);
                                 DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
                                 habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -651,11 +647,11 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-                                        Toast.makeText(RecipeSearch.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                        errorOccurred(error.getMessage());
                                     }
                                 });
                             }
-                        }).addOnFailureListener(e -> Toast.makeText(RecipeSearch.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        }).addOnFailureListener(e -> errorOccurred(e.getMessage()));
                     }
                 });
             }
@@ -663,6 +659,31 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
         builder.setView(view);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void addedToDiary(String choice, String day) {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Meal added to " + choice + " on " + day, Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+    public void addedToFavourites() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to Favourites!", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+    public void duplicateFavourite() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites!", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+    public void noScannedData() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "No scan data received!", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+    public void errorOccurred(String errorMessage) {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + errorMessage, Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 
     public void noResultsFound() {

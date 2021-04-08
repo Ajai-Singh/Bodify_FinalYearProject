@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -97,7 +96,7 @@ public class HealthService extends Service {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(HealthService.this, "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("error", "" + error.getMessage());
             }
         });
     }
@@ -105,7 +104,7 @@ public class HealthService extends Service {
     public void setUserMacros(Double calories, Double fat, Double carbs, Double protein) {
         Macro macro = new Macro(Math.round(calories), Math.round(fat), Math.round(carbs), Math.round(protein));
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("Macros").child(Objects.requireNonNull(mAuth.getUid())).setValue(macro).addOnFailureListener(e -> Toast.makeText(HealthService.this, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        databaseReference.child("Macros").child(Objects.requireNonNull(mAuth.getUid())).setValue(macro).addOnFailureListener(e -> Log.i("error", "" + e.getMessage()));
     }
 }
 

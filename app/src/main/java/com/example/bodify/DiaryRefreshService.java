@@ -145,7 +145,7 @@ public class DiaryRefreshService extends Service {
                     try {
                         dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7, daysInDB, dbCalories, weight);
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        Log.i("parse exception","" + e.getMessage());
                     }
                 }
 

@@ -1,7 +1,9 @@
 package com.example.bodify.Models;
 
+import java.util.ArrayList;
+
 public class Favourite {
-    private String itemName, userID, id;
+    private String itemName, userID, id, sourceUrl;
     private int calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, numberOfServings;
 
     public Favourite() {
@@ -88,7 +90,17 @@ public class Favourite {
         this.numberOfServings = numberOfServings;
     }
 
-    public Favourite(String itemName, int calories, int itemTotalFat, int itemSodium, int itemTotalCarbohydrates, int itemSugars, int itemProtein, String userID, int numberOfServings) {
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
+
+    public Favourite(String itemName, int calories, int itemTotalFat,
+                     int itemSodium, int itemTotalCarbohydrates, int itemSugars,
+                     int itemProtein, String userID, int numberOfServings, String sourceUrl) {
         this.itemName = itemName;
         this.calories = calories;
         this.itemTotalFat = itemTotalFat;
@@ -98,5 +110,6 @@ public class Favourite {
         this.itemProtein = itemProtein;
         this.userID = userID;
         this.numberOfServings = numberOfServings;
+        this.sourceUrl = sourceUrl;
     }
 }

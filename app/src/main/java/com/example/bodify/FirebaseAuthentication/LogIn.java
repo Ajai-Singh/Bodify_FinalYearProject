@@ -14,7 +14,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.bodify.Management;
 import com.example.bodify.DiaryRefreshService;
 import com.example.bodify.R;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
@@ -22,7 +21,6 @@ import java.util.Objects;
 public class LogIn extends AppCompatActivity {
     private EditText emailAddress, password;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +35,6 @@ public class LogIn extends AppCompatActivity {
         emailAddress = findViewById(R.id.userNameSignUp);
         password = findViewById(R.id.passwordTextField);
         TextView createAcc = findViewById(R.id.createNewAccount);
-        constraintLayout = findViewById(R.id.logInCL);
         createAcc.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), SignUp.class));
         });
@@ -56,16 +53,11 @@ public class LogIn extends AppCompatActivity {
                         emailAddress.setText("");
                         password.setText("");
                     } else {
-                        errorOccurred(Objects.requireNonNull(task.getException()).getMessage());
+                        Toast.makeText(LogIn.this, "Error occurred! " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
-    }
-
-    public void errorOccurred(String errorMessage) {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + errorMessage, Snackbar.LENGTH_SHORT);
-        snackbar.show();
     }
 
     @Override

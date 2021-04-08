@@ -10,16 +10,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.bodify.Models.ChatRoom;
 import com.example.bodify.Models.Message;
 import com.example.bodify.Models.User;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,6 +45,7 @@ public class ChatBox extends AppCompatActivity {
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private FirebaseListAdapter<Message> adapter;
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +56,12 @@ public class ChatBox extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Chat Room: " + theme);
         Button floatingActionButton = findViewById(R.id.button2);
         editText = findViewById(R.id.editTextTextPersonName);
+        constraintLayout = findViewById(R.id.cbcl);
         showAllMessages();
         floatingActionButton.setOnClickListener(v -> {
             if (editText.getText().toString().isEmpty()) {
-                Toast.makeText(ChatBox.this, "Message is empty!", Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(constraintLayout, "Message is empty!", Snackbar.LENGTH_SHORT);
+                snackbar.show();
             } else {
                 createMessage(editText.getText().toString());
             }
@@ -102,7 +106,8 @@ public class ChatBox extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(ChatBox.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                     }
                 });
                 messageText.setText(model.getMessageText());
@@ -139,7 +144,8 @@ public class ChatBox extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             editText.setText("");
                         } else {
-                            Toast.makeText(ChatBox.this, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                            Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);
+                            snackbar.show();
                         }
                     });
                 }
@@ -147,7 +153,8 @@ public class ChatBox extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ChatBox.this, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
         });
     }

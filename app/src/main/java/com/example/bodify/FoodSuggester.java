@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -93,7 +92,10 @@ public class FoodSuggester extends Fragment {
         Button clear = view.findViewById(R.id.clearFilters);
         AndroidNetworking.initialize(getContext());
         ImageButton info = view.findViewById(R.id.recipeInfo);
-        info.setOnClickListener(v -> infoSnackBar());
+        info.setOnClickListener(v -> {
+            Snackbar snackbar = Snackbar.make(constraintLayout, "Note: If you swipe the recipe right it will add the recipe to your favourites", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        });
         headerLayout.setOnClickListener(v -> {
             if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -269,15 +271,19 @@ public class FoodSuggester extends Fragment {
                                 }
                             }
                             if (exists) {
-                                duplicateRecordSnackBar();
+                                Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites", Snackbar.LENGTH_SHORT);
+                                snackbar.show();
                             } else {
                                 Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
-                                        recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), mAuth.getUid(), recipe.getServings());
+                                        recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(),
+                                        mAuth.getUid(), recipe.getServings(), recipe.getSourceUrl());
                                 databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        addedRecord();
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to favourites", Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
                                     } else {
-                                        Toast.makeText(getContext(), "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
                                     }
                                 });
                             }
@@ -285,16 +291,14 @@ public class FoodSuggester extends Fragment {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                            snackbar.show();
                         }
                     });
                 }
-                if (direction == Direction.Left) {
-                    ignoredRecord();
-                }
                 if (cardStackLayoutManager.getTopPosition() == cardStackAdapter.getItemCount()) {
-                    showSnackBar();
-
+                    Snackbar snackbar = Snackbar.make(constraintLayout, "Modify settings to find more results!", Snackbar.LENGTH_SHORT);
+                    snackbar.show();
                 }
             }
 
@@ -371,7 +375,7 @@ public class FoodSuggester extends Fragment {
                         Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, mAuth.getUid(), macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
                         recipes.add(recipe);
                     }
-                    cardStackAdapter = new CardStackAdapter(recipes, getContext());
+                    cardStackAdapter = new CardStackAdapter(recipes, getContext(), constraintLayout);
                     cardStackView.setLayoutManager(cardStackLayoutManager);
                     cardStackView.setAdapter(cardStackAdapter);
                     cardStackView.setItemAnimator(new DefaultItemAnimator());
@@ -382,7 +386,8 @@ public class FoodSuggester extends Fragment {
 
             @Override
             public void onError(ANError anError) {
-                Toast.makeText(getContext(), "Error Occurred: " + anError.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + anError.getMessage(), Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
         });
     }
@@ -427,7 +432,7 @@ public class FoodSuggester extends Fragment {
                         Recipe recipe = new Recipe(id, title, sourceUrl, readyInMinutes, servings, mAuth.getUid(), macros.get(0), macros.get(1), macros.get(3), macros.get(8), macros.get(5), macros.get(7), image, ingredients);
                         recipes.add(recipe);
                     }
-                    cardStackAdapter = new CardStackAdapter(recipes, getContext());
+                    cardStackAdapter = new CardStackAdapter(recipes, getContext(), constraintLayout);
                     cardStackView.setLayoutManager(cardStackLayoutManager);
                     cardStackView.setAdapter(cardStackAdapter);
                     cardStackView.setItemAnimator(new DefaultItemAnimator());
@@ -438,33 +443,9 @@ public class FoodSuggester extends Fragment {
 
             @Override
             public void onError(ANError anError) {
-                Toast.makeText(getContext(), "Error occrred: " + anError, Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + anError.getMessage(), Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
         });
-    }
-
-    public void showSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Modify settings to find more results!", Snackbar.LENGTH_LONG);
-        snackbar.show();
-    }
-
-    public void infoSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Note: If you swipe the recipe right it will add the recipe to your favourites", Snackbar.LENGTH_LONG);
-        snackbar.show();
-    }
-
-    public void duplicateRecordSnackBar() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites", Snackbar.LENGTH_LONG);
-        snackbar.show();
-    }
-
-    public void addedRecord() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to favourites", Snackbar.LENGTH_SHORT);
-        snackbar.show();
-    }
-
-    public void ignoredRecord() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Ignored", Snackbar.LENGTH_SHORT);
-        snackbar.show();
     }
 }
