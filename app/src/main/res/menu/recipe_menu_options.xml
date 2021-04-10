@@ -17,5 +17,5 @@
 
     <item
         android:id="@+id/onlineRecipe"
-        android:title="View Recipe?" />
+        android:title="View Recipe" />
 </menu>

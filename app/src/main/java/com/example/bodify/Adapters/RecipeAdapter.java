@@ -49,7 +49,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private final ArrayList<Recipe> recipes;
     private final Context context;
     private ArrayList<String> servingNumbers;
-    private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -121,9 +120,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         break;
                     case R.id.addToTodaysDiary:
                         AlertDialog.Builder diaryBuilder = new AlertDialog.Builder(context);
-                        final Spinner meals;
-                        final Spinner quantity;
-                        final Spinner whatDay;
+                        final Spinner meals, quantity, whatDay;
                         @SuppressLint("InflateParams")
                         LayoutInflater diaryInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View diaryView = diaryInflater.inflate(R.layout.addtodiarypopup, null);
@@ -141,25 +138,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         ArrayList<String> daysToShow = new ArrayList<>();
                         String dayPosition = null;
                         for (int i = 0; i < daysOfWeek.size(); i++) {
-                            if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
-                                String a = daysOfWeek.get(i);
-                                dayPosition = String.valueOf(daysOfWeek.indexOf(a));
+                            if (simpleDateformat.format(date).equalsIgnoreCase(daysOfWeek.get(i))) {
+                                dayPosition = String.valueOf(daysOfWeek.indexOf(daysOfWeek.get(i)));
                                 break;
                             }
                         }
                         for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(dayPosition)); i++) {
                             daysToShow.add(daysOfWeek.get(i));
                         }
-                        int defaultP = 0;
-                        for (int i = 0; i < daysToShow.size(); i++) {
-                            if (simpleDateformat.format(today).equalsIgnoreCase(daysToShow.get(i))) {
-                                defaultP = i;
-                                break;
-                            }
-                        }
                         ArrayAdapter dayAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, daysToShow);
                         whatDay.setAdapter(dayAdapter);
-                        whatDay.setSelection(defaultP);
+                        whatDay.setSelection(daysToShow.indexOf(simpleDateformat.format(date)));
                         dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         whatDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -246,8 +235,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                             }
                         });
                         String finalDayPosition = dayPosition;
-                        diaryBuilder.setPositiveButton("Create", (d, which) -> {
-                        });
+                        diaryBuilder.setPositiveButton("Create", (d, which) -> { });
                         diaryBuilder.setNegativeButton("Close", (d, which) -> d.cancel());
                         diaryBuilder.setView(diaryView);
                         AlertDialog diaryAlertDialog = diaryBuilder.create();
@@ -262,19 +250,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 dlgAlert.create().show();
                             } else {
                                 diaryAlertDialog.dismiss();
-                                Recipe recipe = null;
-                                for (int i = 0; i < recipes.size(); i++) {
-                                    if (i == holder.getAdapterPosition()) {
-                                        recipe = recipes.get(i);
-                                        break;
-                                    }
-                                }
-                                assert recipe != null;
+                                Recipe recipe = recipes.get(position);
                                 String positionToAddTo = null;
                                 for (int i = 0; i < daysOfWeek.size(); i++) {
                                     if (daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
-                                        String a = daysOfWeek.get(i);
-                                        positionToAddTo = String.valueOf(daysOfWeek.indexOf(a));
+                                        positionToAddTo = String.valueOf(daysOfWeek.indexOf(daysOfWeek.get(i)));
                                         break;
                                     }
                                 }
@@ -296,10 +276,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                         recipe.getSugar(), recipe.getProteins(),
                                         Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, recipe.getServings(), UUID.randomUUID().toString(), recipe.getSourceUrl());
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
-                                Recipe finalRecipe = recipe;
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Snackbar.LENGTH_SHORT);
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, recipe.getTitle() + " added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Snackbar.LENGTH_SHORT);
                                         snackbar.show();
                                         DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
                                         habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -314,12 +293,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                                                 for (int i = 0; i < Objects.requireNonNull(habits).getBreakfastNames().size(); i++) {
                                                                     if (habits.getBreakfastNames().get(i).equals("No Meals")) {
                                                                         habits.getBreakfastNames().remove(i);
-                                                                        habits.getBreakfastNames().add(finalRecipe.getTitle());
+                                                                        habits.getBreakfastNames().add(recipe.getTitle());
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if (habits.getBreakfastNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
-                                                                habits.getBreakfastNames().add(finalRecipe.getTitle());
+                                                            } else if (habits.getBreakfastNames().stream().noneMatch(recipe.getTitle()::equalsIgnoreCase)) {
+                                                                habits.getBreakfastNames().add(recipe.getTitle());
                                                             }
                                                             habitReference.child("breakfastNames").setValue(habits.getBreakfastNames());
                                                             break;
@@ -328,12 +307,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                                                 for (int i = 0; i < Objects.requireNonNull(habits).getLunchNames().size(); i++) {
                                                                     if (habits.getLunchNames().get(i).equals("No Meals")) {
                                                                         habits.getLunchNames().remove(i);
-                                                                        habits.getLunchNames().add(finalRecipe.getTitle());
+                                                                        habits.getLunchNames().add(recipe.getTitle());
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if (habits.getLunchNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
-                                                                habits.getLunchNames().add(finalRecipe.getTitle());
+                                                            } else if (habits.getLunchNames().stream().noneMatch(recipe.getTitle()::equalsIgnoreCase)) {
+                                                                habits.getLunchNames().add(recipe.getTitle());
                                                             }
                                                             habitReference.child("lunchNames").setValue(habits.getLunchNames());
                                                             break;
@@ -342,12 +321,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                                                 for (int i = 0; i < Objects.requireNonNull(habits).getDinnerNames().size(); i++) {
                                                                     if (habits.getDinnerNames().get(i).equals("No Meals")) {
                                                                         habits.getDinnerNames().remove(i);
-                                                                        habits.getDinnerNames().add(finalRecipe.getTitle());
+                                                                        habits.getDinnerNames().add(recipe.getTitle());
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if (habits.getDinnerNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
-                                                                habits.getDinnerNames().add(finalRecipe.getTitle());
+                                                            } else if (habits.getDinnerNames().stream().noneMatch(recipe.getTitle()::equalsIgnoreCase)) {
+                                                                habits.getDinnerNames().add(recipe.getTitle());
                                                             }
                                                             habitReference.child("dinnerNames").setValue(habits.getDinnerNames());
                                                             break;
@@ -356,12 +335,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                                                 for (int i = 0; i < Objects.requireNonNull(habits).getOtherNames().size(); i++) {
                                                                     if (habits.getOtherNames().get(i).equals("No Meals")) {
                                                                         habits.getOtherNames().remove(i);
-                                                                        habits.getOtherNames().add(finalRecipe.getTitle());
+                                                                        habits.getOtherNames().add(recipe.getTitle());
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if (habits.getOtherNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
-                                                                habits.getOtherNames().add(finalRecipe.getTitle());
+                                                            } else if (habits.getOtherNames().stream().noneMatch(recipe.getTitle()::equalsIgnoreCase)) {
+                                                                habits.getOtherNames().add(recipe.getTitle());
                                                             }
                                                             habitReference.child("otherNames").setValue(habits.getOtherNames());
                                                             break;
@@ -401,15 +380,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         final AlertDialog.Builder favouritesBuilder = new AlertDialog.Builder(context);
                         favouritesBuilder.setMessage("Would you like to add this Recipe to your Favourites?")
                                 .setNegativeButton("No", (dialog13, which) -> dialog13.cancel()).setPositiveButton("Yes", (dialog14, which) -> {
-                            Recipe recipe = null;
-                            for (int i = 0; i < recipes.size(); i++) {
-                                if (holder.getAdapterPosition() == i) {
-                                    recipe = recipes.get(i);
-                                    break;
-                                }
-                            }
+                            Recipe recipe = recipes.get(position);
                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Favourites");
-                            Recipe finalRecipe = recipe;
                             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -417,7 +389,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                                         Favourite favourite = userSnapshot.getValue(Favourite.class);
                                         if (favourite != null) {
-                                            if (favourite.getItemName().equalsIgnoreCase(finalRecipe.getTitle()) && favourite.getUserID().equalsIgnoreCase(userID)) {
+                                            if (favourite.getItemName().equalsIgnoreCase(recipe.getTitle()) && favourite.getUserID().equalsIgnoreCase(userID)) {
                                                 exists = true;
                                                 break;
                                             }
@@ -428,9 +400,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                         snackbar.show();
                                     }
                                     if (!exists) {
-                                        assert finalRecipe != null;
-                                        Favourite favourite = new Favourite(finalRecipe.getTitle(), finalRecipe.getCalories(), finalRecipe.getFats(),
-                                                finalRecipe.getSodium(), finalRecipe.getCarbohydrates(), finalRecipe.getSugar(), finalRecipe.getProteins(), userID, finalRecipe.getServings(), finalRecipe.getSourceUrl());
+                                        assert recipe != null;
+                                        Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
+                                                recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), userID, recipe.getServings(), recipe.getSourceUrl());
                                         databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
                                             if (task.isSuccessful()) {
                                                 Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to Favourites!", Snackbar.LENGTH_SHORT);

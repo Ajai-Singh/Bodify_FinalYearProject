@@ -136,7 +136,8 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    errorOccurred(error.getMessage());
+                    Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                    snackbar.show();
                 }
             });
         });
@@ -389,11 +390,6 @@ public class Groceries extends AppCompatActivity implements AdapterView.OnItemSe
 
     public void noResultsFound() {
         Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no results found!", Snackbar.LENGTH_SHORT);
-        snackbar.show();
-    }
-
-    public void errorOccurred(String errorMessage) {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + errorMessage, Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 

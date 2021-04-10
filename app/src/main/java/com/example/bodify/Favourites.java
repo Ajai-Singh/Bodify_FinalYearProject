@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bodify.Adapters.FavouriteAdapter;
 import com.example.bodify.Models.Favourite;
-import com.example.bodify.Models.Ingredient;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,6 +36,8 @@ public class Favourites extends Fragment {
     private final ArrayList<Favourite> favourites = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private ImageView createFavourite;
+    private RelativeLayout relativeLayout;
+    private ArrayList<String> itemNames;
 
     @Nullable
     @Override
@@ -43,8 +45,33 @@ public class Favourites extends Fragment {
         View view = inflater.inflate(R.layout.activity_favourites, container, false);
         recyclerView = view.findViewById(R.id.favRCV);
         createFavourite = view.findViewById(R.id.createCustomFavourite);
+        relativeLayout = view.findViewById(R.id.favouritesCL);
         getAllFavourites();
-        createFavourite.setOnClickListener(v -> createCustomFavourite());
+        createFavourite.setOnClickListener(v -> {
+            DatabaseReference favReference = FirebaseDatabase.getInstance().getReference("Favourites");
+            favReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    itemNames = new ArrayList<>();
+                    for (DataSnapshot favouriteSnapshot : snapshot.getChildren()) {
+                        Favourite favourite = favouriteSnapshot.getValue(Favourite.class);
+                        if(favourite != null) {
+                            if (favourite.getUserID().equals(mAuth.getUid())) {
+                                itemNames.add(favourite.getItemName().toLowerCase());
+                            }
+                        }
+                    }
+                    createCustomFavourite(itemNames);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Snackbar snackbar = Snackbar.make(relativeLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                }
+            });
+        });
+
         return view;
     }
 
@@ -53,28 +80,39 @@ public class Favourites extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                itemNames = new ArrayList<>();
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     Favourite favourite = userSnapshot.getValue(Favourite.class);
                     assert favourite != null;
                     favourite.setId(userSnapshot.getKey());
                     if (Objects.equals(mAuth.getUid(), favourite.getUserID())) {
                         favourites.add(favourite);
+                        itemNames.add(favourite.getItemName().toLowerCase());
                     }
                 }
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                favouriteAdapter = new FavouriteAdapter(favourites, getContext());
-                recyclerView.setAdapter(favouriteAdapter);
+                if (favourites.isEmpty()) {
+                    Snackbar snackbar = Snackbar.make(relativeLayout, "Sorry no Favourites! ", Snackbar.LENGTH_LONG)
+                            .setAction("Create Favourite?", view -> {
+                                createCustomFavourite(itemNames);
+                            });
+                    snackbar.show();
+                } else {
+                    recyclerView.setHasFixedSize(true);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    favouriteAdapter = new FavouriteAdapter(favourites, getContext(), relativeLayout);
+                    recyclerView.setAdapter(favouriteAdapter);
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(relativeLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
         });
     }
 
-    public void createCustomFavourite() {
+    public void createCustomFavourite(ArrayList<String> itemNames) {
         createFavourite.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             @SuppressLint("InflateParams")
@@ -97,6 +135,9 @@ public class Favourites extends Fragment {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
                 if (TextUtils.isEmpty(itemName.getText().toString())) {
                     itemName.setError("Field cannot be empty!");
+                    itemName.requestFocus();
+                } else if (itemNames.contains(itemName.getText().toString().toLowerCase())) {
+                    itemName.setError("Record already exists!");
                     itemName.requestFocus();
                 } else if (TextUtils.isEmpty(servings.getText().toString())) {
                     servings.setError("Field cannot be empty!");
@@ -127,7 +168,8 @@ public class Favourites extends Fragment {
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                     databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "Item added to favourites", Toast.LENGTH_SHORT).show();
+                            Snackbar snackbar = Snackbar.make(relativeLayout, itemName.getText().toString() + " added to Favourites!", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
                             DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favourites");
                             favRef.addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -143,17 +185,19 @@ public class Favourites extends Fragment {
                                     }
                                     recyclerView.setHasFixedSize(true);
                                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                    favouriteAdapter = new FavouriteAdapter(favourites, getContext());
+                                    favouriteAdapter = new FavouriteAdapter(favourites, getContext(), relativeLayout);
                                     recyclerView.setAdapter(favouriteAdapter);
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(getContext(), "Error Occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Snackbar snackbar = Snackbar.make(relativeLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                    snackbar.show();
                                 }
                             });
                         } else {
-                            Toast.makeText(getContext(), "Error Occurred" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                            Snackbar snackbar = Snackbar.make(relativeLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);
+                            snackbar.show();
                         }
                     });
                 }

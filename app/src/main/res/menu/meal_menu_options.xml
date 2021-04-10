@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
-        android:id="@+id/deleteMeal"
-        android:title="Delete from diary" />
+        android:id="@+id/viewMealOnline"
+        android:title="View Recipe" />
     <item
         android:id="@+id/editMeal"
         android:title="Edit meal" />
     <item
-        android:id="@+id/viewMealOnline"
-        android:title="View Meal Online?" />
+        android:id="@+id/deleteMeal"
+        android:title="Delete from diary" />
 </menu>

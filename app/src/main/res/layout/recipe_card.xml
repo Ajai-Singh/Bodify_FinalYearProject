@@ -2,13 +2,13 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="380dp"
-    app:cardCornerRadius="15dp"
-    android:layout_marginTop="30dp">
+    android:layout_height="340dp"
+    android:layout_marginTop="30dp"
+    app:cardCornerRadius="15dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="380dp">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/recipeCardImage"
@@ -47,20 +47,6 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recipeCardTitle" />
-
-        <TextView
-            android:id="@+id/recipeCardSource"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="4dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="@color/sourceUrl"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipeCardServings" />
 
         <TextView
             android:id="@+id/timeToCookRecipeCard"

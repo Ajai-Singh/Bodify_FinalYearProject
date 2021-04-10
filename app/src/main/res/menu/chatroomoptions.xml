@@ -11,8 +11,4 @@
     <item
         android:id="@+id/leaveChat"
         android:title="Leave chat"/>
-
-    <item
-        android:id="@+id/deleteChatRoom"
-        android:title="Delete Chat Room?" />
 </menu>

@@ -50,16 +50,13 @@ import java.util.UUID;
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
     private final List<Recipe> recipes;
     private final Context context;
-    private String whatDayToAddTo;
-    private String quantityAdapterChoice;
-    private String mealAdapterChoice;
+    private String whatDayToAddTo, quantityAdapterChoice, mealAdapterChoice;
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-    private final Date date = new Date();
-    private ArrayList<String> servingNumbers;
-    private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
+    private final Date date = new Date();
+    private ArrayList<String> servingNumbers;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     private final ConstraintLayout constraintLayout;
@@ -80,21 +77,21 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     @Override
     public void onBindViewHolder(@NonNull CardStackAdapter.ViewHolder holder, int position) {
         holder.setData(recipes.get(position));
-        holder.recipeSource.setOnClickListener(v -> {
-            Intent intent = new Intent("android.intent.action.VIEW", Uri.parse(holder.recipeSource.getText().toString()));
-            v.getContext().startActivity(intent);
-        });
         holder.options.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("NonConstantResourceId")
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(context, holder.options);
-                popupMenu.inflate(R.menu.recipe_menu_options);
+                popupMenu.inflate(R.menu.cardstackoptions);
                 popupMenu.setOnMenuItemClickListener(item -> {
                     TextView itemNameFromScan, itemCalories, itemTotalFatT, itemSodiumT, itemTotalCarbohydratesT, itemSugarsT, itemProteinT, itemServingsT;
                     ImageView imageView;
                     switch (item.getItemId()) {
-                        case R.id.information:
+                        case R.id.csViewOnline:
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(recipes.get(position).getSourceUrl()));
+                            context.startActivity(browserIntent);
+                            break;
+                        case R.id.csInformation:
                             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                             @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.meal_popup, null);
@@ -121,11 +118,9 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                             AlertDialog dialog = builder.create();
                             dialog.show();
                             break;
-                        case R.id.addToTodaysDiary:
+                        case R.id.csAddToTodaysDiary:
                             AlertDialog.Builder diaryBuilder = new AlertDialog.Builder(context);
-                            final Spinner meals;
-                            final Spinner quantity;
-                            final Spinner whatDay;
+                            final Spinner meals, quantity, whatDay;
                             @SuppressLint("InflateParams")
                             LayoutInflater diaryInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                             View diaryView = diaryInflater.inflate(R.layout.addtodiarypopup, null);
@@ -143,25 +138,17 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                             ArrayList<String> daysToShow = new ArrayList<>();
                             String dayPosition = null;
                             for (int i = 0; i < daysOfWeek.size(); i++) {
-                                if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
-                                    String a = daysOfWeek.get(i);
-                                    dayPosition = String.valueOf(daysOfWeek.indexOf(a));
+                                if (simpleDateformat.format(date).equalsIgnoreCase(daysOfWeek.get(i))) {
+                                    dayPosition = String.valueOf(daysOfWeek.indexOf(daysOfWeek.get(i)));
                                     break;
                                 }
                             }
                             for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(dayPosition)); i++) {
                                 daysToShow.add(daysOfWeek.get(i));
                             }
-                            int defaultP = 0;
-                            for (int i = 0; i < daysToShow.size(); i++) {
-                                if (simpleDateformat.format(today).equalsIgnoreCase(daysToShow.get(i))) {
-                                    defaultP = i;
-                                    break;
-                                }
-                            }
                             ArrayAdapter dayAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, daysToShow);
                             whatDay.setAdapter(dayAdapter);
-                            whatDay.setSelection(defaultP);
+                            whatDay.setSelection(daysToShow.indexOf(simpleDateformat.format(date)));
                             dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             whatDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
@@ -248,8 +235,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                 }
                             });
                             String finalDayPosition = dayPosition;
-                            diaryBuilder.setPositiveButton("Create", (d, which) -> {
-                            });
+                            diaryBuilder.setPositiveButton("Create", (d, which) -> { });
                             diaryBuilder.setNegativeButton("Close", (d, which) -> d.cancel());
                             diaryBuilder.setView(diaryView);
                             AlertDialog diaryAlertDialog = diaryBuilder.create();
@@ -264,19 +250,11 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                     dlgAlert.create().show();
                                 } else {
                                     diaryAlertDialog.dismiss();
-                                    Recipe recipe = null;
-                                    for (int i = 0; i < recipes.size(); i++) {
-                                        if (i == holder.getAdapterPosition()) {
-                                            recipe = recipes.get(i);
-                                            break;
-                                        }
-                                    }
-                                    assert recipe != null;
+                                    Recipe recipe = recipes.get(position);
                                     String positionToAddTo = null;
                                     for (int i = 0; i < daysOfWeek.size(); i++) {
                                         if (daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
-                                            String a = daysOfWeek.get(i);
-                                            positionToAddTo = String.valueOf(daysOfWeek.indexOf(a));
+                                            positionToAddTo = String.valueOf(daysOfWeek.indexOf(daysOfWeek.get(i)));
                                             break;
                                         }
                                     }
@@ -293,15 +271,14 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                     } else {
                                         newDate = String.valueOf(stringBuffer);
                                     }
-                                    Meal meal =new Meal(recipe.getTitle(), userID, recipe.getCalories(),
+                                    Meal meal = new Meal(recipe.getTitle(), mAuth.getUid(), recipe.getCalories(),
                                             recipe.getFats(), recipe.getSodium(), recipe.getCarbohydrates(),
                                             recipe.getSugar(), recipe.getProteins(),
                                             Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, recipe.getServings(), UUID.randomUUID().toString(), recipe.getSourceUrl());
                                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
-                                    Recipe finalRecipe = recipe;
                                     databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
-                                            Snackbar snackbar = Snackbar.make(constraintLayout, "Added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar = Snackbar.make(constraintLayout, recipe.getTitle() + " added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Snackbar.LENGTH_SHORT);
                                             snackbar.show();
                                             DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
                                             habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -316,12 +293,12 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                                                     for (int i = 0; i < Objects.requireNonNull(habits).getBreakfastNames().size(); i++) {
                                                                         if (habits.getBreakfastNames().get(i).equals("No Meals")) {
                                                                             habits.getBreakfastNames().remove(i);
-                                                                            habits.getBreakfastNames().add(finalRecipe.getTitle());
+                                                                            habits.getBreakfastNames().add(recipe.getTitle());
                                                                             break;
                                                                         }
                                                                     }
-                                                                } else if (habits.getBreakfastNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
-                                                                    habits.getBreakfastNames().add(finalRecipe.getTitle());
+                                                                } else if (habits.getBreakfastNames().stream().noneMatch(recipe.getTitle()::equalsIgnoreCase)) {
+                                                                    habits.getBreakfastNames().add(recipe.getTitle());
                                                                 }
                                                                 habitReference.child("breakfastNames").setValue(habits.getBreakfastNames());
                                                                 break;
@@ -330,12 +307,12 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                                                     for (int i = 0; i < Objects.requireNonNull(habits).getLunchNames().size(); i++) {
                                                                         if (habits.getLunchNames().get(i).equals("No Meals")) {
                                                                             habits.getLunchNames().remove(i);
-                                                                            habits.getLunchNames().add(finalRecipe.getTitle());
+                                                                            habits.getLunchNames().add(recipe.getTitle());
                                                                             break;
                                                                         }
                                                                     }
-                                                                } else if (habits.getLunchNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
-                                                                    habits.getLunchNames().add(finalRecipe.getTitle());
+                                                                } else if (habits.getLunchNames().stream().noneMatch(recipe.getTitle()::equalsIgnoreCase)) {
+                                                                    habits.getLunchNames().add(recipe.getTitle());
                                                                 }
                                                                 habitReference.child("lunchNames").setValue(habits.getLunchNames());
                                                                 break;
@@ -344,12 +321,12 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                                                     for (int i = 0; i < Objects.requireNonNull(habits).getDinnerNames().size(); i++) {
                                                                         if (habits.getDinnerNames().get(i).equals("No Meals")) {
                                                                             habits.getDinnerNames().remove(i);
-                                                                            habits.getDinnerNames().add(finalRecipe.getTitle());
+                                                                            habits.getDinnerNames().add(recipe.getTitle());
                                                                             break;
                                                                         }
                                                                     }
-                                                                } else if (habits.getDinnerNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
-                                                                    habits.getDinnerNames().add(finalRecipe.getTitle());
+                                                                } else if (habits.getDinnerNames().stream().noneMatch(recipe.getTitle()::equalsIgnoreCase)) {
+                                                                    habits.getDinnerNames().add(recipe.getTitle());
                                                                 }
                                                                 habitReference.child("dinnerNames").setValue(habits.getDinnerNames());
                                                                 break;
@@ -358,12 +335,12 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                                                     for (int i = 0; i < Objects.requireNonNull(habits).getOtherNames().size(); i++) {
                                                                         if (habits.getOtherNames().get(i).equals("No Meals")) {
                                                                             habits.getOtherNames().remove(i);
-                                                                            habits.getOtherNames().add(finalRecipe.getTitle());
+                                                                            habits.getOtherNames().add(recipe.getTitle());
                                                                             break;
                                                                         }
                                                                     }
-                                                                } else if (habits.getOtherNames().stream().noneMatch(finalRecipe.getTitle()::equalsIgnoreCase)) {
-                                                                    habits.getOtherNames().add(finalRecipe.getTitle());
+                                                                } else if (habits.getOtherNames().stream().noneMatch(recipe.getTitle()::equalsIgnoreCase)) {
+                                                                    habits.getOtherNames().add(recipe.getTitle());
                                                                 }
                                                                 habitReference.child("otherNames").setValue(habits.getOtherNames());
                                                                 break;
@@ -385,7 +362,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                 }
                             });
                             break;
-                        case R.id.ingredients:
+                        case R.id.csIngredients:
                             final AlertDialog.Builder ingredientsBuilder = new AlertDialog.Builder(context);
                             LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                             View view2 = inflater2.inflate(R.layout.ingredients, null);
@@ -399,62 +376,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                             AlertDialog ingredientsDialog = ingredientsBuilder.create();
                             ingredientsDialog.show();
                             break;
-                        case R.id.addToFavs:
-                            final AlertDialog.Builder favouritesBuilder = new AlertDialog.Builder(context);
-                            favouritesBuilder.setMessage("Would you like to add this Recipe to your Favourites?")
-                                    .setNegativeButton("No", (dialog13, which) -> dialog13.cancel()).setPositiveButton("Yes", (dialog14, which) -> {
-                                Recipe recipe = null;
-                                for (int i = 0; i < recipes.size(); i++) {
-                                    if (holder.getAdapterPosition() == i) {
-                                        recipe = recipes.get(i);
-                                        break;
-                                    }
-                                }
-                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Favourites");
-                                Recipe finalRecipe = recipe;
-                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        boolean exists = false;
-                                        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                                            Favourite favourite = userSnapshot.getValue(Favourite.class);
-                                            if (favourite != null) {
-                                                if (favourite.getItemName().equalsIgnoreCase(finalRecipe.getTitle()) && favourite.getUserID().equalsIgnoreCase(userID)) {
-                                                    exists = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        if (exists) {
-                                            Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites!", Snackbar.LENGTH_SHORT);
-                                            snackbar.show();
-                                        }
-                                        if (!exists) {
-                                            assert finalRecipe != null;
-                                            Favourite favourite = new Favourite(finalRecipe.getTitle(), finalRecipe.getCalories(), finalRecipe.getFats(),
-                                                    finalRecipe.getSodium(), finalRecipe.getCarbohydrates(), finalRecipe.getSugar(), finalRecipe.getProteins(), userID, finalRecipe.getServings(), finalRecipe.getSourceUrl());
-                                            databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
-                                                if (task.isSuccessful()) {
-                                                    Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to Favourites!", Snackbar.LENGTH_SHORT);
-                                                    snackbar.show();
-                                                } else {
-                                                    Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);
-                                                    snackbar.show();
-                                                }
-                                            });
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
-                                        snackbar.show();
-                                    }
-                                });
-                            });
-                            AlertDialog alertDialog = favouritesBuilder.create();
-                            alertDialog.setTitle("Attention required!");
-                            alertDialog.show();
                     }
                     return false;
                 });
@@ -473,14 +394,12 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         private final TextView recipeName;
         private final TextView timeToCook;
         private final TextView servings;
-        private final TextView recipeSource;
         private final TextView options;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             recipeImage = itemView.findViewById(R.id.recipeCardImage);
             recipeName = itemView.findViewById(R.id.recipeCardTitle);
-            recipeSource = itemView.findViewById(R.id.recipeCardSource);
             timeToCook = itemView.findViewById(R.id.timeToCookRecipeCard);
             servings = itemView.findViewById(R.id.recipeCardServings);
             options = itemView.findViewById(R.id.recipeCardViewOptions);
@@ -492,7 +411,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             recipeName.setText(data.getTitle());
             timeToCook.setText(data.getReadyInMinutes() + " Minutes");
             servings.setText(data.getServings() + " Servings");
-            recipeSource.setText(data.getSourceUrl());
         }
     }
 }

@@ -29,7 +29,6 @@ public class Meals extends Fragment {
         Date currentWeekDay = new Date();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
-        Log.i("TEST", simpleDateformat.format(currentWeekDay));
         ArrayList<String> days = new ArrayList<>();
         days.add("Mon");
         days.add("Tue");

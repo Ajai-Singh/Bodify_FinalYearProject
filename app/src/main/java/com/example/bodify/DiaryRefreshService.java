@@ -46,6 +46,7 @@ public class DiaryRefreshService extends Service {
     private int calories, fats, proteins, carbohydrates;
     private ArrayList<String> daysInDB;
     private ArrayList<String> dates;
+    boolean alreadyExecuted = false;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -145,7 +146,7 @@ public class DiaryRefreshService extends Service {
                     try {
                         dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7, daysInDB, dbCalories, weight);
                     } catch (ParseException e) {
-                        Log.i("parse exception","" + e.getMessage());
+                        Log.i("parse exception", "" + e.getMessage());
                     }
                 }
 
@@ -252,10 +253,10 @@ public class DiaryRefreshService extends Service {
             //test on another android phone with the OR clause
             //if not just change to 8 days but problem with that what if the app is launched constantly
             if (daysBetween >= 7) {
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
                 assert userID != null;
                 Log.i("A", "count");
-                databaseReference.child("Analysis").push().setValue(analysis).addOnCompleteListener(task -> {
+                databaseReference.push().setValue(analysis).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.i("A", "Successfully saved");
                         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek");

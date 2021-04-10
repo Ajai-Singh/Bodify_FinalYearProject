@@ -180,9 +180,7 @@ public class Monday extends Fragment {
     }
 
     public void showBarChart1(ArrayList<BarEntry> macros) {
-        barEntries1.add(macros.get(0));
-        barEntries1.add(macros.get(1));
-        barEntries1.add(macros.get(2));
+        barEntries1.addAll(macros);
         XAxis xAxis = barChart1.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(getXAxisValues1()));
         BarDataSet barDataSet = new BarDataSet(barEntries1, "Data Set");
@@ -236,9 +234,7 @@ public class Monday extends Fragment {
     }
 
     public void showBarChart(ArrayList<BarEntry> macros) {
-        barEntries.add(macros.get(0));
-        barEntries.add(macros.get(1));
-        barEntries.add(macros.get(2));
+        barEntries.addAll(macros);
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(getXAxisValues()));
         BarDataSet barDataSet = new BarDataSet(barEntries, "Data Set");

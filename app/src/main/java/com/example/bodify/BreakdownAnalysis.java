@@ -314,7 +314,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                errorOccurred(error.getMessage());
             }
         });
     }

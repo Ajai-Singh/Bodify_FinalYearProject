@@ -19,11 +19,11 @@
         android:id="@+id/mealItemCalories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="2dp"
         android:text="Item calories: "
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mealItemName" />
+        app:layout_constraintTop_toBottomOf="@+id/mealItemNameTextView" />
 
     <TextView
         android:id="@+id/mealTotalFat"
@@ -90,7 +90,7 @@
     <TextView
         android:id="@+id/mealItemNameTextView"
         android:layout_width="330dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="82dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
@@ -103,7 +103,7 @@
         android:id="@+id/mealItemCaloriesTextView"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="221dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"

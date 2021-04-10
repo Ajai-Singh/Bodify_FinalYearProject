@@ -54,7 +54,6 @@ import java.util.Objects;
 public class FoodSuggester extends Fragment {
     private CardStackLayoutManager cardStackLayoutManager;
     private CardStackAdapter cardStackAdapter;
-    private final ArrayList<Ingredient> ingredients = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private ConstraintLayout constraintLayout;
@@ -63,10 +62,7 @@ public class FoodSuggester extends Fragment {
     private BottomSheetBehavior bottomSheetBehavior;
     private SeekBar fatsSB, proteinsSB, carbsSB, caloriesSB;
     private TextView fats, protein, carbs, calories;
-    private final int minimumFat = 1;
-    private final int minimumProtein = 10;
-    private final int minimumCarbs = 10;
-    private final int minimumCalories = 50;
+    private final int minimumFat = 1, minimumProtein = 10, minimumCarbs = 10, minimumCalories = 50;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Nullable
@@ -348,11 +344,12 @@ public class FoodSuggester extends Fragment {
             @Override
             public void onResponse(String response) {
                 try {
-                    ArrayList<Integer> macros = new ArrayList<>();
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray jsonArray = jsonObject.getJSONArray("results");
                     JSONObject jsonObject1;
                     for (int i = 0; i < jsonArray.length(); i++) {
+                        ArrayList<Integer> macros = new ArrayList<>();
+                        ArrayList<Ingredient> ingredients = new ArrayList<>();
                         int id = jsonArray.getJSONObject(i).getInt("id");
                         String title = jsonArray.getJSONObject(i).getString("title");
                         String readyInMinutes = jsonArray.getJSONObject(i).getString("readyInMinutes");
@@ -405,11 +402,12 @@ public class FoodSuggester extends Fragment {
             @Override
             public void onResponse(String response) {
                 try {
-                    ArrayList<Integer> macros = new ArrayList<>();
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray jsonArray = jsonObject.getJSONArray("results");
                     JSONObject jsonObject1;
                     for (int i = 0; i < jsonArray.length(); i++) {
+                        ArrayList<Integer> macros = new ArrayList<>();
+                        ArrayList<Ingredient> ingredients = new ArrayList<>();
                         int id = jsonArray.getJSONObject(i).getInt("id");
                         String title = jsonArray.getJSONObject(i).getString("title");
                         String readyInMinutes = jsonArray.getJSONObject(i).getString("readyInMinutes");

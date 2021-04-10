@@ -91,15 +91,16 @@ public class ChatBox extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                             User user = userSnapshot.getValue(User.class);
-                            assert user != null;
-                            user.setUserID(userSnapshot.getKey());
-                            if (user.getUserID().equals(model.getUserId())) {
-                                messageUser.setText("User: " + user.getUserName());
-                                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-                                storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {
-                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                    circleImageView.setImageBitmap(bitmap);
-                                });
+                            if (user != null) {
+                                user.setUserID(userSnapshot.getKey());
+                                if (user.getUserID().equals(model.getUserId())) {
+                                    messageUser.setText("User: " + user.getUserName());
+                                    StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                                    storageReference.child(user.getmImageUrl()).getBytes(Long.MAX_VALUE).addOnSuccessListener(bytes -> {
+                                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                        circleImageView.setImageBitmap(bitmap);
+                                    });
+                                }
                             }
                         }
                     }

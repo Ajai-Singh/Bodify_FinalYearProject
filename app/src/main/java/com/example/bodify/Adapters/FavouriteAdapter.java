@@ -7,26 +7,26 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.recyclerview.widget.LinearLayoutManager;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Habits;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -47,20 +47,19 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     private final ArrayList<Favourite> favourites;
     private final Context context;
     private ArrayList<String> servingNumbers;
-    private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
-    private String whatDayToAddTo;
-    private String quantityAdapterChoice;
-    private String mealAdapterChoice;
+    private String whatDayToAddTo, quantityAdapterChoice, mealAdapterChoice;
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private final Date date = new Date();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private final RelativeLayout relativeLayout;
 
-    public FavouriteAdapter(ArrayList<Favourite> favourites, Context context) {
+    public FavouriteAdapter(ArrayList<Favourite> favourites, Context context, RelativeLayout relativeLayout) {
         this.favourites = favourites;
         this.context = context;
+        this.relativeLayout = relativeLayout;
     }
 
     @NonNull
@@ -85,35 +84,16 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 switch (item.getItemId()) {
                     case R.id.viewFavOnline:
-                        DatabaseReference dbFavSnapshot = FirebaseDatabase.getInstance().getReference("Favourites");
-                        dbFavSnapshot.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot favSnapshot : snapshot.getChildren()) {
-                                    Favourite favourite = favSnapshot.getValue(Favourite.class);
-                                    if (favourite != null) {
-                                        if (favourite.getItemName().equals(favourites.get(position).getItemName())) {
-                                            if (favourite.getSourceUrl().equalsIgnoreCase("no url")) {
-                                                Toast.makeText(context, "Sorry no recipe available!", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(favourites.get(position).getSourceUrl()));
-                                                context.startActivity(browserIntent);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        if (favourites.get(position).getSourceUrl().equals("no url")) {
+                            Snackbar snackbar = Snackbar.make(relativeLayout, "Sorry no recipe available!", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        } else {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(favourites.get(position).getSourceUrl()));
+                            context.startActivity(browserIntent);
+                        }
                         break;
                     case R.id.addToDiary:
-                        final Spinner meals;
-                        final Spinner quantity;
-                        final Spinner whatDay;
+                        final Spinner meals, quantity, whatDay;
                         @SuppressLint("InflateParams")
                         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View view = inflater.inflate(R.layout.addtodiarypopup, null);
@@ -131,26 +111,17 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                         ArrayList<String> daysToShow = new ArrayList<>();
                         String dayPosition = null;
                         for (int i = 0; i < daysOfWeek.size(); i++) {
-                            if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
-                                String a = daysOfWeek.get(i);
-                                dayPosition = String.valueOf(daysOfWeek.indexOf(a));
+                            if (simpleDateformat.format(date).equalsIgnoreCase(daysOfWeek.get(i))) {
+                                dayPosition = String.valueOf(daysOfWeek.indexOf(daysOfWeek.get(i)));
                                 break;
                             }
                         }
-                        Log.i("dayP", "" + dayPosition);
                         for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(dayPosition)); i++) {
                             daysToShow.add(daysOfWeek.get(i));
                         }
-                        int defaultP = 0;
-                        for (int i = 0; i < daysToShow.size(); i++) {
-                            if (simpleDateformat.format(today).equalsIgnoreCase(daysToShow.get(i))) {
-                                defaultP = i;
-                                break;
-                            }
-                        }
                         ArrayAdapter dayAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, daysToShow);
                         whatDay.setAdapter(dayAdapter);
-                        whatDay.setSelection(defaultP);
+                        whatDay.setSelection(daysToShow.indexOf(simpleDateformat.format(date)));
                         dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         whatDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -237,8 +208,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                             }
                         });
                         String finalDayPosition = dayPosition;
-                        builder.setPositiveButton("Create", (dialog, which) -> {
-                        });
+                        builder.setPositiveButton("Create", (dialog, which) -> { });
                         builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
                         builder.setView(view);
                         AlertDialog dialog = builder.create();
@@ -253,19 +223,12 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                 dlgAlert.create().show();
                             } else {
                                 dialog.dismiss();
-                                Favourite favourite = null;
-                                for (int i = 0; i < favourites.size(); i++) {
-                                    if (i == holder.getAdapterPosition()) {
-                                        favourite = favourites.get(i);
-                                        break;
-                                    }
-                                }
+                                Favourite favourite = favourites.get(position);
                                 assert favourite != null;
                                 String positionToAddTo = null;
                                 for (int i = 0; i < daysOfWeek.size(); i++) {
                                     if (daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
-                                        String a = daysOfWeek.get(i);
-                                        positionToAddTo = String.valueOf(daysOfWeek.indexOf(a));
+                                        positionToAddTo = String.valueOf(daysOfWeek.indexOf(daysOfWeek.get(i)));
                                         break;
                                     }
                                 }
@@ -287,10 +250,10 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                         favourite.getItemTotalCarbohydrates(), favourite.getItemSugars(),
                                         favourite.getItemProtein(), Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, favourite.getNumberOfServings(), UUID.randomUUID().toString(), favourite.getSourceUrl());
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
-                                Favourite finalFavourite = favourite;
                                 databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(context, "Added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Toast.LENGTH_SHORT).show();
+                                        Snackbar snackbar = Snackbar.make(relativeLayout, favourite.getItemName() + " added to " + mealAdapterChoice.toLowerCase() + " on " + whatDayToAddTo, Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
                                         DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
                                         habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -304,12 +267,12 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                                                 for (int i = 0; i < Objects.requireNonNull(habits).getBreakfastNames().size(); i++) {
                                                                     if (habits.getBreakfastNames().get(i).equals("No Meals")) {
                                                                         habits.getBreakfastNames().remove(i);
-                                                                        habits.getBreakfastNames().add(finalFavourite.getItemName());
+                                                                        habits.getBreakfastNames().add(favourite.getItemName());
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if (habits.getBreakfastNames().stream().noneMatch(finalFavourite.getItemName()::equalsIgnoreCase)) {
-                                                                habits.getBreakfastNames().add(finalFavourite.getItemName());
+                                                            } else if (habits.getBreakfastNames().stream().noneMatch(favourite.getItemName()::equalsIgnoreCase)) {
+                                                                habits.getBreakfastNames().add(favourite.getItemName());
                                                             }
                                                             habitReference.child("breakfastNames").setValue(habits.getBreakfastNames());
                                                             break;
@@ -318,12 +281,12 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                                                 for (int i = 0; i < Objects.requireNonNull(habits).getLunchNames().size(); i++) {
                                                                     if (habits.getLunchNames().get(i).equals("No Meals")) {
                                                                         habits.getLunchNames().remove(i);
-                                                                        habits.getLunchNames().add(finalFavourite.getItemName());
+                                                                        habits.getLunchNames().add(favourite.getItemName());
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if (habits.getLunchNames().stream().noneMatch(finalFavourite.getItemName()::equalsIgnoreCase)) {
-                                                                habits.getLunchNames().add(finalFavourite.getItemName());
+                                                            } else if (habits.getLunchNames().stream().noneMatch(favourite.getItemName()::equalsIgnoreCase)) {
+                                                                habits.getLunchNames().add(favourite.getItemName());
                                                             }
                                                             habitReference.child("lunchNames").setValue(habits.getLunchNames());
                                                             break;
@@ -332,12 +295,12 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                                                 for (int i = 0; i < Objects.requireNonNull(habits).getDinnerNames().size(); i++) {
                                                                     if (habits.getDinnerNames().get(i).equals("No Meals")) {
                                                                         habits.getDinnerNames().remove(i);
-                                                                        habits.getDinnerNames().add(finalFavourite.getItemName());
+                                                                        habits.getDinnerNames().add(favourite.getItemName());
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if (habits.getDinnerNames().stream().noneMatch(finalFavourite.getItemName()::equalsIgnoreCase)) {
-                                                                habits.getDinnerNames().add(finalFavourite.getItemName());
+                                                            } else if (habits.getDinnerNames().stream().noneMatch(favourite.getItemName()::equalsIgnoreCase)) {
+                                                                habits.getDinnerNames().add(favourite.getItemName());
                                                             }
                                                             habitReference.child("dinnerNames").setValue(habits.getDinnerNames());
                                                             break;
@@ -346,12 +309,12 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                                                                 for (int i = 0; i < Objects.requireNonNull(habits).getOtherNames().size(); i++) {
                                                                     if (habits.getOtherNames().get(i).equals("No Meals")) {
                                                                         habits.getOtherNames().remove(i);
-                                                                        habits.getOtherNames().add(finalFavourite.getItemName());
+                                                                        habits.getOtherNames().add(favourite.getItemName());
                                                                         break;
                                                                     }
                                                                 }
-                                                            } else if (habits.getOtherNames().stream().noneMatch(finalFavourite.getItemName()::equalsIgnoreCase)) {
-                                                                habits.getOtherNames().add(finalFavourite.getItemName());
+                                                            } else if (habits.getOtherNames().stream().noneMatch(favourite.getItemName()::equalsIgnoreCase)) {
+                                                                habits.getOtherNames().add(favourite.getItemName());
                                                             }
                                                             habitReference.child("otherNames").setValue(habits.getOtherNames());
                                                             break;
@@ -361,26 +324,24 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
 
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError error) {
-                                                Toast.makeText(context, "Error occurred: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                                Snackbar snackbar = Snackbar.make(relativeLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                                                snackbar.show();
                                             }
                                         });
                                     }
-                                }).addOnFailureListener(e -> Toast.makeText(context, "Error Occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                }).addOnFailureListener(e -> {
+                                    Snackbar snackbar = Snackbar.make(relativeLayout, "Error occurred: " + e.getMessage(), Snackbar.LENGTH_SHORT);
+                                    snackbar.show();
+                                });
                             }
                         });
                         break;
                     case R.id.DeleteFromFavourites:
-                        builder.setMessage("Are you sure you want to delete this item from your favourites").setNegativeButton("No", (dialog1, which) -> dialog1.cancel()).setPositiveButton("Yes", (dialog1, which) -> {
-                            Favourite favourite = new Favourite();
-                            for (int i = 0; i < favourites.size(); i++) {
-                                if (holder.getAdapterPosition() == i) {
-                                    favourite = favourites.get(i);
-                                    break;
-                                }
-                            }
+                        builder.setMessage("Are you sure you want to delete this item from your Favourites?").setNegativeButton("No", (dialog1, which) -> dialog1.cancel()).setPositiveButton("Yes", (dialog1, which) -> {
                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Favourites");
-                            databaseReference.child(favourite.getId()).removeValue();
-                            Toast.makeText(context, "Item removed from Favourites!", Toast.LENGTH_SHORT).show();
+                            databaseReference.child(favourites.get(position).getId()).removeValue();
+                            Snackbar snackbar = Snackbar.make(relativeLayout, favourites.get(position).getItemName() + " removed from Favourites!", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
                             favourites.clear();
                             notifyDataSetChanged();
                         });

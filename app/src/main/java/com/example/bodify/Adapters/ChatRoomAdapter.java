@@ -124,17 +124,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                             ChatRoom dbChatRoom = snapshot.getValue(ChatRoom.class);
                                                             assert dbChatRoom != null;
-                                                            if (dbChatRoom.getUserIds().contains("No users")) {
-                                                                for (int i = 0; i < dbChatRoom.getUserIds().size(); i++) {
-                                                                    if (dbChatRoom.getUserIds().get(i).equals("No users")) {
-                                                                        dbChatRoom.getUserIds().remove(i);
-                                                                        dbChatRoom.getUserIds().add(mAuth.getUid());
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            } else {
-                                                                dbChatRoom.getUserIds().add(mAuth.getUid());
-                                                            }
+                                                            dbChatRoom.getUserIds().remove("No users");
+                                                            dbChatRoom.getUserIds().add(mAuth.getUid());
                                                             chatRoomReference.child("userIds").setValue(dbChatRoom.getUserIds());
                                                             Intent intent = new Intent(context, ChatBox.class);
                                                             intent.putExtra("theme", rooms.get(position).getTheme());
@@ -203,12 +194,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                         deleteBuilder.setMessage("Are you sure you want to leave this room")
                                                 .setNegativeButton("No", (dialog1, which) -> dialog1.cancel())
                                                 .setPositiveButton("Yes", (dialog1, which) -> {
-                                                    for (int i = 0; i < chatRoom.getUserIds().size(); i++) {
-                                                        if (chatRoom.getUserIds().get(i).equals(mAuth.getUid())) {
-                                                            chatRoom.getUserIds().remove(i);
-                                                            break;
-                                                        }
-                                                    }
+                                                    chatRoom.getUserIds().remove(mAuth.getUid());
                                                     if (chatRoom.getUserIds().isEmpty()) {
                                                         chatRoom.getUserIds().add("No users");
                                                     }

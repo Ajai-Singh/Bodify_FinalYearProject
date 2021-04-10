@@ -5,9 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +13,16 @@ import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bodify.Management;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Meal> meals;
@@ -69,68 +68,31 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
             popupMenu.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
                     case R.id.viewMealOnline:
-                        DatabaseReference dbMealSnapshot = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meals.get(position).getDayOfWeek());
-                        dbMealSnapshot.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot mealSnapshot : snapshot.getChildren()) {
-                                    Meal meal = mealSnapshot.getValue(Meal.class);
-                                    if (meal != null) {
-                                        if (meal.getUUID().equals(meals.get(position).getUUID())) {
-                                            if (meal.getSourceUrl().equalsIgnoreCase("no url")) {
-                                                Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no recipe available!", Snackbar.LENGTH_SHORT);
-                                                snackbar.show();
-                                            } else {
-                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(meals.get(position).getSourceUrl()));
-                                                context.startActivity(browserIntent);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
-                                snackbar.show();
-                            }
-                        });
+                        if (meals.get(position).getSourceUrl().equals("no url")) {
+                            Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no recipe available!", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        } else {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(meals.get(position).getSourceUrl()));
+                            context.startActivity(browserIntent);
+                        }
                         break;
                     case R.id.deleteMeal:
                         builder.setMessage("Are you sure you want to delete this meal")
                                 .setNegativeButton("No", (dialog, which) -> dialog.cancel()).setPositiveButton("Yes", (dialog, which) -> {
-                            Meal meal = new Meal();
-                            for (int i = 0; i < meals.size(); i++) {
-                                if (holder.getAdapterPosition() == i) {
-                                    meal = meals.get(i);
-                                    break;
-                                }
-                            }
-                            Meal finalMeal1 = meal;
-                            new Handler(Looper.getMainLooper()).post(() -> {
-                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(finalMeal1.getDayOfWeek());
-                                databaseReference.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        for (DataSnapshot mealSnapshot : snapshot.getChildren()) {
-                                            Meal dbMeal = mealSnapshot.getValue(Meal.class);
-                                            assert dbMeal != null;
-                                            dbMeal.setId(mealSnapshot.getKey());
-                                            if (dbMeal.getUUID().equals(finalMeal1.getUUID())) {
-                                                databaseReference.child(dbMeal.getId()).removeValue();
-                                                meals.clear();
-                                                notifyDataSetChanged();
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + error.getMessage(), Snackbar.LENGTH_SHORT);
+                            DatabaseReference deleteReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meals.get(position).getDayOfWeek());
+                            deleteReference.child(meals.get(position).getId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Meal removed from Diary!", Snackbar.LENGTH_SHORT);
+                                        snackbar.show();
+                                        Intent intent = new Intent(context, Management.class);
+                                        context.startActivity(intent);
+                                    } else {
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);
                                         snackbar.show();
                                     }
-                                });
+                                }
                             });
                         });
                         AlertDialog alertDialog = builder.create();
@@ -139,9 +101,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                         break;
                     case R.id.editMeal:
                         AlertDialog.Builder diaryBuilder = new AlertDialog.Builder(context);
-                        final Spinner mealsSpinner;
-                        final Spinner quantity;
-                        final Spinner whatDay;
+                        final Spinner mealsSpinner, quantity, whatDay;
                         final TextView header, whatDayHeader, servingsTV;
                         @SuppressLint("InflateParams")
                         LayoutInflater diaryInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -158,12 +118,12 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                         whatDayHeader.setVisibility(View.INVISIBLE);
                         mealsSpinner.setVisibility(View.INVISIBLE);
                         ArrayList<Integer> servings = new ArrayList<>();
-                        for (int i = 1; i <= meals.get(holder.getAdapterPosition()).getOriginalServings(); i++) {
+                        for (int i = 1; i <= meals.get(position).getOriginalServings(); i++) {
                             servings.add(i);
                         }
                         int servingsPosition = 0;
                         for (int i = 0; i < servings.size(); i++) {
-                            if (servings.get(i).equals(meals.get(holder.getAdapterPosition()).getNumberOfServings())) {
+                            if (servings.get(i).equals(meals.get(position).getNumberOfServings())) {
                                 servingsPosition = i;
                             }
                         }

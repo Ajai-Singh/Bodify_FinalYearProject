@@ -115,7 +115,10 @@ public class MondayMeals extends Fragment {
                     for (int i = 0; i < dbKeys.size(); i++) {
                         if (dbKeys.get(i).equals(userSnapshot.getKey())) {
                             Meal meal = userSnapshot.getValue(Meal.class);
-                            meals.add(meal);
+                            if(meal != null) {
+                                meal.setId(userSnapshot.getKey());
+                                meals.add(meal);
+                            }
                         }
                     }
                 }
@@ -151,7 +154,10 @@ public class MondayMeals extends Fragment {
                     for (int i = 0; i < dbKeys.size(); i++) {
                         if (dbKeys.get(i).equals(userSnapshot.getKey())) {
                             Meal meal = userSnapshot.getValue(Meal.class);
-                            meals.add(meal);
+                            if(meal != null) {
+                                meal.setId(userSnapshot.getKey());
+                                meals.add(meal);
+                            }
                         }
                     }
                 }
@@ -187,7 +193,10 @@ public class MondayMeals extends Fragment {
                     for (int i = 0; i < dbKeys.size(); i++) {
                         if (dbKeys.get(i).equals(userSnapshot.getKey())) {
                             Meal meal = userSnapshot.getValue(Meal.class);
-                            meals.add(meal);
+                            if(meal != null) {
+                                meal.setId(userSnapshot.getKey());
+                                meals.add(meal);
+                            }
                         }
                     }
                 }
@@ -223,7 +232,10 @@ public class MondayMeals extends Fragment {
                     for (int i = 0; i < dbKeys.size(); i++) {
                         if (dbKeys.get(i).equals(userSnapshot.getKey())) {
                             Meal meal = userSnapshot.getValue(Meal.class);
-                            meals.add(meal);
+                            if (meal != null) {
+                                meal.setId(userSnapshot.getKey());
+                                meals.add(meal);
+                            }
                         }
                     }
                 }

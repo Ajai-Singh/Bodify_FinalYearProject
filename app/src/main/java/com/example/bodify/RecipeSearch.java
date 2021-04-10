@@ -71,15 +71,11 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
     public static final String API_KEY = "de851175d709445bb3d6149a58107a93";
     private final ArrayList<Recipe> recipes = new ArrayList<>();
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private Button search;
-    private Button find;
+    private Button search, find;
     private RecyclerView recyclerView;
     private RecipeAdapter recipeAdapter;
-    private String quantityAdapterChoice;
-    private String mealAdapterChoice;
-    private String whatDayToAddTo;
+    private String quantityAdapterChoice, mealAdapterChoice, whatDayToAddTo;
     private ArrayList<String> servingNumbers;
-    private final Date today = new Date();
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
     private RequestQueue queue;
@@ -166,7 +162,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                 choice.setError("Field cannot be empty!");
                 choice.requestFocus();
             } else {
-                AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query=" + choice.getText().toString() + "&apiKey=" + API_KEY + "&addRecipeNutrition=true&type=" + mealsSpinner.getSelectedItem().toString().toLowerCase() + "&number=" + 1)
+                AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?query=" + choice.getText().toString() + "&apiKey=" + API_KEY + "&addRecipeNutrition=true&type=" + mealsSpinner.getSelectedItem().toString().toLowerCase())
                         .addPathParameter("pageNumber", "0")
                         .addQueryParameter("limit", "1")
                         .addHeaders("token", "1234")
@@ -303,7 +299,8 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                 returnNutritionalInformation(scanContent);
             }
         } else {
-            noScannedData();
+            Snackbar snackbar = Snackbar.make(constraintLayout, "No scan data received!", Snackbar.LENGTH_SHORT);
+            snackbar.show();
         }
     }
 
@@ -382,14 +379,16 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                     if (exists) {
-                        duplicateFavourite();
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites!", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
                     }
                     if (!exists) {
                         Favourite favourite = new Favourite(itemName, calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, userID, servings, "no url");
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                         databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                addedToFavourites();
+                                Snackbar snackbar = Snackbar.make(constraintLayout,"Item added to Favourites!", Snackbar.LENGTH_SHORT);
+                                snackbar.show();
                             } else {
                                 errorOccurred(Objects.requireNonNull(task.getException()).getMessage());
                             }
@@ -407,9 +406,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
         addToDiary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Spinner meals;
-                final Spinner quantity;
-                final Spinner whatDay;
+                final Spinner meals, quantity, whatDay;
                 AlertDialog.Builder builder = new AlertDialog.Builder(RecipeSearch.this);
                 @SuppressLint("InflateParams")
                 View view = getLayoutInflater().inflate(R.layout.addtodiarypopup, null);
@@ -427,25 +424,17 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                 ArrayList<String> daysToShow = new ArrayList<>();
                 String position = null;
                 for (int i = 0; i < daysOfWeek.size(); i++) {
-                    if (simpleDateformat.format(today).equalsIgnoreCase(daysOfWeek.get(i))) {
-                        String a = daysOfWeek.get(i);
-                        position = String.valueOf(daysOfWeek.indexOf(a));
+                    if (simpleDateformat.format(date).equalsIgnoreCase(daysOfWeek.get(i))) {
+                        position = String.valueOf(daysOfWeek.indexOf(daysOfWeek.get(i)));
                         break;
                     }
                 }
                 for (int i = 0; i <= Integer.parseInt(Objects.requireNonNull(position)); i++) {
                     daysToShow.add(daysOfWeek.get(i));
                 }
-                int defaultP = 0;
-                for (int i = 0; i < daysToShow.size(); i++) {
-                    if (simpleDateformat.format(today).equalsIgnoreCase(daysToShow.get(i))) {
-                        defaultP = i;
-                        break;
-                    }
-                }
                 ArrayAdapter dayAdapter = new ArrayAdapter(RecipeSearch.this, android.R.layout.simple_spinner_dropdown_item, daysToShow);
                 whatDay.setAdapter(dayAdapter);
-                whatDay.setSelection(defaultP);
+                whatDay.setSelection(daysToShow.indexOf(simpleDateformat.format(date)));
                 dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 whatDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -551,8 +540,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         String positionToAddTo = null;
                         for (int i = 0; i < daysOfWeek.size(); i++) {
                             if (daysOfWeek.get(i).equalsIgnoreCase(whatDayToAddTo)) {
-                                String a = daysOfWeek.get(i);
-                                positionToAddTo = String.valueOf(daysOfWeek.indexOf(a));
+                                positionToAddTo = String.valueOf(daysOfWeek.indexOf(daysOfWeek.get(i)));
                                 break;
                             }
                         }
@@ -576,7 +564,8 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                         databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                addedToDiary(mealAdapterChoice, whatDayToAddTo);
+                                Snackbar snackbar = Snackbar.make(constraintLayout, itemName + " added to " + mealAdapterChoice + " on " + whatDayToAddTo, Snackbar.LENGTH_SHORT);
+                                snackbar.show();
                                 DatabaseReference habitReference = FirebaseDatabase.getInstance().getReference("Habits").child(Objects.requireNonNull(mAuth.getUid()));
                                 habitReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -659,26 +648,6 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
         builder.setView(view);
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    public void addedToDiary(String choice, String day) {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Meal added to " + choice + " on " + day, Snackbar.LENGTH_SHORT);
-        snackbar.show();
-    }
-
-    public void addedToFavourites() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to Favourites!", Snackbar.LENGTH_SHORT);
-        snackbar.show();
-    }
-
-    public void duplicateFavourite() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites!", Snackbar.LENGTH_SHORT);
-        snackbar.show();
-    }
-
-    public void noScannedData() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "No scan data received!", Snackbar.LENGTH_SHORT);
-        snackbar.show();
     }
 
     public void errorOccurred(String errorMessage) {
