@@ -7,6 +7,7 @@ public class Recipe {
     private int calories, fats, carbohydrates, proteins, sugar, sodium, servings, id;
     private ArrayList<Ingredient> ingredients;
 
+
     public int getId() {
         return id;
     }

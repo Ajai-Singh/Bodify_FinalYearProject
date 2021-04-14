@@ -39,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 public class WeightProgression extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -64,6 +65,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barChart.setPinchZoom(false);
         barChart.setDoubleTapToZoomEnabled(false);
         analyses = (ArrayList<Analysis>) getIntent().getSerializableExtra("analyses");
+        Collections.sort(analyses, (o1, o2) -> o1.getWeekStarting().compareTo(o2.getWeekStarting()));
         leftAxis = barChart.getAxisLeft();
         populateSpinner();
         search.setOnClickListener(v -> {
@@ -78,40 +80,40 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                         });
                 dlgAlert.create().show();
             } else {
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User user = snapshot.getValue(User.class);
-                        switch (spinner.getSelectedItemPosition()) {
-                            case 1:
-                                assert user != null;
-                                leftAxis.removeAllLimitLines();
-                                getWeightProgression(user.getWeight(), user.getsignUpDate());
-                                break;
-                            case 2:
-                                assert user != null;
-                                leftAxis.removeAllLimitLines();
-                                getFatProgression(user.getsignUpDate());
-                                break;
-                            case 3:
-                                assert user != null;
-                                leftAxis.removeAllLimitLines();
-                                getCarbProgression(user.getsignUpDate());
-                                break;
-                            case 4:
-                                assert user != null;
-                                leftAxis.removeAllLimitLines();
-                                getProteinProgression(user.getsignUpDate());
-                                break;
-                        }
-                    }
+                switch (spinner.getSelectedItemPosition()) {
+                    case 1:
+                        leftAxis.removeAllLimitLines();
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                User user = snapshot.getValue(User.class);
+                                if (user != null) {
+                                    getWeightProgression(user.getWeight());
+                                }
+                            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        errorOccurred(error.getMessage());
-                    }
-                });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                errorOccurred(error.getMessage());
+                            }
+                        });
+                        break;
+                    case 2:
+                        leftAxis.removeAllLimitLines();
+                        getFatProgression();
+                        break;
+                    case 3:
+                        leftAxis.removeAllLimitLines();
+                        getCarbProgression();
+                        break;
+                    case 4:
+                        leftAxis.removeAllLimitLines();
+                        getProteinProgression();
+                        break;
+                }
+
+
             }
         });
     }
@@ -121,7 +123,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         spinnerValues.add("Select option!");
         spinnerValues.add("Weight progression");
         spinnerValues.add("Fat progression AVG");
-        spinnerValues.add("Carbohydrate progression AVG");
+        spinnerValues.add("Carb progression AVG");
         spinnerValues.add("Protein progression AVG");
         ArrayAdapter<String> adapterNames = new ArrayAdapter<String>(WeightProgression.this, android.R.layout.simple_spinner_dropdown_item, spinnerValues) {
             @Override
@@ -146,7 +148,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         spinner.setOnItemSelectedListener(WeightProgression.this);
     }
 
-    public void getWeightProgression(double weight, String date) {
+    public void getWeightProgression(double weight) {
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
@@ -163,7 +165,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
             snackbar.show();
         }
         barEntries.add(new BarEntry(0f, (float) weight));
-        xLabels.add(date);
+        xLabels.add("Starting Weight");
         for (int i = 0; i < analyses.size(); i++) {
             float o = (float) i + 1f;
             barEntries.add(new BarEntry(o, (float) analyses.get(i).getWeight()));
@@ -183,7 +185,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barChart.invalidate();
     }
 
-    public void getFatProgression(String date) {
+    public void getFatProgression() {
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
@@ -194,7 +196,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                 Macro macro = snapshot.getValue(Macro.class);
                 assert macro != null;
                 barEntries.add(new BarEntry(0f, (float) macro.getFats()));
-                xLabels.add(date);
+                xLabels.add("Allowance");
                 for (int i = 0; i < analyses.size(); i++) {
                     float o = (float) i + 1f;
                     barEntries.add(new BarEntry(o, (float) analyses.get(i).getFats()));
@@ -227,7 +229,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         });
     }
 
-    public void getCarbProgression(String date) {
+    public void getCarbProgression() {
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
@@ -238,7 +240,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                 Macro macro = snapshot.getValue(Macro.class);
                 assert macro != null;
                 barEntries.add(new BarEntry(0f, (float) macro.getCarbohydrates()));
-                xLabels.add(date);
+                xLabels.add("Allowance");
                 for (int i = 0; i < analyses.size(); i++) {
                     float o = (float) i + 1f;
                     barEntries.add(new BarEntry(o, (float) analyses.get(i).getCarbohydrates()));
@@ -271,7 +273,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         });
     }
 
-    public void getProteinProgression(String date) {
+    public void getProteinProgression() {
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
@@ -282,7 +284,7 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                 Macro macro = snapshot.getValue(Macro.class);
                 assert macro != null;
                 barEntries.add(new BarEntry(0f, (float) macro.getProteins()));
-                xLabels.add(date);
+                xLabels.add("Allowance");
                 for (int i = 0; i < analyses.size(); i++) {
                     float o = (float) i + 1f;
                     barEntries.add(new BarEntry(o, (float) analyses.get(i).getProteins()));

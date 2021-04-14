@@ -52,7 +52,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE");
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     private String whatDayToAddTo;
     private String quantityAdapterChoice;
     private String mealAdapterChoice;
@@ -235,7 +234,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                             }
                         });
                         String finalDayPosition = dayPosition;
-                        diaryBuilder.setPositiveButton("Create", (d, which) -> { });
+                        diaryBuilder.setPositiveButton("Create", (d, which) -> {
+                        });
                         diaryBuilder.setNegativeButton("Close", (d, which) -> d.cancel());
                         diaryBuilder.setView(diaryView);
                         AlertDialog diaryAlertDialog = diaryBuilder.create();
@@ -271,7 +271,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                 } else {
                                     newDate = String.valueOf(stringBuffer);
                                 }
-                                Meal meal = new Meal(recipe.getTitle(), userID, recipe.getCalories(),
+                                Meal meal = new Meal(recipe.getTitle(), mAuth.getUid(), recipe.getCalories(),
                                         recipe.getFats(), recipe.getSodium(), recipe.getCarbohydrates(),
                                         recipe.getSugar(), recipe.getProteins(),
                                         Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo, newDate, recipe.getServings(), UUID.randomUUID().toString(), recipe.getSourceUrl());
@@ -363,7 +363,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         });
                         break;
                     case R.id.ingredients:
-                        final AlertDialog.Builder ingredientsBuilder = new AlertDialog.Builder(context,R.style.MyDialogTheme);
+                        final AlertDialog.Builder ingredientsBuilder = new AlertDialog.Builder(context, R.style.MyDialogTheme);
                         LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View view2 = inflater2.inflate(R.layout.ingredients, null);
                         RecyclerView recyclerView = view2.findViewById(R.id.ingredientsRCV);
@@ -389,23 +389,23 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                                         Favourite favourite = userSnapshot.getValue(Favourite.class);
                                         if (favourite != null) {
-                                            if (favourite.getItemName().equalsIgnoreCase(recipe.getTitle()) && favourite.getUserID().equalsIgnoreCase(userID)) {
+                                            if (favourite.getItemName().equalsIgnoreCase(recipe.getTitle()) && favourite.getUserID().equalsIgnoreCase(mAuth.getUid())) {
                                                 exists = true;
                                                 break;
                                             }
                                         }
                                     }
                                     if (exists) {
-                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites!", Snackbar.LENGTH_SHORT);
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Item already exists in Favourites!", Snackbar.LENGTH_SHORT);
                                         snackbar.show();
                                     }
                                     if (!exists) {
                                         assert recipe != null;
                                         Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
-                                                recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), userID, recipe.getServings(), recipe.getSourceUrl());
+                                                recipe.getSodium(), recipe.getCarbohydrates(), recipe.getSugar(), recipe.getProteins(), mAuth.getUid(), recipe.getServings(), recipe.getSourceUrl());
                                         databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
                                             if (task.isSuccessful()) {
-                                                Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to Favourites!", Snackbar.LENGTH_SHORT);
+                                                Snackbar snackbar = Snackbar.make(constraintLayout, recipe.getTitle() + " added to Favourites!", Snackbar.LENGTH_SHORT);
                                                 snackbar.show();
                                             } else {
                                                 Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);

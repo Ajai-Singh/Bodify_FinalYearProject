@@ -26,7 +26,6 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.bodify.Models.User;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -47,6 +46,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
     private ArrayList<String> bodyTypes;
     private ArrayList<String> preferredFoods;
     private ConstraintLayout constraintLayout;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,17 +63,33 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         constraintLayout = findViewById(R.id.tcl);
         updateSpinners();
         Button submit = findViewById(R.id.submitButton);
-        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         submit.setOnClickListener(v -> {
             if (weight.getText().toString().length() < 2) {
                 weight.setError("Invalid weight!");
                 weight.requestFocus();
+            } else if (weight.getText().toString().indexOf("0") == 0) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (Double.parseDouble(weight.getText().toString()) <= 1.00) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (weight.getText().toString().indexOf(".") == 1) {
+                    weight.setError("Invalid weight!");
+                    weight.requestFocus();
+            } else if (weight.getText().toString().contains(".") && weight.getText().toString().indexOf(".") == - 1) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (weight.getText().toString().contains(".") && weight.getText().toString().indexOf(".") == - 2) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (weight.getText().toString().indexOf(".") == 2 && weight.getText().toString().length() == 6) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (Double.parseDouble(weight.getText().toString()) > 442.00) {
+                weight.setError("Error max weight is 442KG!");
             } else if (height.getText().toString().length() < 2) {
                 height.setError("Invalid height!");
                 height.requestFocus();
-            } else if (Double.parseDouble(weight.getText().toString()) > 442) {
-                weight.setError("Error max weight is 442KG!");
             } else if (Integer.parseInt(height.getText().toString()) > 232) {
                 height.setError("Error max height is 232CM!");
                 height.requestFocus();
@@ -88,12 +104,6 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 dlgAlert.create().show();
             } else {
                 Intent intent = getIntent();
-                String strUserName = intent.getStringExtra("userName");
-                String imageDownloadUrl = intent.getStringExtra("imageUrl");
-                FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                assert firebaseUser != null;
-                String strEmail = firebaseUser.getEmail();
-                String userID = firebaseUser.getUid();
                 double bodyMassIndex;
                 double heightInMetres = Integer.parseInt(height.getText().toString()) / 100.00;
                 bodyMassIndex = Double.parseDouble(weight.getText().toString()) / Math.pow(heightInMetres, 2.0);
@@ -101,8 +111,13 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 double formattedBodyMassIndex = Double.parseDouble(decimalFormat.format(bodyMassIndex));
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat todaysDate = new SimpleDateFormat("dd/MM/yyyy");
                 Date date = new Date();
-                User user = new User(strUserName, strEmail, genderSpinner.getSelectedItem().toString(), activityLevelSpinner.getSelectedItem().toString(), fitnessGoalSpinner.getSelectedItem().toString(), bodyTypeSpinner.getSelectedItem().toString(), preferredFoodsSpinner.getSelectedItem().toString(), Double.parseDouble(weight.getText().toString()), formattedBodyMassIndex, Integer.parseInt(height.getText().toString()), imageDownloadUrl, todaysDate.format(date));
-                databaseReference.child("User").child(userID).setValue(user).addOnCompleteListener(task -> {
+                User user = new User(intent.getStringExtra("userName"), Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(), genderSpinner.getSelectedItem().toString(),
+                        activityLevelSpinner.getSelectedItem().toString(), fitnessGoalSpinner.getSelectedItem().toString(),
+                        bodyTypeSpinner.getSelectedItem().toString(), preferredFoodsSpinner.getSelectedItem().toString(),
+                        Double.parseDouble(weight.getText().toString()), formattedBodyMassIndex, Integer.parseInt(height.getText().toString()),
+                        intent.getStringExtra("imageUrl"), todaysDate.format(date));
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
+                databaseReference.child(Objects.requireNonNull(mAuth.getUid())).setValue(user).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             NotificationChannel notificationChannel = new NotificationChannel("My Notification", "test", NotificationManager.IMPORTANCE_DEFAULT);
@@ -261,7 +276,7 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
         preferredFoodsSpinner.setAdapter(adapterPreferredFoods);
         preferredFoodsSpinner.setOnItemSelectedListener(Tailoring.this);
     }
-    
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 

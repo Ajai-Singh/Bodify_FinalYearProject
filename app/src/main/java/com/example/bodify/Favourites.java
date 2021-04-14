@@ -2,6 +2,7 @@ package com.example.bodify;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -26,6 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.internal.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -55,7 +59,7 @@ public class Favourites extends Fragment {
                     itemNames = new ArrayList<>();
                     for (DataSnapshot favouriteSnapshot : snapshot.getChildren()) {
                         Favourite favourite = favouriteSnapshot.getValue(Favourite.class);
-                        if(favourite != null) {
+                        if (favourite != null) {
                             if (favourite.getUserID().equals(mAuth.getUid())) {
                                 itemNames.add(favourite.getItemName().toLowerCase());
                             }
@@ -95,6 +99,7 @@ public class Favourites extends Fragment {
                             .setAction("Create Favourite?", view -> {
                                 createCustomFavourite(itemNames);
                             });
+                    snackbar.setActionTextColor(Color.RED);
                     snackbar.show();
                 } else {
                     recyclerView.setHasFixedSize(true);
@@ -162,13 +167,13 @@ public class Favourites extends Fragment {
                     protein.requestFocus();
                 } else {
                     dialog.dismiss();
-                    Favourite favourite = new Favourite(itemName.getText().toString(), Integer.parseInt(calories.getText().toString()), Integer.parseInt(fat.getText().toString()),
+                    Favourite favourite = new Favourite(StringUtils.capitalize(itemName.getText().toString().toLowerCase()), Integer.parseInt(calories.getText().toString()), Integer.parseInt(fat.getText().toString()),
                             Integer.parseInt(sodium.getText().toString()), Integer.parseInt(carbs.getText().toString()), Integer.parseInt(sugar.getText().toString()),
                             Integer.parseInt(protein.getText().toString()), mAuth.getUid(), Integer.parseInt(servings.getText().toString()), "no url");
                     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                     databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Snackbar snackbar = Snackbar.make(relativeLayout, itemName.getText().toString() + " added to Favourites!", Snackbar.LENGTH_SHORT);
+                            Snackbar snackbar = Snackbar.make(relativeLayout, StringUtils.capitalize(itemName.getText().toString().toLowerCase()) + " added to Favourites!", Snackbar.LENGTH_SHORT);
                             snackbar.show();
                             DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favourites");
                             favRef.addValueEventListener(new ValueEventListener() {

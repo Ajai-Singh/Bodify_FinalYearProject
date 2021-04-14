@@ -9,7 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.bodify.Management;
 import com.example.bodify.DiaryRefreshService;
@@ -28,6 +27,7 @@ public class LogIn extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Log In Form");
         setContentView(R.layout.activity_log_in);
         if (mAuth.getCurrentUser() != null) {
+            startService(new Intent(LogIn.this, DiaryRefreshService.class));
             startActivity(new Intent(LogIn.this, Management.class));
             return;
         }

@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Habits;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.Models.Recipe;
@@ -58,7 +57,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     private final Date date = new Date();
     private ArrayList<String> servingNumbers;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     private final ConstraintLayout constraintLayout;
 
     public CardStackAdapter(List<Recipe> recipes, Context context, ConstraintLayout constraintLayout) {
@@ -235,7 +233,8 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                 }
                             });
                             String finalDayPosition = dayPosition;
-                            diaryBuilder.setPositiveButton("Create", (d, which) -> { });
+                            diaryBuilder.setPositiveButton("Create", (d, which) -> {
+                            });
                             diaryBuilder.setNegativeButton("Close", (d, which) -> d.cancel());
                             diaryBuilder.setView(diaryView);
                             AlertDialog diaryAlertDialog = diaryBuilder.create();
@@ -363,7 +362,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                             });
                             break;
                         case R.id.csIngredients:
-                            final AlertDialog.Builder ingredientsBuilder = new AlertDialog.Builder(context);
+                            final AlertDialog.Builder ingredientsBuilder = new AlertDialog.Builder(context, R.style.MyDialogTheme);
                             LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                             View view2 = inflater2.inflate(R.layout.ingredients, null);
                             RecyclerView recyclerView = view2.findViewById(R.id.ingredientsRCV);

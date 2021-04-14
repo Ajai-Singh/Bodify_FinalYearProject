@@ -105,7 +105,7 @@ public class Health extends AppCompatActivity {
                         requiredCalories = requiredCalories + 500;
                     }
                     formattedCalorieIntake = Double.parseDouble(decimalFormat.format(requiredCalories));
-                    calorieIntake.setText(String.valueOf(formattedCalorieIntake));
+                    calorieIntake.setText(String.valueOf(Math.round(formattedCalorieIntake)));
                     if (user.getBodyType().equalsIgnoreCase("Excess body fat")) {
                         proteinAmount = (user.getWeight() * 2.20462) * 0.75;
                     } else if (user.getBodyType().equalsIgnoreCase("Average Shape")) {
@@ -154,9 +154,7 @@ public class Health extends AppCompatActivity {
     }
 
     public void showChart(ArrayList<BarEntry> macros) {
-        barEntries.add(macros.get(0));
-        barEntries.add(macros.get(1));
-        barEntries.add(macros.get(2));
+        barEntries.addAll(macros);
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(getXAxisValues()));
         BarDataSet barDataSet = new BarDataSet(barEntries, "Data Set");

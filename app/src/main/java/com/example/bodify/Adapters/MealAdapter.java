@@ -159,6 +159,8 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                                         }
                                         if (mealID.equals(arrayID)) {
                                             databaseReference.child(meal.getId()).child("numberOfServings").setValue(Integer.parseInt(quantityAdapterChoice));
+                                            Snackbar snackbar = Snackbar.make(constraintLayout, "Meal successfully updated!", Snackbar.LENGTH_SHORT);
+                                            snackbar.show();
                                             notifyDataSetChanged();
                                         }
                                     }

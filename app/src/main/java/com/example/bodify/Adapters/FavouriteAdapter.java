@@ -26,7 +26,6 @@ import com.example.bodify.Models.Favourite;
 import com.example.bodify.Models.Habits;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -208,7 +207,8 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                             }
                         });
                         String finalDayPosition = dayPosition;
-                        builder.setPositiveButton("Create", (dialog, which) -> { });
+                        builder.setPositiveButton("Create", (dialog, which) -> {
+                        });
                         builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
                         builder.setView(view);
                         AlertDialog dialog = builder.create();

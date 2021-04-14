@@ -1,5 +1,6 @@
 package com.example.bodify;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -35,8 +36,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -260,6 +266,19 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
     }
 
     public void populateUI(ArrayList<String> weeks, String userTag) {
+        Collections.sort(weeks, new Comparator<String>() {
+            @SuppressLint("SimpleDateFormat")
+            final DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+
+            @Override
+            public int compare(String o1, String o2) {
+                try {
+                    return Objects.requireNonNull(f.parse(o1)).compareTo(f.parse(o2));
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        });
         week.setText(weeks.get(0));
         previous.setOnClickListener(new View.OnClickListener() {
             int currentIndex = weeks.indexOf(week.getText().toString());
@@ -393,14 +412,15 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                 DecimalFormat df = new DecimalFormat("0.00");
                 double calorieNegative = macro.getCalorieConsumption() - calories;
                 calorieNegative *= 7;
-                double newWeight = calorieNegative / 7700;
+                calorieNegative /= 7700;
                 DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
+                double finalCalorieNegative = calorieNegative;
                 userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User user = snapshot.getValue(User.class);
                         assert user != null;
-                        weightTV.setText(df.format(user.getWeight() - newWeight));
+                        weightTV.setText(df.format(user.getWeight() - finalCalorieNegative));
                     }
 
                     @Override
@@ -415,7 +435,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {;
+            public void onCancelled(@NonNull DatabaseError error) {
                 errorOccurred(error.getMessage());
             }
         });

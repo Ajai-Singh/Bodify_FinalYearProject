@@ -96,6 +96,7 @@ public class ChatRooms extends AppCompatActivity {
                                 DatabaseReference roomReference = FirebaseDatabase.getInstance().getReference("Rooms");
                                 roomReference.addValueEventListener(new ValueEventListener() {
                                     final ArrayList<String> roomNames = new ArrayList<>();
+
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot1) {
                                         for (DataSnapshot roomSnapshot : snapshot1.getChildren()) {
@@ -168,7 +169,8 @@ public class ChatRooms extends AppCompatActivity {
 
             }
         });
-        builder.setPositiveButton("Create", (dialog, which) -> { });
+        builder.setPositiveButton("Create", (dialog, which) -> {
+        });
         builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
         builder.setView(view);
         AlertDialog dialog = builder.create();

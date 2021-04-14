@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Sunday extends Fragment {
@@ -129,10 +130,10 @@ public class Sunday extends Fragment {
                     } else {
                         caloriesTV.setTextColor(Color.BLACK);
                     }
-                    caloriesTV.setText(String.valueOf(macroCopy.getCalorieConsumption()));
-                    fatsTV.setText(String.valueOf(macroCopy.getFatConsumption()));
-                    proteinsTV.setText(String.valueOf(macroCopy.getProteinConsumption()));
-                    carbohydratesTV.setText(String.valueOf(macroCopy.getCarbohydrateConsumption()));
+                    caloriesTV.setText(String.valueOf(Math.round(macroCopy.getCalorieConsumption())));
+                    fatsTV.setText(String.valueOf(Math.round(macroCopy.getFatConsumption())));
+                    proteinsTV.setText(String.valueOf(Math.round(macroCopy.getProteinConsumption())));
+                    carbohydratesTV.setText(String.valueOf(Math.round(macroCopy.getCarbohydrateConsumption())));
                 }
             }
 

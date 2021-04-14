@@ -267,7 +267,7 @@ public class FoodSuggester extends Fragment {
                                 }
                             }
                             if (exists) {
-                                Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites", Snackbar.LENGTH_SHORT);
+                                Snackbar snackbar = Snackbar.make(constraintLayout, "Item already exists in Favourites!", Snackbar.LENGTH_SHORT);
                                 snackbar.show();
                             } else {
                                 Favourite favourite = new Favourite(recipe.getTitle(), recipe.getCalories(), recipe.getFats(),
@@ -275,7 +275,7 @@ public class FoodSuggester extends Fragment {
                                         mAuth.getUid(), recipe.getServings(), recipe.getSourceUrl());
                                 databaseReference.push().setValue(favourite).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Item added to favourites", Snackbar.LENGTH_SHORT);
+                                        Snackbar snackbar = Snackbar.make(constraintLayout, recipe.getTitle() + " added to favourites", Snackbar.LENGTH_SHORT);
                                         snackbar.show();
                                     } else {
                                         Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);

@@ -38,6 +38,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 public class DiaryRefreshService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
@@ -46,7 +47,6 @@ public class DiaryRefreshService extends Service {
     private int calories, fats, proteins, carbohydrates;
     private ArrayList<String> daysInDB;
     private ArrayList<String> dates;
-    boolean alreadyExecuted = false;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -111,7 +111,6 @@ public class DiaryRefreshService extends Service {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     daysInDB.add(userSnapshot.getKey());
-                    Log.i("", "" + daysInDB);
                 }
                 test(daysInDB, calories, weight);
             }
@@ -127,15 +126,15 @@ public class DiaryRefreshService extends Service {
     public void test(ArrayList<String> daysInDB, double dbCalories, double weight) {
         dates = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("DayOfWeek");
-        for (int i = 0; i < daysInDB.size(); i++) {
-            databaseReference.child(daysInDB.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
-                @RequiresApi(api = Build.VERSION_CODES.O)
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                        Meal meal = userSnapshot.getValue(Meal.class);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    for(DataSnapshot userSnapshot2 : userSnapshot.getChildren()) {
+                        Meal meal = userSnapshot2.getValue(Meal.class);
                         assert meal != null;
-                        if (meal.getUserID().equalsIgnoreCase(userID)) {
+                        if (meal.getUserID().equalsIgnoreCase(mAuth.getUid())) {
                             dates.add(meal.getDate());
                             calories += meal.getCalories() * meal.getNumberOfServings();
                             fats += meal.getItemTotalFat() * meal.getNumberOfServings();
@@ -143,19 +142,19 @@ public class DiaryRefreshService extends Service {
                             proteins += meal.getItemProtein() * meal.getNumberOfServings();
                         }
                     }
-                    try {
-                        dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7, daysInDB, dbCalories, weight);
-                    } catch (ParseException e) {
-                        Log.i("parse exception", "" + e.getMessage());
-                    }
                 }
+                try {
+                    dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7,daysInDB, dbCalories, weight);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.i("error", ":" + error.getMessage());
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("parse exception", "" + error.getMessage());
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -168,16 +167,6 @@ public class DiaryRefreshService extends Service {
         daysOfWeek.add("Friday");
         daysOfWeek.add("Saturday");
         daysOfWeek.add("Sunday");
-        Log.i("days", "" + dates);
-        Log.i("cals", "" + calories);
-        Log.i("fat", "" + fats);
-        Log.i("car", "" + carbohydrates);
-        Log.i("pro", "" + proteins);
-
-        //Keeping for second or clause
-//        LocalTime minDeleteTime = LocalTime.of(14, 38, 0);
-//        LocalTime maxDeleteTime = LocalTime.of(14,38,1);
-//        LocalTime localTime = LocalTime.now();
         ArrayList<Integer> test = new ArrayList<>();
         for (int i = 0; i < dates.size(); i++) {
             test.add(Integer.parseInt(dates.get(i).substring(0, 2)));
@@ -247,16 +236,11 @@ public class DiaryRefreshService extends Service {
             double newWeight = calorieNegative / 7700;
             double finalWeight = Double.parseDouble(decimalFormat.format(weight - newWeight));
             Analysis analysis = new Analysis(calories, fats, carbohydrates, proteins, userID, String.valueOf(stringBuffer), finalWeight);
-            //I need to test the OR clause on a different android phone
-            //|| simpleDateFormat.format(currentWeekDay).equalsIgnoreCase("Monday") && localTime.isAfter(minDeleteTime) && localTime.isBefore(maxDeleteTime)
-            //I need to come up with an OR clause because it wont work if the difference is never 7 days
-            //test on another android phone with the OR clause
-            //if not just change to 8 days but problem with that what if the app is launched constantly
             if (daysBetween >= 7) {
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Analysis");
                 assert userID != null;
                 Log.i("A", "count");
-                databaseReference.push().setValue(analysis).addOnCompleteListener(task -> {
+                databaseReference.child(UUID.randomUUID().toString()).setValue(analysis).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.i("A", "Successfully saved");
                         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("DayOfWeek");

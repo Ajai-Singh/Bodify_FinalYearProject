@@ -246,7 +246,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                                 Snackbar snackbar = Snackbar.make(constraintLayout, "Sorry no members!", Snackbar.LENGTH_SHORT);
                                                 snackbar.show();
                                             } else {
-                                                final AlertDialog.Builder userBuilder = new AlertDialog.Builder(context);
+                                                final AlertDialog.Builder userBuilder = new AlertDialog.Builder(context, R.style.MyDialogTheme);
                                                 LayoutInflater inflater2 = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                                                 View view2 = inflater2.inflate(R.layout.users, null);
                                                 RecyclerView recyclerView = view2.findViewById(R.id.userRCV);

@@ -1,7 +1,5 @@
 package com.example.bodify.Models;
 
-import java.util.ArrayList;
-
 public class Favourite {
     private String itemName, userID, id, sourceUrl;
     private int calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, numberOfServings;

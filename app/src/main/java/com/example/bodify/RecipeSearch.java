@@ -325,8 +325,8 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
 
             @Override
             public void onError(ANError anError) {
-                    Snackbar snackbar = Snackbar.make(constraintLayout, "Invalid UPC provided", Snackbar.LENGTH_SHORT);
-                    snackbar.show();
+                Snackbar snackbar = Snackbar.make(constraintLayout, "Invalid UPC provided", Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
         });
     }
@@ -379,7 +379,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                     if (exists) {
-                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error item already exists in Favourites!", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar = Snackbar.make(constraintLayout, "Item already exists in Favourites!", Snackbar.LENGTH_SHORT);
                         snackbar.show();
                     }
                     if (!exists) {
@@ -387,7 +387,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                         databaseReference.child("Favourites").push().setValue(favourite).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Snackbar snackbar = Snackbar.make(constraintLayout,"Item added to Favourites!", Snackbar.LENGTH_SHORT);
+                                Snackbar snackbar = Snackbar.make(constraintLayout, itemName + " added to Favourites!", Snackbar.LENGTH_SHORT);
                                 snackbar.show();
                             } else {
                                 errorOccurred(Objects.requireNonNull(task.getException()).getMessage());
@@ -560,7 +560,7 @@ public class RecipeSearch extends AppCompatActivity implements AdapterView.OnIte
                         Meal meal = new Meal(itemName, mAuth.getUid(), calories, itemTotalFat, itemSodium,
                                 itemTotalCarbohydrates, itemSugars, itemProtein,
                                 Integer.parseInt(quantityAdapterChoice), mealAdapterChoice, whatDayToAddTo,
-                                newDate, servings, UUID.randomUUID().toString(),"no url");
+                                newDate, servings, UUID.randomUUID().toString(), "no url");
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("DayOfWeek");
                         databaseReference.child(whatDayToAddTo).push().setValue(meal).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {

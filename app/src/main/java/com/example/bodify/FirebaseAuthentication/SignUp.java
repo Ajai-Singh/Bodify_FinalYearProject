@@ -44,6 +44,7 @@ public class SignUp extends AppCompatActivity {
     private Uri mImageUri;
     private String imageDownloadUrl;
     private final ArrayList<String> userNames = new ArrayList<>();
+    private final ArrayList<String> emails = new ArrayList<>();
     private ConstraintLayout constraintLayout;
 
     @Override
@@ -119,10 +120,12 @@ public class SignUp extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                         User user = userSnapshot.getValue(User.class);
-                        assert user != null;
-                        userNames.add(user.getUserName().toLowerCase());
+                        if (user != null) {
+                            userNames.add(user.getUserName().toLowerCase());
+                            emails.add(user.getEmail().toLowerCase());
+                        }
                     }
-                    createUser(userNames);
+                    createUser(userNames, emails);
                 }
 
                 @Override
@@ -133,7 +136,7 @@ public class SignUp extends AppCompatActivity {
         });
     }
 
-    public void createUser(ArrayList<String> userNames) {
+    public void createUser(ArrayList<String> userNames, ArrayList<String> emails) {
         if (TextUtils.isEmpty(userName.getText().toString().trim())) {
             userName.setError("User Name is required.");
             userName.requestFocus();
@@ -142,6 +145,9 @@ public class SignUp extends AppCompatActivity {
             userName.requestFocus();
         } else if (TextUtils.isEmpty(emailAddress.getText().toString().trim())) {
             emailAddress.setError("Email Address is required.");
+            emailAddress.requestFocus();
+        } else if (emails.contains(emailAddress.getText().toString().trim().toLowerCase())) {
+            emailAddress.setError("Error email already exists!");
             emailAddress.requestFocus();
         } else if (password.getText().toString().length() < 6) {
             password.setError("Password length must be >= 6 characters.");

@@ -102,6 +102,26 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
             if (weight.getText().toString().length() < 2) {
                 weight.setError("Invalid weight!");
                 weight.requestFocus();
+            } else if (weight.getText().toString().indexOf("0") == 0) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (Double.parseDouble(weight.getText().toString()) <= 1.00) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (weight.getText().toString().indexOf(".") == 1) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (weight.getText().toString().contains(".") && weight.getText().toString().indexOf(".") == - 1) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (weight.getText().toString().contains(".") && weight.getText().toString().indexOf(".") == - 2) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (weight.getText().toString().indexOf(".") == 2 && weight.getText().toString().length() == 6) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (Double.parseDouble(weight.getText().toString()) > 442.00) {
+                weight.setError("Error max weight is 442KG!");
             } else if (height.getText().toString().length() < 2) {
                 height.setError("Invalid height!");
                 height.requestFocus();
@@ -158,7 +178,8 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
                                     break;
                                 }
                             }
-                            update();
+                            Snackbar snackbar = Snackbar.make(constraintLayout, "Update successful", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
                         }
                     }
 
@@ -223,10 +244,5 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     public void onBackPressed() {
         finish();
         startActivity(new Intent(Settings.this, Management.class));
-    }
-
-    public void update() {
-        Snackbar snackbar = Snackbar.make(constraintLayout, "Update successful", Snackbar.LENGTH_SHORT);
-        snackbar.show();
     }
 }

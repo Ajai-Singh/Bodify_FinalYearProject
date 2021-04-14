@@ -44,7 +44,7 @@ public class TuesdayMeals extends Fragment {
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
     private ConstraintLayout constraintLayout;
-    
+
     public TuesdayMeals() {
 
     }
@@ -115,7 +115,7 @@ public class TuesdayMeals extends Fragment {
                     for (int i = 0; i < dbKeys.size(); i++) {
                         if (dbKeys.get(i).equals(userSnapshot.getKey())) {
                             Meal meal = userSnapshot.getValue(Meal.class);
-                            if(meal != null) {
+                            if (meal != null) {
                                 meal.setId(userSnapshot.getKey());
                                 meals.add(meal);
                             }
@@ -125,7 +125,7 @@ public class TuesdayMeals extends Fragment {
                 if (!meals.isEmpty()) {
                     breakfastRecyclerView.setHasFixedSize(true);
                     breakfastRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    mondayBreakfastAdapter = new MealAdapter(meals, getContext(),constraintLayout);
+                    mondayBreakfastAdapter = new MealAdapter(meals, getContext(), constraintLayout);
                     breakfastRecyclerView.setAdapter(mondayBreakfastAdapter);
                 }
             }
@@ -154,7 +154,7 @@ public class TuesdayMeals extends Fragment {
                     for (int i = 0; i < dbKeys.size(); i++) {
                         if (dbKeys.get(i).equals(userSnapshot.getKey())) {
                             Meal meal = userSnapshot.getValue(Meal.class);
-                            if(meal != null) {
+                            if (meal != null) {
                                 meal.setId(userSnapshot.getKey());
                                 meals.add(meal);
                             }
@@ -164,7 +164,7 @@ public class TuesdayMeals extends Fragment {
                 if (!meals.isEmpty()) {
                     lunchRecyclerView.setHasFixedSize(true);
                     lunchRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    mondayLunchAdapter = new MealAdapter(meals, getContext(),constraintLayout);
+                    mondayLunchAdapter = new MealAdapter(meals, getContext(), constraintLayout);
                     lunchRecyclerView.setAdapter(mondayLunchAdapter);
                 }
             }
@@ -193,7 +193,7 @@ public class TuesdayMeals extends Fragment {
                     for (int i = 0; i < dbKeys.size(); i++) {
                         if (dbKeys.get(i).equals(userSnapshot.getKey())) {
                             Meal meal = userSnapshot.getValue(Meal.class);
-                            if(meal != null) {
+                            if (meal != null) {
                                 meal.setId(userSnapshot.getKey());
                                 meals.add(meal);
                             }
@@ -203,7 +203,7 @@ public class TuesdayMeals extends Fragment {
                 if (!meals.isEmpty()) {
                     dinnerRecyclerView.setHasFixedSize(true);
                     dinnerRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    mondayDinnerAdapter = new MealAdapter(meals, getContext(),constraintLayout);
+                    mondayDinnerAdapter = new MealAdapter(meals, getContext(), constraintLayout);
                     dinnerRecyclerView.setAdapter(mondayDinnerAdapter);
                 }
             }
@@ -232,7 +232,7 @@ public class TuesdayMeals extends Fragment {
                     for (int i = 0; i < dbKeys.size(); i++) {
                         if (dbKeys.get(i).equals(userSnapshot.getKey())) {
                             Meal meal = userSnapshot.getValue(Meal.class);
-                            if(meal != null) {
+                            if (meal != null) {
                                 meal.setId(userSnapshot.getKey());
                                 meals.add(meal);
                             }
@@ -242,7 +242,7 @@ public class TuesdayMeals extends Fragment {
                 if (!meals.isEmpty()) {
                     otherRecyclerView.setHasFixedSize(true);
                     otherRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    mondayOtherAdapter = new MealAdapter(meals, getContext(),constraintLayout);
+                    mondayOtherAdapter = new MealAdapter(meals, getContext(), constraintLayout);
                     otherRecyclerView.setAdapter(mondayOtherAdapter);
                 }
             }
