@@ -10,6 +10,9 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+
+import com.example.bodify.Models.User;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -29,8 +32,16 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -41,6 +52,7 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
     Location myLocation;
     private final static int REQUEST_CHECK_SETTING_GPS = 0x1;
     private final static int REQUEST_ID_MULTIPLE_PERMISSIONS=0x2;
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,23 +125,35 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
 
     @Override
     public void onLocationChanged(Location location) {
-        myLocation = location;
-        if(myLocation != null) {
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-            //google does not accept drawable so we must convert it to a bitmap
-            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.navigation);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude,currentLongitude), 15.0f));
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(new LatLng(currentLatitude,currentLongitude));
-            markerOptions.title("You");
-            markerOptions.icon(icon);
-            mMap.addMarker(markerOptions);
+            DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
+            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User user = snapshot.getValue(User.class);
+                    if (user != null) {
+                        myLocation = location;
+                        if (myLocation != null) {
+                            currentLatitude = location.getLatitude();
+                            currentLongitude = location.getLongitude();
+                            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.navigation);
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 15.0f));
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(new LatLng(currentLatitude, currentLongitude));
+                            markerOptions.title(user.getUserName());
+                            markerOptions.icon(icon);
+                            mMap.addMarker(markerOptions);
+                            getNearByGyms();
+                        }
+                    }
+                }
 
-            getNearByGyms();
-
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.i("Error", "" + error.getMessage());
+                }
+            });
         }
-    }
+
 
     private void getNearByGyms() {
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + "location=" + currentLatitude + "," + currentLongitude +

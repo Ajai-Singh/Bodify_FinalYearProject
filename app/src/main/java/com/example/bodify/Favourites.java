@@ -29,7 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.internal.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -119,7 +118,7 @@ public class Favourites extends Fragment {
 
     public void createCustomFavourite(ArrayList<String> itemNames) {
         createFavourite.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyDialogTheme);
             @SuppressLint("InflateParams")
             View view = getLayoutInflater().inflate(R.layout.custom_favourite, null);
             EditText itemName, servings, calories, fat, sodium, carbs, sugar, protein;

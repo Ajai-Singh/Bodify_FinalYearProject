@@ -53,7 +53,7 @@ public class LogIn extends AppCompatActivity {
                         emailAddress.setText("");
                         password.setText("");
                     } else {
-                        Toast.makeText(LogIn.this, "Error occurred! " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LogIn.this, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

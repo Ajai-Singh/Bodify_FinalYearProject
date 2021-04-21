@@ -1,7 +1,7 @@
 package com.example.bodify.Models;
 
 public class Meal {
-    private String itemName, userID, id, mealType, dayOfWeek, date, UUID,sourceUrl;
+    private String itemName, userID, id, mealType, dayOfWeek, date, UUID, sourceUrl;
     private int calories, itemTotalFat, itemSodium, itemTotalCarbohydrates, itemSugars, itemProtein, numberOfServings, originalServings;
 
     public String getItemName() {

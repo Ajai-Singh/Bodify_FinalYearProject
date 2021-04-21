@@ -176,7 +176,6 @@ public class Management extends AppCompatActivity implements BottomNavigationVie
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Habits habits = snapshot.getValue(Habits.class);
                 if (habits == null) {
-                    Log.i("habits", "null");
                     ArrayList<String> breakfastNames = new ArrayList<>();
                     breakfastNames.add("No Meals");
                     ArrayList<String> lunchNames = new ArrayList<>();

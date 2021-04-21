@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHolder> implements View.OnClickListener {
     private final ArrayList<Room> rooms;
@@ -164,7 +165,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ViewHo
                                                         intent.putExtra("theme", rooms.get(position).getTheme());
                                                         context.startActivity(intent);
                                                     } else {
-                                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + task.getException().getMessage(), Snackbar.LENGTH_SHORT);
+                                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);
                                                         snackbar.show();
                                                     }
                                                 });

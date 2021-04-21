@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,7 +46,6 @@ public class ChatRooms extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatrooms);
-        Toolbar toolbar = findViewById(R.id.toolbar);
         ImageView imageView = findViewById(R.id.createChatRoom);
         recyclerView = findViewById(R.id.chatRoomRCV);
         constraintLayout = findViewById(R.id.test);
@@ -174,7 +172,9 @@ public class ChatRooms extends AppCompatActivity {
         builder.setNegativeButton("Close", (dialog, which) -> dialog.cancel());
         builder.setView(view);
         AlertDialog dialog = builder.create();
-        dialog.show();
+        if (!ChatRooms.this.isFinishing()) {
+            dialog.show();
+        }
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
             if (spinner.getSelectedItemPosition() == 0) {
                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(ChatRooms.this);

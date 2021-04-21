@@ -74,12 +74,12 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
                 weight.setError("Invalid weight!");
                 weight.requestFocus();
             } else if (weight.getText().toString().indexOf(".") == 1) {
-                    weight.setError("Invalid weight!");
-                    weight.requestFocus();
-            } else if (weight.getText().toString().contains(".") && weight.getText().toString().indexOf(".") == - 1) {
                 weight.setError("Invalid weight!");
                 weight.requestFocus();
-            } else if (weight.getText().toString().contains(".") && weight.getText().toString().indexOf(".") == - 2) {
+            } else if (weight.getText().toString().contains(".") && weight.getText().toString().indexOf(".") == -1) {
+                weight.setError("Invalid weight!");
+                weight.requestFocus();
+            } else if (weight.getText().toString().contains(".") && weight.getText().toString().indexOf(".") == -2) {
                 weight.setError("Invalid weight!");
                 weight.requestFocus();
             } else if (weight.getText().toString().indexOf(".") == 2 && weight.getText().toString().length() == 6) {

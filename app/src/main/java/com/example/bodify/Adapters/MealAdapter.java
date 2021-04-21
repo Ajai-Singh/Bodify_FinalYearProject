@@ -21,8 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bodify.Management;
 import com.example.bodify.Models.Meal;
 import com.example.bodify.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -80,18 +78,15 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> im
                         builder.setMessage("Are you sure you want to delete this meal")
                                 .setNegativeButton("No", (dialog, which) -> dialog.cancel()).setPositiveButton("Yes", (dialog, which) -> {
                             DatabaseReference deleteReference = FirebaseDatabase.getInstance().getReference("DayOfWeek").child(meals.get(position).getDayOfWeek());
-                            deleteReference.child(meals.get(position).getId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Meal removed from Diary!", Snackbar.LENGTH_SHORT);
-                                        snackbar.show();
-                                        Intent intent = new Intent(context, Management.class);
-                                        context.startActivity(intent);
-                                    } else {
-                                        Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);
-                                        snackbar.show();
-                                    }
+                            deleteReference.child(meals.get(position).getId()).removeValue().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Snackbar snackbar = Snackbar.make(constraintLayout, "Meal removed from Diary!", Snackbar.LENGTH_SHORT);
+                                    snackbar.show();
+                                    Intent intent = new Intent(context, Management.class);
+                                    context.startActivity(intent);
+                                } else {
+                                    Snackbar snackbar = Snackbar.make(constraintLayout, "Error occurred: " + Objects.requireNonNull(task.getException()).getMessage(), Snackbar.LENGTH_SHORT);
+                                    snackbar.show();
                                 }
                             });
                         });

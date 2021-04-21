@@ -141,7 +141,7 @@ public class SignUp extends AppCompatActivity {
             userName.setError("User Name is required.");
             userName.requestFocus();
         } else if (userNames.contains(userName.getText().toString().trim().toLowerCase())) {
-            userName.setError("Error User name already exists!");
+            userName.setError("Error name already exists!");
             userName.requestFocus();
         } else if (TextUtils.isEmpty(emailAddress.getText().toString().trim())) {
             emailAddress.setError("Email Address is required.");

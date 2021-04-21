@@ -41,7 +41,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public class DiaryRefreshService extends Service {
-    private static final String TAG = "BOOMBOOMTESTGPS";
+    private static final String TAG = "Starting DRS";
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private final String userID = mAuth.getUid();
     private int calories, fats, proteins, carbohydrates;

@@ -20,7 +20,7 @@ import java.text.DecimalFormat;
 import java.util.Objects;
 
 public class HealthService extends Service {
-    private static final String TAG = "BOOMBOOMTESTGPS";
+    private static final String TAG = "Starting HS";
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private double formattedCalorieIntake, fatAmount, proteinAmount, proteinCalories, fatCalories, carbohydrateCalories, carbohydrateAmount;
 

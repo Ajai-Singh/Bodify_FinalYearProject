@@ -63,7 +63,7 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_breakdown_analysis);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Breakdown Analysis");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Data Analysis");
         weights = findViewById(R.id.weightProgression);
         userSP = findViewById(R.id.userSpinner);
         carbs = findViewById(R.id.avgCarbsHeader);

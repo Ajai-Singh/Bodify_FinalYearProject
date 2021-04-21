@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/csViewOnline"
-        android:title="View Recipe?" />
+        android:title="View Recipe" />
 
     <item
         android:id="@+id/csInformation"
