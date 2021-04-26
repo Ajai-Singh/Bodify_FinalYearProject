@@ -131,7 +131,7 @@ public class DiaryRefreshService extends Service {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    for(DataSnapshot userSnapshot2 : userSnapshot.getChildren()) {
+                    for (DataSnapshot userSnapshot2 : userSnapshot.getChildren()) {
                         Meal meal = userSnapshot2.getValue(Meal.class);
                         assert meal != null;
                         if (meal.getUserID().equalsIgnoreCase(mAuth.getUid())) {
@@ -144,7 +144,7 @@ public class DiaryRefreshService extends Service {
                     }
                 }
                 try {
-                    dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7,daysInDB, dbCalories, weight);
+                    dates(dates, calories / 7, fats / 7, carbohydrates / 7, proteins / 7, daysInDB, dbCalories, weight);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

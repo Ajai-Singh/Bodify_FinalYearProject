@@ -1,5 +1,6 @@
 package com.example.bodify;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -38,8 +39,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class WeightProgression extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -83,7 +88,8 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
                 switch (spinner.getSelectedItemPosition()) {
                     case 1:
                         leftAxis.removeAllLimitLines();
-                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
+                        Intent intent = getIntent();
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(intent.getStringExtra("userId")));
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -164,8 +170,21 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
             snackbar.setActionTextColor(Color.RED);
             snackbar.show();
         }
+        Collections.sort(analyses, new Comparator<Analysis>() {
+            @SuppressLint("SimpleDateFormat")
+            final DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+
+            @Override
+            public int compare(Analysis o1, Analysis o2) {
+                try {
+                    return Objects.requireNonNull(f.parse(o1.getWeekStarting())).compareTo(f.parse(o2.getWeekStarting()));
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        });
         barEntries.add(new BarEntry(0f, (float) weight));
-        xLabels.add("Starting Weight");
+        xLabels.add("Starting KGs");
         for (int i = 0; i < analyses.size(); i++) {
             float o = (float) i + 1f;
             barEntries.add(new BarEntry(o, (float) analyses.get(i).getWeight()));
@@ -189,7 +208,8 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(Objects.requireNonNull(mAuth.getUid()));
+        Intent intent = getIntent();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(Objects.requireNonNull(intent.getStringExtra("userId")));
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -233,7 +253,8 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(Objects.requireNonNull(mAuth.getUid()));
+        Intent intent = getIntent();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(Objects.requireNonNull(intent.getStringExtra("userId")));
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -277,7 +298,8 @@ public class WeightProgression extends AppCompatActivity implements AdapterView.
         barEntries.clear();
         xLabels.clear();
         barChart.setVisibility(View.VISIBLE);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(Objects.requireNonNull(mAuth.getUid()));
+        Intent intent = getIntent();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Macros").child(Objects.requireNonNull(intent.getStringExtra("userId")));
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

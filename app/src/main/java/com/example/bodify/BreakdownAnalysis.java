@@ -27,7 +27,6 @@ import com.example.bodify.Models.Analysis;
 import com.example.bodify.Models.Macro;
 import com.example.bodify.Models.User;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +36,6 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,10 +47,9 @@ import java.util.Objects;
 import java.util.Set;
 
 public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private ImageButton previous, next;
     private Pie pie;
-    private TextView fatsTV, carbsTV, proteinsTV, caloriesTV, weightTV, week, header, carbs, fats, proteins, calories, weight;
+    private TextView fatsTV, carbsTV, proteinsTV, caloriesTV, week, header, carbs, fats, proteins, calories;
     private ConstraintLayout constraintLayout;
     private Spinner userSP;
     private AnyChartView anyChartView;
@@ -70,14 +67,12 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         fats = findViewById(R.id.avgFatsHeader);
         proteins = findViewById(R.id.avgProteinHeader);
         calories = findViewById(R.id.avgCaloriesHeader);
-        weight = findViewById(R.id.currentWeightHeader);
         header = findViewById(R.id.wsp);
         Button search = findViewById(R.id.searchUser);
         fatsTV = findViewById(R.id.avgFats);
         carbsTV = findViewById(R.id.avgCarbs);
         proteinsTV = findViewById(R.id.avgProteins);
         caloriesTV = findViewById(R.id.avgCalories);
-        weightTV = findViewById(R.id.newWeight);
         ImageButton imageButton = findViewById(R.id.analysisInfo);
         constraintLayout = findViewById(R.id.analysisCL);
         anyChartView = findViewById(R.id.anyChartView);
@@ -115,14 +110,12 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         carbsTV.setVisibility(View.INVISIBLE);
         proteinsTV.setVisibility(View.INVISIBLE);
         caloriesTV.setVisibility(View.INVISIBLE);
-        weightTV.setVisibility(View.INVISIBLE);
         header.setVisibility(View.INVISIBLE);
         anyChartView.setVisibility(View.INVISIBLE);
         next.setVisibility(View.INVISIBLE);
         carbs.setVisibility(View.INVISIBLE);
         fats.setVisibility(View.INVISIBLE);
         proteins.setVisibility(View.INVISIBLE);
-        weight.setVisibility(View.INVISIBLE);
         calories.setVisibility(View.INVISIBLE);
         week.setVisibility(View.INVISIBLE);
         weights.setVisibility(View.INVISIBLE);
@@ -206,14 +199,12 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
         carbsTV.setVisibility(View.VISIBLE);
         proteinsTV.setVisibility(View.VISIBLE);
         caloriesTV.setVisibility(View.VISIBLE);
-        weightTV.setVisibility(View.VISIBLE);
         header.setVisibility(View.VISIBLE);
         anyChartView.setVisibility(View.VISIBLE);
         next.setVisibility(View.VISIBLE);
         carbs.setVisibility(View.VISIBLE);
         fats.setVisibility(View.VISIBLE);
         proteins.setVisibility(View.VISIBLE);
-        weight.setVisibility(View.VISIBLE);
         calories.setVisibility(View.VISIBLE);
         week.setVisibility(View.VISIBLE);
         weights.setVisibility(View.VISIBLE);
@@ -409,25 +400,6 @@ public class BreakdownAnalysis extends AppCompatActivity implements AdapterView.
                 } else {
                     caloriesTV.setTextColor(Color.BLACK);
                 }
-                DecimalFormat df = new DecimalFormat("0.00");
-                double calorieNegative = macro.getCalorieConsumption() - calories;
-                calorieNegative *= 7;
-                calorieNegative /= 7700;
-                DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
-                double finalCalorieNegative = calorieNegative;
-                userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User user = snapshot.getValue(User.class);
-                        assert user != null;
-                        weightTV.setText(df.format(user.getWeight() - finalCalorieNegative));
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        errorOccurred(error.getMessage());
-                    }
-                });
                 caloriesTV.setText(String.valueOf(calories));
                 fatsTV.setText(String.valueOf(fats));
                 carbsTV.setText(String.valueOf(carbs));

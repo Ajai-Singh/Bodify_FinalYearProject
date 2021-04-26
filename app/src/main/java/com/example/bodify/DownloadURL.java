@@ -1,6 +1,7 @@
 package com.example.bodify;
 
 import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class DownloadURL {
-    public String readURL(String myURL)throws IOException {
+    public String readURL(String myURL) throws IOException {
         String data = "";
         InputStream inputStream = null;
         HttpURLConnection httpURLConnection = null;
@@ -27,14 +28,11 @@ public class DownloadURL {
             }
             data = stringBuffer.toString();
             bufferedReader.close();
-        }
-        catch(MalformedURLException e){
+        } catch (MalformedURLException e) {
             Log.i("DownloadURL", "readURL: " + e.getMessage());
-            }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             assert inputStream != null;
             inputStream.close();
             httpURLConnection.disconnect();

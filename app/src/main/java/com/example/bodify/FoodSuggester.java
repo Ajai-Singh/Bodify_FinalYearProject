@@ -392,7 +392,7 @@ public class FoodSuggester extends Fragment {
     public void APIParsingWithConstraints(int calories, int fats, int proteins, int carbs) {
         Log.i("constraints", "" + fats);
         recipes.clear();
-        AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&maxCarbs=" + carbs + "&maxFat=" + fats + "&maxProtein=" + proteins + "&maxCalories=" + calories+"&sort=random")
+        AndroidNetworking.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=de851175d709445bb3d6149a58107a93&addRecipeNutrition=true&maxCarbs=" + carbs + "&maxFat=" + fats + "&maxProtein=" + proteins + "&maxCalories=" + calories + "&sort=random")
                 .addPathParameter("pageNumber", "0")
                 .addQueryParameter("limit", "1")
                 .addHeaders("token", "1234")

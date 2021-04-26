@@ -90,6 +90,9 @@ public class Tailoring extends AppCompatActivity implements AdapterView.OnItemSe
             } else if (height.getText().toString().length() < 2) {
                 height.setError("Invalid height!");
                 height.requestFocus();
+            } else if (height.getText().toString().indexOf("0") == 0) {
+                height.setError("Invalid height!");
+                height.requestFocus();
             } else if (Integer.parseInt(height.getText().toString()) > 232) {
                 height.setError("Error max height is 232CM!");
                 height.requestFocus();

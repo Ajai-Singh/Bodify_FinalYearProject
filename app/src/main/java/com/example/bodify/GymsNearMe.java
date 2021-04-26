@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+
 import android.Manifest;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -48,10 +49,10 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
 
     public GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
-    double currentLatitude,currentLongitude;
+    double currentLatitude, currentLongitude;
     Location myLocation;
     private final static int REQUEST_CHECK_SETTING_GPS = 0x1;
-    private final static int REQUEST_ID_MULTIPLE_PERMISSIONS=0x2;
+    private final static int REQUEST_ID_MULTIPLE_PERMISSIONS = 0x2;
     private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
@@ -68,13 +69,13 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
     }
 
     private void setUPGClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this,0,this)
+        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, 0, this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
-        }
+    }
 
 
     @Override
@@ -86,29 +87,28 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
     public void onConnected(@Nullable Bundle bundle) {
         checkPermissions();
     }
+
     private void checkPermissions() {
         int permissionLocation = ContextCompat.checkSelfPermission(GymsNearMe.this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
         List<String> listPermission = new ArrayList<>();
-        if(permissionLocation != PackageManager.PERMISSION_GRANTED) {
+        if (permissionLocation != PackageManager.PERMISSION_GRANTED) {
             listPermission.add(Manifest.permission.ACCESS_FINE_LOCATION);
-            if(!listPermission.isEmpty()) {
-                ActivityCompat.requestPermissions(this,listPermission.toArray(new String[0]),REQUEST_ID_MULTIPLE_PERMISSIONS);
+            if (!listPermission.isEmpty()) {
+                ActivityCompat.requestPermissions(this, listPermission.toArray(new String[0]), REQUEST_ID_MULTIPLE_PERMISSIONS);
             }
-        }
-        else {
+        } else {
             getMyLocation();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        int permissionLocation = ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION);
+        int permissionLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
             getMyLocation();
-        }
-        else {
+        } else {
             checkPermissions();
         }
     }
@@ -125,34 +125,34 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
 
     @Override
     public void onLocationChanged(Location location) {
-            DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
-            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User user = snapshot.getValue(User.class);
-                    if (user != null) {
-                        myLocation = location;
-                        if (myLocation != null) {
-                            currentLatitude = location.getLatitude();
-                            currentLongitude = location.getLongitude();
-                            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.navigation);
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 15.0f));
-                            MarkerOptions markerOptions = new MarkerOptions();
-                            markerOptions.position(new LatLng(currentLatitude, currentLongitude));
-                            markerOptions.title(user.getUserName());
-                            markerOptions.icon(icon);
-                            mMap.addMarker(markerOptions);
-                            getNearByGyms();
-                        }
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User").child(Objects.requireNonNull(mAuth.getUid()));
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    myLocation = location;
+                    if (myLocation != null) {
+                        currentLatitude = location.getLatitude();
+                        currentLongitude = location.getLongitude();
+                        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.navigation);
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLatitude, currentLongitude), 15.0f));
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(new LatLng(currentLatitude, currentLongitude));
+                        markerOptions.title(user.getUserName());
+                        markerOptions.icon(icon);
+                        mMap.addMarker(markerOptions);
+                        getNearByGyms();
                     }
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.i("Error", "" + error.getMessage());
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("Error", "" + error.getMessage());
+            }
+        });
+    }
 
 
     private void getNearByGyms() {
@@ -168,8 +168,8 @@ public class GymsNearMe extends FragmentActivity implements OnMapReadyCallback, 
         getNearByPlacesData.execute(dataTransfer);
     }
 
-    private void getMyLocation(){
-        if(mGoogleApiClient!=null) {
+    private void getMyLocation() {
+        if (mGoogleApiClient != null) {
             if (mGoogleApiClient.isConnected()) {
                 int permissionLocation = ContextCompat.checkSelfPermission(GymsNearMe.this,
                         Manifest.permission.ACCESS_FINE_LOCATION);
